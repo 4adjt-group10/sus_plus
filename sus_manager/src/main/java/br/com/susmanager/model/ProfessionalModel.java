@@ -112,7 +112,7 @@ public class ProfessionalModel {
                 .orElse(List.of());
     }
 
-    public void addSpeciality(SpecialityModel Speciality) {
-        this.speciality.add(Speciality);
+    public void addSpeciality(SpecialityModel speciality) {
+        this.speciality.add(speciality);
     }
 }

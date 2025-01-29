@@ -17,10 +17,16 @@ import java.util.UUID;
 
 @Service
 public class SpecialityService {
-    @Autowired
-    private SpecialityRepository specialityRepository;
-    @Autowired
-    private ProfessionalManagerRepository professionalManagerRepository;
+    private static final String ESPECIALIDADE_NAO_ENCONTRADA =  "ESPECIALIDADE_NAO_ENCONTRADA";
+
+    private final SpecialityRepository specialityRepository;
+
+    private final ProfessionalManagerRepository professionalManagerRepository;
+
+    public SpecialityService(SpecialityRepository specialityRepository, ProfessionalManagerRepository professionalManagerRepository) {
+        this.specialityRepository = specialityRepository;
+        this.professionalManagerRepository = professionalManagerRepository;
+    }
 
     @Transactional
     public SpecialityDTO createProcedure(SpecialityForm procedureFormDTO) {
@@ -50,15 +56,15 @@ public class SpecialityService {
 
     public SpecialityDTO findByName(String name) {
         return new SpecialityDTO(specialityRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Procedure not found")));
+                .orElseThrow(() -> new EntityNotFoundException(ESPECIALIDADE_NAO_ENCONTRADA)));
     }
 
     public SpecialityModel findById(UUID id) {
-        return specialityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Procedure not found"));
+        return specialityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ESPECIALIDADE_NAO_ENCONTRADA));
     }
 
     public SpecialityModel findByIdAndProfessionalId(UUID id, UUID professional) {
         return specialityRepository.findByIdAndProfessionalId(id, professional)
-                .orElseThrow(() -> new EntityNotFoundException("Procedure not found"));
+                .orElseThrow(() -> new EntityNotFoundException(ESPECIALIDADE_NAO_ENCONTRADA));
     }
 }

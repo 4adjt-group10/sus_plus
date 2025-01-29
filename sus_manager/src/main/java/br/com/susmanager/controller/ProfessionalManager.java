@@ -4,7 +4,6 @@ import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalManagerOut;
 import br.com.susmanager.service.ProfessionalManagerService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +16,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/manager/professional")
 public class ProfessionalManager {
 
-    @Autowired
-    ProfessionalManagerService professionalManagerService;
+
+    private final ProfessionalManagerService professionalManagerService;
+
+    public ProfessionalManager(ProfessionalManagerService professionalManagerService) {
+        this.professionalManagerService = professionalManagerService;
+    }
 
     @GetMapping("/findall")
     public ResponseEntity<List<ProfessionalManagerOut>> findAll() {

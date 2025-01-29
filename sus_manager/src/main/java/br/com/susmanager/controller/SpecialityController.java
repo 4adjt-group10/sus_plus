@@ -18,8 +18,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/speciality")
 public class SpecialityController {
 
-    @Autowired
-    private SpecialityService specialityService;
+
+    private final SpecialityService specialityService;
+
+    public SpecialityController(SpecialityService specialityService) {
+        this.specialityService = specialityService;
+    }
 
 
     @PostMapping("/create")

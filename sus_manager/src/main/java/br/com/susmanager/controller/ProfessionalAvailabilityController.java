@@ -4,7 +4,6 @@ import br.com.susmanager.controller.dto.professional.ProfessionalAvailabilityDTO
 import br.com.susmanager.controller.dto.professional.ProfessionalAvailabilityFormDTO;
 import br.com.susmanager.service.ProfessionalAvailabilityService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +18,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/professional-availability")
 public class ProfessionalAvailabilityController {
 
-    @Autowired
-    private ProfessionalAvailabilityService availabilityService;
 
+    private final ProfessionalAvailabilityService availabilityService;
+
+    public ProfessionalAvailabilityController(ProfessionalAvailabilityService availabilityService) {
+        this.availabilityService = availabilityService;
+    }
 
 
     @PostMapping("/create")

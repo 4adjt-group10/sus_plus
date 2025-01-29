@@ -7,7 +7,6 @@ import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.repository.ProfessionalAvailabilityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,10 +15,15 @@ import java.util.UUID;
 
 @Service
 public class ProfessionalAvailabilityService {
-    @Autowired
-    private  ProfessionalManagerService professionalService;
-    @Autowired
-    private  ProfessionalAvailabilityRepository professionalAvailabilityRepository;
+
+    private final  ProfessionalManagerService professionalService;
+
+    private final ProfessionalAvailabilityRepository professionalAvailabilityRepository;
+
+    public ProfessionalAvailabilityService(ProfessionalManagerService professionalService, ProfessionalAvailabilityRepository professionalAvailabilityRepository) {
+        this.professionalService = professionalService;
+        this.professionalAvailabilityRepository = professionalAvailabilityRepository;
+    }
 
 
     @Transactional

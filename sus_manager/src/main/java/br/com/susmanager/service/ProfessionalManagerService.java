@@ -12,7 +12,6 @@ import br.com.susmanager.repository.ProfessionalManagerRepository;
 import br.com.susmanager.repository.SpecialityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,16 +20,21 @@ import java.util.UUID;
 
 @Service
 public class ProfessionalManagerService {
-    @Autowired
-    ProfessionalManagerRepository professionalRepository;
-    @Autowired
-    SpecialityRepository speciality;
-    @Autowired
-    AddressService addressService;
-    @Autowired
-    ProfessionalAvailabilityRepository professionalAvailabilityRepository;
-    @Autowired
-    private SpecialityRepository specialityRepository;
+
+    private final ProfessionalManagerRepository professionalRepository;
+
+    private final SpecialityRepository speciality;
+
+    private final AddressService addressService;
+
+    private final ProfessionalAvailabilityRepository professionalAvailabilityRepository;
+
+    public ProfessionalManagerService(ProfessionalManagerRepository professionalRepository, SpecialityRepository speciality, AddressService addressService, ProfessionalAvailabilityRepository professionalAvailabilityRepository) {
+        this.professionalRepository = professionalRepository;
+        this.speciality = speciality;
+        this.addressService = addressService;
+        this.professionalAvailabilityRepository = professionalAvailabilityRepository;
+    }
 
     public ProfessionalManagerOut register(ProfessionalCreateForm form) {
         List<SpecialityModel> specialities = this.speciality.findAllById(form.specialityIds() != null ? form.specialityIds() : new ArrayList<>());
@@ -63,18 +67,18 @@ public class ProfessionalManagerService {
         return professionalRepository.findAll().stream().map(ProfessionalManagerOut::new).toList();
     }
 
-    public ProfessionalManagerOut findById(UUID ProfissionalId) {
-        ProfessionalModel doctor = getDoctorModel(ProfissionalId);
+    public ProfessionalManagerOut findById(UUID profissionalId) {
+        ProfessionalModel doctor = getDoctorModel(profissionalId);
         return new ProfessionalManagerOut(doctor);
     }
 
-    public void deleById(UUID ProfissionalId) {
-        professionalRepository.deleteById(ProfissionalId);
+    public void deleById(UUID profissionalId) {
+        professionalRepository.deleteById(profissionalId);
     }
 
     @Transactional
     public ProfessionalManagerOut update(UUID id, ProfessionalCreateForm professionalFormDTO) {
-        List<SpecialityModel> procedures = specialityRepository.findAllById(professionalFormDTO.specialityIds());
+        List<SpecialityModel> procedures = speciality.findAllById(professionalFormDTO.specialityIds());
         ProfessionalModel professional = findProfessionalById(id);
         professionalAvailabilityRepository.deleteAll(professional.getAvailability());
         professional.merge(professionalFormDTO, procedures);
@@ -85,9 +89,8 @@ public class ProfessionalManagerService {
         return new ProfessionalManagerOut(professional);
     }
 
-    private ProfessionalModel getDoctorModel(UUID ProfissionalId) {
-        ProfessionalModel doctor = professionalRepository.findById(ProfissionalId).
+    private ProfessionalModel getDoctorModel(UUID profissionalId) {
+        return professionalRepository.findById(profissionalId).
                 orElseThrow(() -> new DoctorException("Doctor record not found"));
-        return doctor;
     }
 }
