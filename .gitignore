@@ -29,3 +29,4 @@ replay_pid*
 /sus_integrado/mvnw
 /sus_integrado/mvnw.cmd
 /sus_integrado/.mvn/*
+/data/*
