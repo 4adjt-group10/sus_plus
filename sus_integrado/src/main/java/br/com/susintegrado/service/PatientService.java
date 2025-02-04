@@ -25,21 +25,18 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
     private final AddressService addressService;
-    private final SchedulingRepository schedulingRepository;
 
     public PatientService(PatientRepository patientRepository,
-                          AddressService addressService,
-                          SchedulingRepository schedulingRepository) {
+                          AddressService addressService) {
         this.patientRepository = patientRepository;
         this.addressService = addressService;
-        this.schedulingRepository = schedulingRepository;
     }
 
     @Transactional
     public PatientDTO register(PatientFormDTO patientFormDTO) {
         Patient patient = new Patient(patientFormDTO);
         Address address = addressService.register(patientFormDTO.address());
-        patient.setAddress(address);
+//        patient.setAddress(address);
         patientRepository.save(patient);
         return new PatientDTO(patient);
     }
@@ -49,9 +46,9 @@ public class PatientService {
         Patient patient = findPatientById(id);
         if(!patient.hasAddess()) {
             Address address = addressService.register(patientFormDTO.address());
-            patient.setAddress(address);
+//            patient.setAddress(address);
         }
-        patient.merge(patientFormDTO);
+//        patient.merge(patientFormDTO);
         return new PatientDTO(patient);
     }
 
@@ -67,27 +64,4 @@ public class PatientService {
         return patientRepository.findByDocument(patientDocument)
                 .orElseGet(() -> patientRepository.save(new Patient(patientName, patientDocument, phone)));
     }
-
-    /**
-     * This method will unblock all patients that have a canceled schedule older than 7 days.
-     * {@code @Scheduled(cron = "0 0 0 * * *")} means this method will be executed every day at midnight.
-     */
-    @Async
-    @Transactional
-    @Scheduled(cron = "0 0 0 * * *")
-    public void unblockAllPatients() {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
-        List<Patient> blockedPatients = patientRepository.findAllByBlockedTrue();
-        blockedPatients.forEach(patient -> {
-            Optional<Scheduling> canceledSchedule = schedulingRepository
-                    .findByPatientDocumentAndStatus(patient.getDocument(), CANCELED);
-            canceledSchedule.ifPresent(scheduling -> {
-                if (scheduling.getAppointment().isBefore(sevenDaysAgo)) {
-                    patient.unblock();
-                }
-            });
-        });
-        patientRepository.saveAll(blockedPatients);
-    }
-
 }

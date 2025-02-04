@@ -9,15 +9,16 @@ public record PatientRecordDTO(
         UUID id,
         String description,
         LocalDateTime date,
-        PatientDTO patient,
-        ProfessionalDTO professional
+        PatientDTO patient
+        //ProfessionalDTO professional
 ) {
 
     public PatientRecordDTO(PatientRecord patientRecord) {
         this(patientRecord.getId(),
                 patientRecord.getDescription(),
                 patientRecord.getDate(),
-                new PatientDTO(patientRecord.getPatient()),
-                new ProfessionalDTO(patientRecord.getProfessional()));
+                new PatientDTO(patientRecord.getPatient())
+                //new ProfessionalDTO(patientRecord.getProfessional())
+        );
     }
 }

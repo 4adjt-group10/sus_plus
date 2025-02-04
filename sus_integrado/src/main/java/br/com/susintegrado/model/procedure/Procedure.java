@@ -17,14 +17,14 @@ public class Procedure {
     @Column(unique = true)
     private String name;
     private BigDecimal price;
-    @ManyToMany(mappedBy = "procedures")
-    private List<Professional> professionals;
+//    @ManyToMany(mappedBy = "procedures")
+//    private List<Professional> professionals;
 
-    public Procedure(ProcedureFormDTO procedureFormDTO, List<Professional> professionals) {
+    public Procedure(ProcedureFormDTO procedureFormDTO) {
         this.id = UUID.randomUUID();
         this.name = procedureFormDTO.name();
         this.price = procedureFormDTO.price();
-        this.professionals = professionals;
+//        this.professionals = professionals;
     }
 
     @Deprecated(since = "Only for use of frameworks")
@@ -44,23 +44,23 @@ public class Procedure {
         return price;
     }
 
-    public List<Professional> getProfessionals() {
-        return professionals;
-    }
+//    public List<Professional> getProfessionals() {
+//        return professionals;
+//    }
 
-    public List<String> getProfessionalsNames() {
-        return Optional.ofNullable(professionals)
-                .map(professionalList -> professionalList.stream().map(Professional::getName).toList())
-                .orElse(List.of());
-    }
+//    public List<String> getProfessionalsNames() {
+//        return Optional.ofNullable(professionals)
+//                .map(professionalList -> professionalList.stream().map(Professional::getName).toList())
+//                .orElse(List.of());
+//    }
 
-    public void addProfessional(Professional professional) {
-        professionals.add(professional);
-    }
-
-    public void merge(ProcedureFormDTO procedureFormDTO, List<Professional> professionals) {
-        this.name = procedureFormDTO.name();
-        this.price = procedureFormDTO.price();
-        this.professionals = professionals;
-    }
+//    public void addProfessional(Professional professional) {
+//        professionals.add(professional);
+//    }
+//
+//    public void merge(ProcedureFormDTO procedureFormDTO, List<Professional> professionals) {
+//        this.name = procedureFormDTO.name();
+//        this.price = procedureFormDTO.price();
+//        this.professionals = professionals;
+//    }
 }

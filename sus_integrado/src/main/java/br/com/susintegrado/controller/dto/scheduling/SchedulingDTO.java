@@ -9,7 +9,6 @@ public record SchedulingDTO(
         UUID id,
         String patientName,
         String procedureName,
-        String professionalName,
         String appointment,
         SchedulingStatus status
 ) {
@@ -18,7 +17,6 @@ public record SchedulingDTO(
         this(scheduling.getId(),
                 scheduling.getPatientName(),
                 scheduling.getProcedureName(),
-                scheduling.getProfessionalName(),
                 scheduling.getAppointmentFormated(),
                 scheduling.getStatus());
     }

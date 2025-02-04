@@ -4,7 +4,6 @@ import br.com.susintegrado.controller.dto.patient.PatientFormDTO;
 import br.com.susintegrado.model.address.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,7 +18,7 @@ public class Patient {
     @Column(name = "document", length = 11, nullable = false, unique = true)
     private String document;
     @OneToOne
-    private RabbitConnectionDetails.Address address;
+    private Address address;
     @Column(name = "patientPhone", length = 14)
     private String phone;
     @Email
@@ -84,23 +83,23 @@ public class Patient {
         this.blocked = false;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+//    public Address getAddress() {
+//        return address;
+//    }
+//
+//    public void setAddress(Address address) {
+//        this.address = address;
+//    }
 
     public boolean hasAddess() {
         return this.address != null;
     }
 
-    public void merge(PatientFormDTO patientFormDTO) {
-        this.name = patientFormDTO.name();
-        this.document = patientFormDTO.document();
-        this.phone = patientFormDTO.phone();
-        this.email = patientFormDTO.email().orElse(null);
-        this.address.merge(patientFormDTO.address());
-    }
+//    public void merge(PatientFormDTO patientFormDTO) {
+//        this.name = patientFormDTO.name();
+//        this.document = patientFormDTO.document();
+//        this.phone = patientFormDTO.phone();
+//        this.email = patientFormDTO.email().orElse(null);
+//        this.address.merge(patientFormDTO.address());
+//    }
 }

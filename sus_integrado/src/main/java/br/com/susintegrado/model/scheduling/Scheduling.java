@@ -22,9 +22,9 @@ public class Scheduling {
     @ManyToOne
     @JoinColumn(name = "procedure_id")
     private Procedure procedure;
-    @ManyToOne
-    @JoinColumn(name = "professional_id")
-    private Professional professional;
+//    @ManyToOne
+//    @JoinColumn(name = "professional_id")
+//    private Professional professional;
     private LocalDateTime appointment;
     @Enumerated(EnumType.STRING)
     private SchedulingStatus status;
@@ -35,13 +35,13 @@ public class Scheduling {
 
     public Scheduling(Patient patient,
                       Procedure procedure,
-                      Professional professional,
+//                      Professional professional,
                       LocalDateTime appointment,
                       SchedulingStatus status) {
         this.id = UUID.randomUUID();
         this.patient = patient;
         this.procedure = procedure;
-        this.professional = professional;
+//        this.professional = professional;
         this.appointment = appointment;
         this.status = status;
     }
@@ -58,9 +58,9 @@ public class Scheduling {
         return procedure;
     }
 
-    public Professional getProfessional() {
-        return professional;
-    }
+//    public Professional getProfessional() {
+//        return professional;
+//    }
 
     public LocalDateTime getAppointment() {
         return appointment;
@@ -74,9 +74,9 @@ public class Scheduling {
         return procedure.getName();
     }
 
-    public String getProfessionalName() {
-        return professional.getName();
-    }
+//    public String getProfessionalName() {
+//        return professional.getName();
+//    }
 
     public SchedulingStatus getStatus() {
         return status;
@@ -110,7 +110,7 @@ public class Scheduling {
         if (this.appointment.isAfter(now().plusHours(6))) {
             this.appointment = newAppointment;
         } else {
-            throw new RescheduleException("It is not possible to reschedule an appointment with less than 6 hours in advance.");
+//            throw new RescheduleException("It is not possible to reschedule an appointment with less than 6 hours in advance.");
         }
     }
 

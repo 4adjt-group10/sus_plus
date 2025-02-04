@@ -1,7 +1,5 @@
 package br.com.susintegrado.model.patient;
 
-import br.com.odontoflow.application.patient.PatientRecordFormDTO;
-import br.com.odontoflow.domain.professional.Professional;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,20 +18,20 @@ public class PatientRecord {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
-    @ManyToOne
-    @JoinColumn(name = "professional_id")
-    private Professional professional;
+//    @ManyToOne
+//    @JoinColumn(name = "professional_id")
+//    private Professional professional;
 
     @Deprecated(since = "Only for use of frameworks")
     public PatientRecord() {
     }
 
-    public PatientRecord(String description, LocalDateTime date, Patient patient, Professional professional) {
+    public PatientRecord(String description, LocalDateTime date, Patient patient) {
         this.id = UUID.randomUUID();
         this.description = description;
         this.date = date;
         this.patient = patient;
-        this.professional = professional;
+        //this.professional = professional;
     }
 
     public UUID getId() {
@@ -52,14 +50,14 @@ public class PatientRecord {
         return patient;
     }
 
-    public Professional getProfessional() {
-        return professional;
-    }
-
-    public void merge(PatientRecordFormDTO formDTO) {
-        this.description = formDTO.description();
-        this.date = formDTO.date();
-    }
+//    public Professional getProfessional() {
+//        return professional;
+//    }
+//
+//    public void merge(PatientRecordFormDTO formDTO) {
+//        this.description = formDTO.description();
+//        this.date = formDTO.date();
+//    }
 
     public void isLate() {
         this.description = description.concat("  OBS: Agendamento com atraso do paciente.");
