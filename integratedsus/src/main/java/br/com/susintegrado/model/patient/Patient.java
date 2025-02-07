@@ -4,6 +4,7 @@ import br.com.susintegrado.controller.dto.patient.PatientFormDTO;
 import br.com.susintegrado.model.address.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,7 +25,10 @@ public class Patient {
     @Email
     private String email;
     private LocalDateTime createdAt;
-    private boolean blocked;
+    private String gender;
+    private LocalDateTime birthdate;
+    @Column(name = "sus_id", length = 15)
+    private String susId;
 
     public Patient(PatientFormDTO patientFormDTO) {
         this.id = UUID.randomUUID();
@@ -40,6 +44,18 @@ public class Patient {
         this.name = name;
         this.document = document;
         this.phone = phone;
+    }
+
+    public String getSusId() {
+        return susId;
+    }
+
+    public LocalDateTime getBirthdate() {
+        return birthdate;
+    }
+
+    public String getGender() {
+        return gender;
     }
 
     @Deprecated(since = "Only for use of frameworks")
@@ -71,35 +87,23 @@ public class Patient {
         return email;
     }
 
-    public boolean isBlocked() {
-        return blocked;
+    public Address getAddress() {
+        return address;
     }
 
-    public void block() {
-        this.blocked = true;
+    public void setAddress(Address address) {
+        this.address = address;
     }
-
-    public void unblock() {
-        this.blocked = false;
-    }
-
-//    public Address getAddress() {
-//        return address;
-//    }
-//
-//    public void setAddress(Address address) {
-//        this.address = address;
-//    }
 
     public boolean hasAddess() {
         return this.address != null;
     }
 
-//    public void merge(PatientFormDTO patientFormDTO) {
-//        this.name = patientFormDTO.name();
-//        this.document = patientFormDTO.document();
-//        this.phone = patientFormDTO.phone();
-//        this.email = patientFormDTO.email().orElse(null);
-//        this.address.merge(patientFormDTO.address());
-//    }
+    public void merge(PatientFormDTO patientFormDTO) {
+        this.name = patientFormDTO.name();
+        this.document = patientFormDTO.document();
+        this.phone = patientFormDTO.phone();
+        this.email = patientFormDTO.email().orElse(null);
+        this.address.merge(patientFormDTO.address());
+    }
 }
