@@ -19,13 +19,13 @@ public interface ProfessionalAvailabilityRepository extends JpaRepository<Profes
     List<ProfessionalAvailabilityModel> findByAvailableByDate(@Param("date") LocalDate date);
 
     /*
-    * Retorna as disponibilidades de um profissional em um determinado dia da semana.
-    * Considere Domingo = 1 e sábado = 7.
-    * */
+     * Retorna as disponibilidades de um profissional em um determinado dia da semana.
+     * Considere Domingo = 1 e sábado = 7.
+     * */
     @Query("SELECT pa FROM ProfessionalAvailabilityModel pa WHERE FUNCTION('DAY_OF_WEEK', pa.availableTime) = :dayOfWeek")
     List<ProfessionalAvailabilityModel> findByAvailableTimeByDayOfWeek(@Param("dayOfWeek") Integer dayOfWeek);
 
-     /*
+    /*
      * Retorna as disponibilidades de um profissional em um determinado horário do dia.
      * Considere 0 a 23 horas.
      * */
@@ -36,5 +36,5 @@ public interface ProfessionalAvailabilityRepository extends JpaRepository<Profes
 
     Optional<ProfessionalAvailabilityModel> findByProfessionalIdAndAvailableTime(UUID professionalId, LocalDateTime date);
 
-    List<ProfessionalAvailabilityModel> findAllByProfessional_Procedures_id(UUID procedureId);
+//    List<ProfessionalAvailabilityModel> findAllByProfessional_Procedures_id(UUID procedureId);
 }

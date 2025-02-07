@@ -56,10 +56,10 @@ public class ProfessionalAvailabilityController {
         return ResponseEntity.ok(availabilityService.listAvailabilitiesByHour(hour));
     }
 
-    @GetMapping("/procedure/{id}")
-    public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByProcedure(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok(availabilityService.findByProcedureId(id));
-    }
+//    @GetMapping("/procedure/{id}")
+//    public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByProcedure(@PathVariable("id") UUID id) {
+//        return ResponseEntity.ok(availabilityService.findByProcedureId(id));
+//    }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProfessionalAvailabilityDTO> updateAvailability(@PathVariable("id") UUID id,

@@ -23,10 +23,12 @@
 hs_err_pid*
 replay_pid*
 /.idea/*
-/target/*
-/sus_manager/target/*
-/sus_integrado/target/*
 /sus_integrado/mvnw
 /sus_integrado/mvnw.cmd
 /sus_integrado/.mvn/*
-/data/*
+
+### Database ###
+/**/data/**
+
+### target ###
+/**/target/**
