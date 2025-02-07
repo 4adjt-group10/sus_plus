@@ -55,9 +55,15 @@ public class UnityService {
         unityRepository.deleteById(id);
     }
 
-    public UnityDto updateQuantity(UUID id, Integer quantity) {
+    public UnityDto updateInQuantity(UUID id, Integer quantity) {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        unity.setNumberOfPatients(quantity);
+        unity.inPatiente(quantity);
+        return  new UnityDto(unityRepository.save(unity));
+    }
+
+    public UnityDto updateOutQuantity(UUID id, Integer quantity) {
+        UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        unity.outPatiente(quantity);
         return  new UnityDto(unityRepository.save(unity));
     }
 }

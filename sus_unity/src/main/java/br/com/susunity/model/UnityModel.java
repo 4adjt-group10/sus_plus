@@ -19,8 +19,7 @@ public class UnityModel {
     private AddressModel address;
     private Integer numberOfPatients;
     private Integer numberOfTotalPatients;
-    @Transient
-    private Double porcent = calculatePercent();
+
 
     public UnityModel() {
     }
@@ -33,12 +32,7 @@ public class UnityModel {
         this.numberOfTotalPatients = numberOfTotalPatients;
     }
 
-    private Double calculatePercent() {
-        if(Objects.isNull(this.numberOfTotalPatients) ||  this.numberOfTotalPatients.equals(0)){
-            return 0.0;
-        }
-        return ((double) ((this.numberOfPatients !=null) ? this.numberOfPatients : 0) / this.numberOfTotalPatients) * 100;
-    }
+
 
     public UnityModel( String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients) {
         this.name = name;
@@ -76,13 +70,16 @@ public class UnityModel {
         return numberOfTotalPatients;
     }
 
-    public void setNumberOfPatients(Integer numberOfPatients) {
-        this.numberOfPatients = numberOfPatients;
+    public void inPatiente(Integer numberOfPatients) {
+        this.numberOfPatients = this.numberOfPatients + numberOfPatients;
     }
 
-    public Double getPorcent() {
-        return porcent;
+    public void outPatiente(Integer numberOfPatients) {
+        if(Objects.nonNull(this.numberOfPatients) && this.numberOfPatients > numberOfPatients) {
+            this.numberOfPatients = this.numberOfPatients - numberOfPatients;
+        }
     }
+
 
     public void merge(UnityInForm unityInForm,AddressModel newAddress) {
         if(!this.name.equals(unityInForm.name())){

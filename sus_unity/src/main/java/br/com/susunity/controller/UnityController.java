@@ -47,9 +47,15 @@ public class UnityController {
         unityService.delete(id);
         return ResponseEntity.ok("unidade Deletada");
     }
-    @PutMapping("/update/{id}/{quantity}")
-    public ResponseEntity<UnityDto> alterUnity(@PathVariable UUID id, @PathVariable Integer quantity) {
+    @PutMapping("/update/{id}/{quantity}/in")
+    public ResponseEntity<UnityDto> alterInUnity(@PathVariable UUID id, @PathVariable Integer quantity) {
 
-        return ResponseEntity.ok(unityService.updateQuantity(id,quantity));
+        return ResponseEntity.ok(unityService.updateInQuantity(id,quantity));
+    }
+
+    @PutMapping("/update/{id}/{quantity}/out")
+    public ResponseEntity<UnityDto> alterOutUnity(@PathVariable UUID id, @PathVariable Integer quantity) {
+
+        return ResponseEntity.ok(unityService.updateOutQuantity(id,quantity));
     }
 }
