@@ -10,6 +10,8 @@ import java.util.UUID;
 @Table(name = "Speciality")
 public class SpecialityModel {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     @Column(unique = true)
     private String name;

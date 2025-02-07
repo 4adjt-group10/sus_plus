@@ -60,7 +60,7 @@ public class ProfessionalAvailabilityService {
 
 
     public List<ProfessionalAvailabilityDTO> findByProcedureId(UUID id) {
-        return professionalAvailabilityRepository.findAllByProfessional_Speciality_id(id)
+        return professionalAvailabilityRepository.findAllByProfessional_Procedures_id(id)
                 .stream().map(ProfessionalAvailabilityDTO::new).toList();
     }
 
