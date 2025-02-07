@@ -59,10 +59,10 @@ public class ProfessionalAvailabilityService {
     }
 
 
-    public List<ProfessionalAvailabilityDTO> findByProcedureId(UUID id) {
-        return professionalAvailabilityRepository.findAllByProfessional_Procedures_id(id)
-                .stream().map(ProfessionalAvailabilityDTO::new).toList();
-    }
+//    public List<ProfessionalAvailabilityDTO> findByProcedureId(UUID id) {
+//        return professionalAvailabilityRepository.findAllByProfessional_Procedures_id(id)
+//                .stream().map(ProfessionalAvailabilityDTO::new).toList();
+//    }
 
     @Transactional
     public ProfessionalAvailabilityDTO updateAvailability(UUID id, ProfessionalAvailabilityFormDTO formDTO) {

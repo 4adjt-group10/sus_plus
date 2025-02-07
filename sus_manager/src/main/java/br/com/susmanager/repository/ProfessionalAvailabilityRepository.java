@@ -36,5 +36,5 @@ public interface ProfessionalAvailabilityRepository extends JpaRepository<Profes
 
     Optional<ProfessionalAvailabilityModel> findByProfessionalIdAndAvailableTime(UUID professionalId, LocalDateTime date);
 
-    List<ProfessionalAvailabilityModel> findAllByProfessional_Procedures_id(UUID procedureId);
+//    List<ProfessionalAvailabilityModel> findAllByProfessional_Procedures_id(UUID procedureId);
 }
