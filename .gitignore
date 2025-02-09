@@ -22,10 +22,10 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
-/.idea/*
-/sus_integrado/mvnw
-/sus_integrado/mvnw.cmd
-/sus_integrado/.mvn/*
+/**/.idea/*
+/**/mvnw
+/**/mvnw.cmd
+/**/.mvn/*
 
 ### Database ###
 /**/data/**
