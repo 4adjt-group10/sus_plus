@@ -1,12 +1,9 @@
 package br.com.susmanager.controller;
 
-import br.com.susmanager.controller.ProfessionalAvailabilityController;
 import br.com.susmanager.controller.dto.professional.*;
-import br.com.susmanager.controller.dto.speciality.SpecialityForm;
-import br.com.susmanager.model.AddressModel;
+import br.com.susmanager.helper.ProfessionalHelper;
 import br.com.susmanager.model.ProfessionalAvailabilityModel;
 import br.com.susmanager.model.ProfessionalModel;
-import br.com.susmanager.model.SpecialityModel;
 import br.com.susmanager.service.ProfessionalAvailabilityService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +36,8 @@ public class ProfessionalAvailabilityControllerTest {
 
     @Captor
     private ArgumentCaptor<ProfessionalAvailabilityFormDTO> availabilityFormCaptor;
+
+    private ProfessionalHelper helper;
 
     @Test
     void testAddRegister() {
@@ -63,18 +60,7 @@ public class ProfessionalAvailabilityControllerTest {
     @Test
     void testListAllAvailabilities() {
         LocalDateTime availableTime = LocalDateTime.now();
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
+
         ProfessionalAvailabilityDTO availabilityDTO1 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), availableTime));
         ProfessionalAvailabilityDTO availabilityDTO2 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), availableTime));
         List<ProfessionalAvailabilityDTO> availabilityDTOs = List.of(availabilityDTO1, availabilityDTO2);
@@ -93,18 +79,6 @@ public class ProfessionalAvailabilityControllerTest {
     @Test
     void testListAvailabilities() {
         UUID professionalId = UUID.randomUUID();
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
         ProfessionalAvailabilityDTO availabilityDTO1 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         ProfessionalAvailabilityDTO availabilityDTO2 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         List<ProfessionalAvailabilityDTO> availabilityDTOs = List.of(availabilityDTO1, availabilityDTO2);
@@ -123,18 +97,7 @@ public class ProfessionalAvailabilityControllerTest {
     @Test
     void testListAvailabilitiesByDate() {
         LocalDate date = LocalDate.now();
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
+
         ProfessionalAvailabilityDTO availabilityDTO1 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         ProfessionalAvailabilityDTO availabilityDTO2 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         List<ProfessionalAvailabilityDTO> availabilityDTOs = List.of(availabilityDTO1, availabilityDTO2);
@@ -153,18 +116,7 @@ public class ProfessionalAvailabilityControllerTest {
     @Test
     void testListAvailabilitiesByDayOfWeek() {
         DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
+
         ProfessionalAvailabilityDTO availabilityDTO1 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         ProfessionalAvailabilityDTO availabilityDTO2 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         List<ProfessionalAvailabilityDTO> availabilityDTOs = List.of(availabilityDTO1, availabilityDTO2);
@@ -183,18 +135,7 @@ public class ProfessionalAvailabilityControllerTest {
     @Test
     void testListAvailabilitiesByHour() {
         int hour = 9;
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
+
         ProfessionalAvailabilityDTO availabilityDTO1 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         ProfessionalAvailabilityDTO availabilityDTO2 = new ProfessionalAvailabilityDTO(new ProfessionalAvailabilityModel(new ProfessionalModel(), LocalDateTime.now()));
         List<ProfessionalAvailabilityDTO> availabilityDTOs = List.of(availabilityDTO1, availabilityDTO2);

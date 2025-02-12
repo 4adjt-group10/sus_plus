@@ -1,14 +1,10 @@
 package br.com.susmanager.service;
 
 import br.com.susmanager.controller.dto.professional.*;
-import br.com.susmanager.controller.dto.speciality.SpecialityForm;
-import br.com.susmanager.model.AddressModel;
+import br.com.susmanager.helper.ProfessionalHelper;
 import br.com.susmanager.model.ProfessionalAvailabilityModel;
 import br.com.susmanager.model.ProfessionalModel;
-import br.com.susmanager.model.SpecialityModel;
 import br.com.susmanager.repository.ProfessionalAvailabilityRepository;
-import br.com.susmanager.service.ProfessionalAvailabilityService;
-import br.com.susmanager.service.ProfessionalManagerService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,10 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,12 +34,14 @@ public class ProfessionalAvailabilityServiceTest {
     @InjectMocks
     private ProfessionalAvailabilityService professionalAvailabilityService;
 
+    private ProfessionalHelper helper = new ProfessionalHelper();
+
     @Test
     void testRegisterAvailability() {
         UUID professionalId = UUID.randomUUID();
         LocalDateTime availableTime = LocalDateTime.now();
         ProfessionalAvailabilityFormDTO formDTO = new ProfessionalAvailabilityFormDTO(professionalId, availableTime);
-        ProfessionalModel professional = new ProfessionalModel(); // Mock Professional
+        ProfessionalModel professional = new ProfessionalModel();
         ProfessionalAvailabilityModel availability = new ProfessionalAvailabilityModel(professional, availableTime);
 
         when(professionalService.findProfessionalById(professionalId)).thenReturn(professional);
@@ -63,21 +59,9 @@ public class ProfessionalAvailabilityServiceTest {
     @Test
     void testListAvailabilitiesByProfessionalId() {
         UUID professionalId = UUID.randomUUID();
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
 
 
-        ProfessionalAvailabilityModel availability = new ProfessionalAvailabilityModel(professional, LocalDateTime.now());
+        ProfessionalAvailabilityModel availability = new ProfessionalAvailabilityModel(helper.createProfessionalModel(), LocalDateTime.now());
         List<ProfessionalAvailabilityModel> avail = List.of(availability);
 
         when(professionalAvailabilityRepository.findByProfessionalId(professionalId)).thenReturn(avail);
@@ -94,21 +78,8 @@ public class ProfessionalAvailabilityServiceTest {
         LocalDate date = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
 
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> avail = new ArrayList<>();
-        avail.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, avail);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
-
-        ProfessionalAvailabilityModel availability1 = new ProfessionalAvailabilityModel(professional, now);
-        ProfessionalAvailabilityModel availability2 = new ProfessionalAvailabilityModel(professional, now);
+        ProfessionalAvailabilityModel availability1 = new ProfessionalAvailabilityModel(helper.createProfessionalModel(), now);
+        ProfessionalAvailabilityModel availability2 = new ProfessionalAvailabilityModel(helper.createProfessionalModel(), now);
         List<ProfessionalAvailabilityModel> availabilities = List.of(availability1, availability2);
 
         when(professionalAvailabilityRepository.findByAvailableByDate(date)).thenReturn(availabilities);
@@ -124,22 +95,10 @@ public class ProfessionalAvailabilityServiceTest {
     @Test
     void testListAvailabilitiesByHour() {
         int hour = 9;
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> avail = new ArrayList<>();
-        avail.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, avail);
-        ProfessionalModel professional = new ProfessionalModel(form);
-        professional.setAddress(address);
 
         LocalDateTime now = LocalDateTime.now();
-        ProfessionalAvailabilityModel availability1 = new ProfessionalAvailabilityModel(professional, now.withHour(hour));
-        ProfessionalAvailabilityModel availability2 = new ProfessionalAvailabilityModel(professional, now.withHour(hour));
+        ProfessionalAvailabilityModel availability1 = new ProfessionalAvailabilityModel(helper.createProfessionalModel(), now.withHour(hour));
+        ProfessionalAvailabilityModel availability2 = new ProfessionalAvailabilityModel(helper.createProfessionalModel(), now.withHour(hour));
         List<ProfessionalAvailabilityModel> availabilities = List.of(availability1, availability2);
 
         when(professionalAvailabilityRepository.findByAvailableByHour(hour)).thenReturn(availabilities);
@@ -165,7 +124,7 @@ public class ProfessionalAvailabilityServiceTest {
         assertThrows(EntityNotFoundException.class, () -> professionalAvailabilityService.updateAvailability(id, formDTO));
 
         verify(professionalAvailabilityRepository).findById(id);
-        verify(professionalAvailabilityRepository, never()).save(any()); // Ensure save is not called
+        verify(professionalAvailabilityRepository, never()).save(any());
     }
 
     @Test

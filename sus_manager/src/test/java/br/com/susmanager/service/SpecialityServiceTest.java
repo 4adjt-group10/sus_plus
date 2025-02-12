@@ -1,16 +1,11 @@
 package br.com.susmanager.service;
 
-import br.com.susmanager.controller.dto.professional.AddressFormDTO;
-import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
-import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import br.com.susmanager.controller.dto.speciality.SpecialityDTO;
 import br.com.susmanager.controller.dto.speciality.SpecialityForm;
-import br.com.susmanager.model.AddressModel;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
 import br.com.susmanager.repository.ProfessionalManagerRepository;
 import br.com.susmanager.repository.SpecialityRepository;
-import br.com.susmanager.service.SpecialityService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -121,8 +116,6 @@ public class SpecialityServiceTest {
         UUID id = UUID.randomUUID();
         SpecialityForm form = new SpecialityForm("Cardiology", List.of(id));
 
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -132,7 +125,6 @@ public class SpecialityServiceTest {
         availabilities.add(LocalDateTime.now());
 
         List<ProfessionalModel> professionals = new ArrayList<>();
-        // The crucial change is here: Mock the addSpeciality method
         ProfessionalModel professional1 = mock(ProfessionalModel.class);
         ProfessionalModel professional2 = mock(ProfessionalModel.class);
         professionals.add(professional1);

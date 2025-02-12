@@ -28,7 +28,7 @@ public class ProfessionalAvailabilityModelTest {
 
     @Test
     public void testMerge() {
-        ProfessionalAvailabilityModel availability = new ProfessionalAvailabilityModel(); // precisa do construtor sem argumentos para o merge
+        ProfessionalAvailabilityModel availability = new ProfessionalAvailabilityModel();
 
         ProfessionalAvailabilityFormDTO formDTO = Mockito.mock(ProfessionalAvailabilityFormDTO.class);
         LocalDateTime newTime = LocalDateTime.now().plusHours(1);

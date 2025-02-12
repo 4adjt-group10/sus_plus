@@ -1,13 +1,8 @@
 package br.com.susmanager.controller;
 
-import br.com.susmanager.controller.SpecialityController;
-import br.com.susmanager.controller.dto.professional.AddressFormDTO;
-import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
-import br.com.susmanager.controller.dto.professional.ProfessionalManagerOut;
-import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import br.com.susmanager.controller.dto.speciality.SpecialityDTO;
 import br.com.susmanager.controller.dto.speciality.SpecialityForm;
-import br.com.susmanager.model.AddressModel;
+import br.com.susmanager.helper.ProfessionalHelper;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
 import br.com.susmanager.service.SpecialityService;
@@ -21,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,10 +35,12 @@ public class SpecialityControllerTest {
     @Captor
     private ArgumentCaptor<SpecialityForm> specialityFormCaptor;
 
+    private ProfessionalHelper helper = new ProfessionalHelper();
+
     @Test
     void testProcedureRegister() {
         SpecialityForm specialityForm = new SpecialityForm("Cardiology", List.of(UUID.randomUUID()));
-        SpecialityDTO specialityDTO = new SpecialityDTO(new SpecialityModel(specialityForm, List.of())); // Mocked Speciality
+        SpecialityDTO specialityDTO = new SpecialityDTO(new SpecialityModel(specialityForm, List.of()));
 
         when(specialityService.createProcedure(any(SpecialityForm.class))).thenReturn(specialityDTO);
 
@@ -61,17 +56,8 @@ public class SpecialityControllerTest {
 
     @Test
     void testFindAllProcedures() {
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
-        List<UUID> specialityIds = new ArrayList<>();
-        specialityIds.add(UUID.randomUUID());
-        List<SpecialityModel> specialities = new ArrayList<>();
-        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
-        specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalModel professional1 = new  ProfessionalModel(new ProfessionalCreateForm("Name1", "unity", "123", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities));
-        ProfessionalModel professional2 = new  ProfessionalModel(new ProfessionalCreateForm("Name1", "unity", "123", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities));
+        ProfessionalModel professional1 = helper.createProfessionalModel();
+        ProfessionalModel professional2 = helper.createProfessionalModel();
 
         SpecialityDTO specialityDTO1 = new SpecialityDTO(new SpecialityModel(new SpecialityForm("Cardiology",List.of(UUID.randomUUID())), List.of(professional1, professional2)));
         SpecialityDTO specialityDTO2 = new SpecialityDTO(new SpecialityModel(new SpecialityForm("Dermatology",List.of(UUID.randomUUID())), List.of(professional1, professional2)));
@@ -111,7 +97,7 @@ public class SpecialityControllerTest {
         SpecialityForm specialityForm = new SpecialityForm("New Cardiology",List.of(UUID.randomUUID()));
         SpecialityDTO updatedSpecialityDTO = new SpecialityDTO(new SpecialityModel(specialityForm, List.of()));
 
-        when(specialityService.update(eq(id), any(SpecialityForm.class))).thenReturn(updatedSpecialityDTO); // Use eq() for UUID matching
+        when(specialityService.update(eq(id), any(SpecialityForm.class))).thenReturn(updatedSpecialityDTO);
 
         ResponseEntity<SpecialityDTO> response = specialityController.updateProcedure(id, specialityForm);
 

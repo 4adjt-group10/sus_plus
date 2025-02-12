@@ -59,8 +59,6 @@ public class ProfessionalManagerServiceTest {
         ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
         ProfessionalModel professional = new ProfessionalModel(form);
         professional.setAddress(address);
-        List<ProfessionalAvailabilityModel> professionalAvailabilityModels = availabilities.stream().map(availability -> new ProfessionalAvailabilityModel(professional, availability)).toList();
-
 
         when(specialityRepository.findAllById(specialityIds)).thenReturn(specialities);
         when(addressService.register(addressForm)).thenReturn(address);
@@ -115,7 +113,6 @@ public class ProfessionalManagerServiceTest {
     void testFindProfessionalById() {
         UUID id = UUID.randomUUID();
         AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -161,11 +158,11 @@ public class ProfessionalManagerServiceTest {
         ProfessionalModel existingProfessional = new ProfessionalModel(form);
         existingProfessional.setAddress(address);
 
-        existingProfessional.setAddress(new AddressModel(new AddressFormDTO("Old Street", 123, "Old City", "Old State", "Old Zip"))); // Set old address
+        existingProfessional.setAddress(new AddressModel(new AddressFormDTO("Old Street", 123, "Old City", "Old State", "Old Zip")));
 
         when(professionalRepository.findById(id)).thenReturn(Optional.of(existingProfessional));
         when(specialityRepository.findAllById(specialityIds)).thenReturn(specialities);
-        when(professionalAvailabilityRepository.save(any(ProfessionalAvailabilityModel.class))).thenReturn(new ProfessionalAvailabilityModel()); // Mock save
+        when(professionalAvailabilityRepository.save(any(ProfessionalAvailabilityModel.class))).thenReturn(new ProfessionalAvailabilityModel());
 
         ProfessionalManagerOut output = professionalManagerService.update(id, form);
 
