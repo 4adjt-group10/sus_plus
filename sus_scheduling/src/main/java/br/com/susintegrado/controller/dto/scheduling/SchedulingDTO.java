@@ -8,7 +8,9 @@ import java.util.UUID;
 public record SchedulingDTO(
         UUID id,
         String patientName,
-        String procedureName,
+        String professionalName,
+        String specialityName,
+        String unityName,
         String appointment,
         SchedulingStatus status
 ) {
@@ -16,8 +18,10 @@ public record SchedulingDTO(
     public SchedulingDTO(Scheduling scheduling) {
         this(scheduling.getId(),
                 scheduling.getPatientName(),
-                scheduling.getProcedureName(),
-                scheduling.getAppointmentFormated(),
+                scheduling.getProfessionalName(),
+                scheduling.getSpecialityName(),
+                scheduling.getUnityName(),
+                scheduling.getAppointment().toString(),
                 scheduling.getStatus());
     }
 

@@ -1,11 +1,10 @@
 package br.com.susintegrado.model.scheduling;
 
-import br.com.susintegrado.model.patient.Patient;
+import br.com.susintegrado.exception.RescheduleException;
 import br.com.susintegrado.model.procedure.Procedure;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static br.com.susintegrado.model.scheduling.SchedulingStatus.*;
@@ -15,14 +14,25 @@ import static java.time.LocalDateTime.now;
 @Table(name = "Scheduling")
 public class Scheduling {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     @Column(name = "patient_id")
     private UUID patientId;
-    @ManyToOne
-    @JoinColumn(name = "procedure_id")
-    private Procedure procedure;
-    @JoinColumn(name = "professional_id")
-    private UUID professional;
+    @Column(name = "patient_name")
+    private String patientName;
+    @Column(name = "speciality_id")
+    private UUID specialityId;
+    @Column(name = "speciality_name")
+    private String specialityName;
+    @Column(name = "professional_id")
+    private UUID professionalId;
+    @Column(name = "professional_name")
+    private String professionalName;
+    @Column(name = "unity_id")
+    private UUID unityId;
+    @Column(name = "unity_name")
+    private String unityName;
     private LocalDateTime appointment;
     @Enumerated(EnumType.STRING)
     private SchedulingStatus status;
@@ -31,15 +41,24 @@ public class Scheduling {
     public Scheduling() {
     }
 
-    public Scheduling(Patient patientId,
-                      Procedure procedure,
-//                      Professional professional,
+    public Scheduling(UUID patientId,
+                      String patientName,
+                      UUID specialityId,
+                      String specialityName,
+                      UUID professionalId,
+                      String professionalName,
+                      UUID unityId,
+                      String unityName,
                       LocalDateTime appointment,
                       SchedulingStatus status) {
-        this.id = UUID.randomUUID();
         this.patientId = patientId;
-        this.procedure = procedure;
-//        this.professional = professional;
+        this.patientName = patientName;
+        this.specialityId = specialityId;
+        this.specialityName = specialityName;
+        this.professionalId = professionalId;
+        this.professionalName = professionalName;
+        this.unityId = unityId;
+        this.unityName = unityName;
         this.appointment = appointment;
         this.status = status;
     }
@@ -48,44 +67,44 @@ public class Scheduling {
         return id;
     }
 
-    public Patient getPatientId() {
+    public UUID getPatientId() {
         return patientId;
     }
 
-    public Procedure getProcedure() {
-        return procedure;
+    public String getPatientName() {
+        return patientName;
     }
 
-//    public Professional getProfessional() {
-//        return professional;
-//    }
+    public UUID getSpecialityId() {
+        return specialityId;
+    }
+
+    public String getSpecialityName() {
+        return specialityName;
+    }
+
+    public UUID getProfessionalId() {
+        return professionalId;
+    }
+
+    public String getProfessionalName() {
+        return professionalName;
+    }
+
+    public UUID getUnityId() {
+        return unityId;
+    }
+
+    public String getUnityName() {
+        return unityName;
+    }
 
     public LocalDateTime getAppointment() {
         return appointment;
     }
 
-    public String getPatientName() {
-        return patientId.getName();
-    }
-
-    public String getProcedureName() {
-        return procedure.getName();
-    }
-
-//    public String getProfessionalName() {
-//        return professional.getName();
-//    }
-
     public SchedulingStatus getStatus() {
         return status;
-    }
-
-    public UUID getPatientId() {
-        return this.patientId.getId();
-    }
-
-    public String getAppointmentFormated() {
-        return appointment.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 
     public boolean hasStatus(SchedulingStatus status) {
@@ -105,20 +124,6 @@ public class Scheduling {
     }
 
     private void reschedule(LocalDateTime newAppointment) {
-        if (this.appointment.isAfter(now().plusHours(6))) {
-            this.appointment = newAppointment;
-        } else {
-//            throw new RescheduleException("It is not possible to reschedule an appointment with less than 6 hours in advance.");
-        }
-    }
-
-    public void merge(Procedure procedure, SchedulingStatus status) {
-        this.procedure = procedure;
-        this.status = status;
-    }
-
-    public void merge(Procedure procedure, LocalDateTime appointment, SchedulingStatus status) {
-        reschedule(appointment);
-        merge(procedure, status);
+        this.appointment = newAppointment;
     }
 }
