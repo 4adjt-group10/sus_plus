@@ -31,12 +31,12 @@ services:
       - "5007:5005"
     networks:
       - sus-unity-network
-#      - rabbitmq_go_net
+      - rabbitmq_go_net
     depends_on:
       - sus-unity-db
 
 networks:
-#  rabbitmq_go_net:
-#    external: true
+  rabbitmq_go_net:
+    external: true
   sus-unity-network:
     name: sus-unity-network

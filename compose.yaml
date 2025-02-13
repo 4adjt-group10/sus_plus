@@ -1,34 +1,130 @@
+networks:
+  integrated-sus-network:
+    name: integrated-sus-network
+  sus-manager-network:
+    name: sus-manager-network
+  sus-unity-network:
+    name: sus-unity-network
+#  delivery-network:
+#    name: delivery-network
+  rabbitmq_go_net:
+    name: rabbitmq_go_net
+
 services:
 
-  postgres:
-    container_name: postgres
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_go_net
+
+  integrated-sus-db:
+    container_name: postgres-integrated-sus
     image: postgres:latest
     restart: unless-stopped
     volumes:
-      - ./data/db/postgres:/var/lib/postgresql/data
+      - ./integratedsus/data/db/postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=mydatabase
+      - POSTGRES_DB=integrated_sus_database
       - POSTGRES_PASSWORD=secret
       - POSTGRES_USER=myuser
       - TZ=America/Sao_Paulo
     ports:
-      - 5432:5432
+      - "5432:5432"
     networks:
-      - postgres-network
+      - integrated-sus-network
 
-  pgadmin:
-    image: dpage/pgadmin4
+  integrated-sus-app:
+    container_name: java-integrated-sus
+    image: maven:3.8.4-openjdk-17
+    volumes:
+      - ./integratedsus:/app
+    working_dir: /app
+    command: bash -c "mvn clean install && java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar target/IntegratedSus.jar"
     environment:
-      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
-      - PGADMIN_DEFAULT_PASSWORD=admin
+      - TZ=America/Sao_Paulo
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    networks:
+      - integrated-sus-network
+      - rabbitmq_go_net
+    depends_on:
+      - integrated-sus-db
+
+  sus-manager-db:
+    container_name: postgres-sus-manager
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - ./sus_manager/data/db/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sus_manager_database
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=myuser
       - TZ=America/Sao_Paulo
     ports:
-      - 5050:80
+      - "5433:5432"
     networks:
-      - postgres-network
-    depends_on:
-      - postgres
+      - sus-manager-network
 
-networks:
-  postgres-network:
-    name: postgres-network
+  sus-manager-app:
+    container_name: java-sus-manager
+    image: maven:3.8.4-openjdk-17
+    volumes:
+      - ./sus_manager:/app
+    working_dir: /app
+    command: bash -c "mvn clean install && java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar target/SusManager.jar"
+    environment:
+      - TZ=America/Sao_Paulo
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    ports:
+      - "8081:8080"
+      - "5006:5005"
+    networks:
+      - sus-manager-network
+      - rabbitmq_go_net
+    depends_on:
+      - sus-manager-db
+
+  sus-unity-db:
+    container_name: postgres-sus-unity
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - ./sus_unity/data/db/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sus_unity_database
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=myuser
+      - TZ=America/Sao_Paulo
+    ports:
+      - "5434:5432"
+    networks:
+      - sus-unity-network
+
+  sus-unity-app:
+    container_name: java-sus-unity
+    image: maven:3.8.4-openjdk-17
+    volumes:
+      - ./sus_unity:/app
+    working_dir: /app
+    command: bash -c "mvn clean install && java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar target/SusUnity.jar"
+    environment:
+      - TZ=America/Sao_Paulo
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    ports:
+      - "8082:8080"
+      - "5007:5005"
+    networks:
+      - sus-unity-network
+      - rabbitmq_go_net
+    depends_on:
+      - sus-unity-db

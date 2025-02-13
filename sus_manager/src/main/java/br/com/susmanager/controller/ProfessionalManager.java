@@ -2,8 +2,10 @@ package br.com.susmanager.controller;
 
 import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalManagerOut;
+import br.com.susmanager.queue.producer.MessageProducer;
 import br.com.susmanager.service.ProfessionalManagerService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/manager/professional")
 public class ProfessionalManager {
 
+    @Autowired
+    MessageProducer producer;
 
     private final ProfessionalManagerService professionalManagerService;
 
@@ -46,6 +50,14 @@ public class ProfessionalManager {
     @DeleteMapping("/delete/{professionalId}")
     public void delete(@PathVariable UUID professionalId) {
         professionalManagerService.deleById(professionalId);
+    }
+    @PostMapping("/testeqeue")
+    public void testEqeue() {
+        for (int i = 0; i < 10; i++) {
+            producer.sendToUnity("testeqeue: "  + i);
+            producer.sendToIntegrated("testeqeue: "  + i);
+            System.out.println("envio " + i);
+        }
     }
 
 }

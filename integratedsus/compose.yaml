@@ -31,12 +31,12 @@ services:
       - "5005:5005"
     networks:
       - integrated-sus-network
-#      - rabbitmq_go_net
+      - rabbitmq_go_net
     depends_on:
       - integrated-sus-db
 
 networks:
-#  rabbitmq_go_net:
-#    external: true
+  rabbitmq_go_net:
+    external: true
   integrated-sus-network:
     name: integrated-sus-network
