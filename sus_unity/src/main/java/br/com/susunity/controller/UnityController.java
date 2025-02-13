@@ -2,7 +2,9 @@ package br.com.susunity.controller;
 
 import br.com.susunity.controller.dto.UnityInForm;
 import br.com.susunity.controller.dto.UnityDto;
+import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.service.UnityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/unity")
 public class UnityController {
+    @Autowired
+    private MessageProducer producer;
 
     private final UnityService unityService;
 
@@ -57,5 +61,14 @@ public class UnityController {
     public ResponseEntity<UnityDto> alterOutUnity(@PathVariable UUID id, @PathVariable Integer quantity) {
 
         return ResponseEntity.ok(unityService.updateOutQuantity(id,quantity));
+    }
+
+    @PostMapping("/testeqeue")
+    public void testEqeue() {
+        for (int i = 0; i < 10; i++) {
+            producer.sendToManager("testeqeue: "  + i);
+            producer.sendToIntegrated("testeqeue: "  + i);
+            System.out.println("envio " + i);
+        }
     }
 }

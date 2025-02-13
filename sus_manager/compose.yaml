@@ -31,12 +31,12 @@ services:
       - "5006:5005"
     networks:
       - sus-manager-network
-#      - rabbitmq_go_net
+      - rabbitmq_go_net
     depends_on:
       - sus-manager-db
 
 networks:
-#  rabbitmq_go_net:
-#    external: true
+  rabbitmq_go_net:
+    external: true
   sus-manager-network:
     name: sus-manager-network
