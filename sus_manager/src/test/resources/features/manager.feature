@@ -6,34 +6,34 @@ Feature: Professional Manager API
     Then the response status code should be "200"
     Examples:
       |  document |name  |
-      |1234567890111|Teste111|
+      |12345678901111|Teste1111|
 
   Scenario Template: Find a professional by ID
     Given that I create a professional with "<document>" and "<name>"
-    When I look for a client by id
+    When I look for a professional by id
     Then the response status code should be "200"
     Examples:
       |  document |name  |
-      |1234567890211|Teste211|
+      |12345678902111|Teste2111|
 
   Scenario Template: Create a new professional
     Given that I create a professional with "<document>" and "<name>"
     Then the response status code should be "201"
     Examples:
       |  document |name  |
-      |1234567890311|Teste311|
+      |12345678903111|Teste3111|
 
   Scenario Template: Attempt to create a professional with invalid data
     Given that I create a professional with "<document>" and "<name>" error
     Then the response status code should be "404"
     Examples:
       |  document |name  |
-      |1234567890411|Teste411|
+      |12345678904111|Teste4111|
 
   Scenario Template: Delete a professional
     Given that I create a professional with "<document>" and "<name>"
-    When I delete the client
+    When I delete the professional
     Then the response status code should be "204"
     Examples:
       |  document |name  |
-      |1234567890511|Teste511|
+      |12345678905111|Teste5111|

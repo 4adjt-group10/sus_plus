@@ -52,15 +52,15 @@ public class StepDefinitionManager {
         
     }
 
-    @When("I look for a client by id")
-    public void iLookForAClientById() {
+    @When("I look for a professional by id")
+    public void iLookForAProfessionalById() {
         response = when().get(ENDPOINT_API_FIND_BY_ID, response.jsonPath().getString("id"));
         
     }
 
 
-    @When("I delete the client")
-    public void iDeleteTheClient() {
+    @When("I delete the professional")
+    public void iDeleteTheProfessional() {
         response = when().delete(ENDPOINT_API_DELETE, response.jsonPath().getString("id"));
 
     }
@@ -77,4 +77,5 @@ public class StepDefinitionManager {
                 .post(ENDPOINT_API_REGISTER_ERROR);
 
     }
+
 }
