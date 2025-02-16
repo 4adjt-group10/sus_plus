@@ -1,7 +1,8 @@
 package br.com.susunity.queue.consumer;
 
 import br.com.susunity.config.RabbitConfig;
-import org.springframework.amqp.AmqpRejectAndDontRequeueException;
+import br.com.susunity.queue.consumer.dto.Professional;
+import br.com.susunity.service.UnityService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -16,20 +17,23 @@ import java.util.logging.Logger;
 
 @Component
 public class RabbitMQReceiver {
-
+    private final UnityService unityService;
     private final Logger logger = Logger.getLogger(RabbitMQReceiver.class.getName());
+
+    public RabbitMQReceiver(UnityService unityService) {
+        this.unityService = unityService;
+    }
 
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_MANAGER_UNITY, ackMode = "MANUAL")
-    public void receiveDeliveryMessage(Message message,
+    public void receiveProfessionalMessage(Message message,
                                        Channel channel,
                                        @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         try {
             SimpleMessageConverter messageConverter = new SimpleMessageConverter();
-            String messageBody = (String) messageConverter.fromMessage(message);
+            Professional messageBody = (Professional) messageConverter.fromMessage(message);
             logger.info(String.format("Received <%s>", messageBody));
-            // Adicione aqui a lógica para processar a mensagem
-            // Se o processamento for bem-sucedido, confirme a mensagem
+            unityService.updateProfessional(messageBody);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);
@@ -37,4 +41,5 @@ public class RabbitMQReceiver {
             channel.basicNack(deliveryTag, false, false);
         }
     }
+
 }

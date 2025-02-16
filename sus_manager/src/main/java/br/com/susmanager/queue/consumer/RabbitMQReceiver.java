@@ -2,6 +2,8 @@ package br.com.susmanager.queue.consumer;
 
 
 import br.com.susmanager.config.RabbitConfig;
+import br.com.susmanager.queue.consumer.dto.unity.UnityProfessionalForm;
+import br.com.susmanager.service.ProfessionalManagerService;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -16,20 +18,23 @@ import java.util.logging.Logger;
 
 @Component
 public class RabbitMQReceiver {
-
+    private final ProfessionalManagerService professionalManagerService;
     private final Logger logger = Logger.getLogger(RabbitMQReceiver.class.getName());
+
+    public RabbitMQReceiver(ProfessionalManagerService professionalManagerService) {
+        this.professionalManagerService = professionalManagerService;
+    }
 
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_UNITY_MANAGER, ackMode = "MANUAL")
-    public void receiveDeliveryMessage(Message message,
-                                       Channel channel,
-                                       @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
+    public void receiveUnityMessage(Message message,
+                                    Channel channel,
+                                    @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         try {
             SimpleMessageConverter messageConverter = new SimpleMessageConverter();
-            String messageBody = (String) messageConverter.fromMessage(message);
+            UnityProfessionalForm messageBody = (UnityProfessionalForm) messageConverter.fromMessage(message);
             logger.info(String.format("Received <%s>", messageBody));
-            // Adicione aqui a lógica para processar a mensagem
-            // Se o processamento for bem-sucedido, confirme a mensagem
+            professionalManagerService.findProfessionalMQ(messageBody);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);

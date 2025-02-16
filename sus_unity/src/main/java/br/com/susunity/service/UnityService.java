@@ -2,8 +2,11 @@ package br.com.susunity.service;
 
 import br.com.susunity.controller.dto.UnityInForm;
 import br.com.susunity.controller.dto.UnityDto;
+import br.com.susunity.controller.dto.UnityProfessionalForm;
 import br.com.susunity.model.AddressModel;
 import br.com.susunity.model.UnityModel;
+import br.com.susunity.queue.consumer.dto.Professional;
+import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.repository.UnityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,10 +21,12 @@ import java.util.stream.Collectors;
 public class UnityService {
     private final UnityRepository unityRepository;
     private final AddressService addressService;
+    private final MessageProducer messageProducer;
 
-    public UnityService(UnityRepository unityRepository, AddressService addressService) {
+    public UnityService(UnityRepository unityRepository, AddressService addressService, MessageProducer messageProducer) {
         this.unityRepository = unityRepository;
         this.addressService = addressService;
+        this.messageProducer = messageProducer;
     }
     @Transactional
     public UnityDto create(UnityInForm unityInForm) {
@@ -65,5 +70,19 @@ public class UnityService {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         unity.outPatiente(quantity);
         return  new UnityDto(unityRepository.save(unity));
+    }
+
+    public void includeProfessional(UnityProfessionalForm unityProfessionalForm) {
+        unityRepository.findById(unityProfessionalForm.unityId()).orElseThrow(EntityNotFoundException::new);
+        messageProducer.sendToManager(unityProfessionalForm.toString());
+
+    }
+
+    public void updateProfessional(Professional messageBody) {
+        if(messageBody.getProfessional()){
+            UnityModel unityModel = unityRepository.findById(messageBody.getUnityId()).orElseThrow(EntityNotFoundException::new);
+            unityModel.setProfessional(messageBody,unityModel);
+            unityRepository.save(unityModel);
+        }
     }
 }

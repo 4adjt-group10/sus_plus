@@ -7,6 +7,9 @@ import br.com.susmanager.model.AddressModel;
 import br.com.susmanager.model.ProfessionalAvailabilityModel;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
+import br.com.susmanager.queue.consumer.dto.unity.UnityProfessionalForm;
+import br.com.susmanager.queue.producer.MessageProducer;
+import br.com.susmanager.queue.producer.dto.Professional;
 import br.com.susmanager.repository.ProfessionalAvailabilityRepository;
 import br.com.susmanager.repository.ProfessionalManagerRepository;
 import br.com.susmanager.repository.SpecialityRepository;
@@ -29,11 +32,13 @@ public class ProfessionalManagerService {
 
     private final ProfessionalAvailabilityRepository professionalAvailabilityRepository;
 
-    public ProfessionalManagerService(ProfessionalManagerRepository professionalRepository, SpecialityRepository speciality, AddressService addressService, ProfessionalAvailabilityRepository professionalAvailabilityRepository) {
+    private final MessageProducer messageProducer;
+    public ProfessionalManagerService(ProfessionalManagerRepository professionalRepository, SpecialityRepository speciality, AddressService addressService, ProfessionalAvailabilityRepository professionalAvailabilityRepository, MessageProducer messageProducer) {
         this.professionalRepository = professionalRepository;
         this.speciality = speciality;
         this.addressService = addressService;
         this.professionalAvailabilityRepository = professionalAvailabilityRepository;
+        this.messageProducer = messageProducer;
     }
 
     public ProfessionalManagerOut register(ProfessionalCreateForm form) {
@@ -92,5 +97,17 @@ public class ProfessionalManagerService {
     private ProfessionalModel getDoctorModel(UUID profissionalId) {
         return professionalRepository.findById(profissionalId).
                 orElseThrow(() -> new DoctorException("Doctor record not found"));
+    }
+
+    public void findProfessionalMQ(UnityProfessionalForm messageBody) {
+        ProfessionalModel professionalModel = new ProfessionalModel();
+        try{
+            professionalModel= getDoctorModel(messageBody.ProfessionalId());
+            Professional professional = new Professional(professionalModel,messageBody.unityId());
+            messageProducer.sendToUnity(professional);
+        }catch (Exception e){
+            Professional professional = new Professional(messageBody.unityId());
+            messageProducer.sendToUnity(professional);
+        }
     }
 }

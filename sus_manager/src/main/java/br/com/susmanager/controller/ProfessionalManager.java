@@ -51,13 +51,6 @@ public class ProfessionalManager {
     public void delete(@PathVariable UUID professionalId) {
         professionalManagerService.deleById(professionalId);
     }
-    @PostMapping("/testeqeue")
-    public void testEqeue() {
-        for (int i = 0; i < 10; i++) {
-            producer.sendToUnity("testeqeue: "  + i);
-            producer.sendToIntegrated("testeqeue: "  + i);
-            System.out.println("envio " + i);
-        }
-    }
+
 
 }
