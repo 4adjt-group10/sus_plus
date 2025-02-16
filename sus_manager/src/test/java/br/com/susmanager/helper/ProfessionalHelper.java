@@ -45,4 +45,17 @@ public class ProfessionalHelper {
 
         return professional;
     }
+
+    public ProfessionalCreateForm createProfessionalForm(String document, String name){
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
+        List<UUID> specialityIds = new ArrayList<>();
+        specialityIds.add(UUID.randomUUID());
+        List<SpecialityModel> specialities = new ArrayList<>();
+        SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
+        specialities.add(speciality);
+        List<LocalDateTime> availabilities = new ArrayList<>();
+        availabilities.add(LocalDateTime.now());
+
+        return new ProfessionalCreateForm(name, document, "123", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+    }
 }
