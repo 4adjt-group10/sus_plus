@@ -33,7 +33,7 @@ public class SchedulingService {
 
     @Transactional
     public SchedulingDTO register(SchedulingFormDTO formDTO) {
-        // TODO: Enviar menssageria para serviço de unidade para saber se tem vaga para aquela especialidade naquele dia (obtem informações de profissional)
+        // TODO: Enviar menssageria para serviço de unidade para saber se tem vaga para aquela especialidade naquele dia (obtem informações de profissional: id, nome, cargo)
         // TODO: Caso não seja possível agendar, retornar aviso ao paciente e enviar via messageria para serviço externo que utiliza IA para sugerir encaminhamento para outra unidade mais próxima com profissional disponível
         // TODO: enviar menssageria para serviço de paciente para validar id (ou documento) e retornar nome
 //        Scheduling scheduling = new Scheduling(formDTO.patientId(),
