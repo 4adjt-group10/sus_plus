@@ -4,6 +4,9 @@ import br.com.susintegrado.controller.dto.scheduling.SchedulingDTO;
 import br.com.susintegrado.controller.dto.scheduling.SchedulingFormDTO;
 import br.com.susintegrado.controller.dto.scheduling.SchedulingUpdateDTO;
 import br.com.susintegrado.model.scheduling.Scheduling;
+import br.com.susintegrado.queue.MessageBodyForIntegrated;
+import br.com.susintegrado.queue.MessageBodyForUnity;
+import br.com.susintegrado.queue.producer.MessageProducer;
 import br.com.susintegrado.repository.SchedulingRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,28 +28,27 @@ import static br.com.susintegrado.model.scheduling.SchedulingStatus.*;
 public class SchedulingService {
 
     private final SchedulingRepository schedulingRepository;
+    private final MessageProducer messageProducer;
+
     private final Logger logger = Logger.getLogger(SchedulingService.class.getName());
 
-    public SchedulingService(SchedulingRepository schedulingRepository) {
+    public SchedulingService(SchedulingRepository schedulingRepository, MessageProducer messageProducer) {
         this.schedulingRepository = schedulingRepository;
+        this.messageProducer = messageProducer;
     }
 
     @Transactional
     public SchedulingDTO register(SchedulingFormDTO formDTO) {
         // TODO: Enviar menssageria para serviço de unidade para saber se tem vaga para aquela especialidade naquele dia (obtem informações de profissional: id, nome, cargo)
+        messageProducer.sendToUnity(new MessageBodyForUnity(formDTO));
+        messageProducer.sendToIntegrated(new MessageBodyForIntegrated(formDTO.patientId()));
         // TODO: Caso não seja possível agendar, retornar aviso ao paciente e enviar via messageria para serviço externo que utiliza IA para sugerir encaminhamento para outra unidade mais próxima com profissional disponível
         // TODO: enviar menssageria para serviço de paciente para validar id (ou documento) e retornar nome
-//        Scheduling scheduling = new Scheduling(formDTO.patientId(),
-//                formDTO.specialityId(),
-//                formDTO.professionalId(),
-//                formDTO.unityId(),
-//                formDTO.appointment(),
-//                formDTO.status(),
-//                formDTO.observation());
-//        schedulingRepository.save(scheduling);
+        Scheduling schedulingUnderAnalysis = new Scheduling(formDTO);
+        schedulingRepository.save(schedulingUnderAnalysis);
         //TODO: mandar email via serviço externo
-//        logger.info("New appointment: " + scheduling);
-//        return new SchedulingDTO(scheduling);
+        logger.info("New appointment: " + schedulingUnderAnalysis);
+        return new SchedulingDTO(schedulingUnderAnalysis);
     }
 
     public List<SchedulingDTO> findAllByPatientId(UUID id, Optional<LocalDate> date) {

@@ -2,6 +2,7 @@ package br.com.susintegrado.model.scheduling;
 
 public enum SchedulingStatus {
 
+    UNDER_ANALYSIS("Em análise"),
     SCHEDULED("Agendado"),
     RESCHEDULED("Reagendado"),
     CANCELED("Cancelado"),
