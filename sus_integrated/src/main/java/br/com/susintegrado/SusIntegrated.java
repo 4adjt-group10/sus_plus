@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
-public class SusIntegrado {
+public class SusIntegrated {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SusIntegrado.class, args);
+		SpringApplication.run(SusIntegrated.class, args);
 	}
 
 }

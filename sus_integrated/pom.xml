@@ -8,8 +8,8 @@
 		<version>3.2.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.integratedsus</groupId>
-	<artifactId>IntegratedSus</artifactId>
+	<groupId>br.com.sus_integrated</groupId>
+	<artifactId>sus_integrated</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>IntegratedSus</name>
 	<description>A patient API for sus</description>

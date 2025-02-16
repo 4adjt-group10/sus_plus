@@ -1,14 +1,13 @@
 package br.com.susintegrado.model.scheduling;
 
-import br.com.susintegrado.exception.RescheduleException;
-import br.com.susintegrado.model.procedure.Procedure;
+import br.com.susintegrado.controller.dto.scheduling.SchedulingFormDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static br.com.susintegrado.model.scheduling.SchedulingStatus.*;
-import static java.time.LocalDateTime.now;
+
 
 @Entity
 @Table(name = "Scheduling")
@@ -39,6 +38,14 @@ public class Scheduling {
 
     @Deprecated(since = "Only for use of frameworks")
     public Scheduling() {
+    }
+
+    public Scheduling(SchedulingFormDTO formDTO) {
+        this.patientId = formDTO.patientId();
+        this.specialityId = formDTO.specialityId();
+        this.unityId = formDTO.unityId();
+        this.appointment = formDTO.appointment();
+        this.status = UNDER_ANALYSIS;
     }
 
     public Scheduling(UUID patientId,
