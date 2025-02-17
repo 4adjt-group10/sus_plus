@@ -1,5 +1,6 @@
 package br.com.susunity.model;
 
+import br.com.susunity.queue.consumer.dto.Speciality;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class SpecialityModel {
     private UUID id;
     @Column(unique = true)
     private String name;
-    @ManyToMany(mappedBy = "speciality")
+    @ManyToMany(mappedBy = "speciality",cascade = CascadeType.ALL)
     private List<ProfissionalUnityModel> professionals;
 
     public SpecialityModel() {
@@ -30,6 +31,11 @@ public class SpecialityModel {
     public SpecialityModel(String name, List<ProfissionalUnityModel> professionals) {
         this.name = name;
         this.professionals = professionals;
+    }
+
+    public SpecialityModel(Speciality speciality) {
+        this.id = speciality.getId();
+        this.name = speciality.getName();
     }
 
     public UUID getId() {

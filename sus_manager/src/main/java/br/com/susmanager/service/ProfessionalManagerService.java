@@ -7,7 +7,7 @@ import br.com.susmanager.model.AddressModel;
 import br.com.susmanager.model.ProfessionalAvailabilityModel;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
-import br.com.susmanager.queue.consumer.dto.unity.UnityProfessionalForm;
+import br.com.susmanager.queue.consumer.dto.unity.UnityProfessional;
 import br.com.susmanager.queue.producer.MessageProducer;
 import br.com.susmanager.queue.producer.dto.Professional;
 import br.com.susmanager.repository.ProfessionalAvailabilityRepository;
@@ -43,7 +43,7 @@ public class ProfessionalManagerService {
 
     public ProfessionalManagerOut register(ProfessionalCreateForm form) {
         List<SpecialityModel> specialities = this.speciality.findAllById(form.specialityIds() != null ? form.specialityIds() : new ArrayList<>());
-        ProfessionalModel professional = new ProfessionalModel(form);
+        ProfessionalModel professional = new ProfessionalModel(form,specialities);
         List<ProfessionalAvailabilityModel> availabilities = form.availabilities()
                 .stream()
                 .map(availability -> new ProfessionalAvailabilityModel(professional, availability))
@@ -93,20 +93,18 @@ public class ProfessionalManagerService {
         professionalRepository.save(professional);
         return new ProfessionalManagerOut(professional);
     }
-
-    private ProfessionalModel getDoctorModel(UUID profissionalId) {
+    @Transactional
+    public ProfessionalModel getDoctorModel(UUID profissionalId) {
         return professionalRepository.findById(profissionalId).
                 orElseThrow(() -> new DoctorException("Doctor record not found"));
     }
 
-    public void findProfessionalMQ(UnityProfessionalForm messageBody) {
-        ProfessionalModel professionalModel = new ProfessionalModel();
+    public void findProfessionalMQ(UnityProfessional messageBody) {
         try{
-            professionalModel= getDoctorModel(messageBody.ProfessionalId());
-            Professional professional = new Professional(professionalModel,messageBody.unityId());
+            Professional professional = new Professional(getDoctorModel(messageBody.getProfessionalId()),messageBody.getUnityId());
             messageProducer.sendToUnity(professional);
         }catch (Exception e){
-            Professional professional = new Professional(messageBody.unityId());
+            Professional professional = new Professional(messageBody.getUnityId());
             messageProducer.sendToUnity(professional);
         }
     }

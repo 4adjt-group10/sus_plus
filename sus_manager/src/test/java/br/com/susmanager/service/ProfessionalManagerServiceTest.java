@@ -57,7 +57,7 @@ public class ProfessionalManagerServiceTest {
         availabilities.add(LocalDateTime.now());
 
         ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
+        ProfessionalModel professional = new ProfessionalModel(form,null);
         professional.setAddress(address);
 
         when(specialityRepository.findAllById(specialityIds)).thenReturn(specialities);
@@ -89,7 +89,7 @@ public class ProfessionalManagerServiceTest {
         availabilities.add(LocalDateTime.now());
 
         ProfessionalCreateForm form = new ProfessionalCreateForm("Name", document, "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
+        ProfessionalModel professional = new ProfessionalModel(form,null);
 
         when(professionalRepository.findByDocument(document)).thenReturn(Optional.of(professional));
 
@@ -122,7 +122,7 @@ public class ProfessionalManagerServiceTest {
         availabilities.add(LocalDateTime.now());
 
         ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "12345", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
+        ProfessionalModel professional = new ProfessionalModel(form,null);
 
         when(professionalRepository.findById(id)).thenReturn(Optional.of(professional));
 
@@ -155,7 +155,7 @@ public class ProfessionalManagerServiceTest {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
         ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel existingProfessional = new ProfessionalModel(form);
+        ProfessionalModel existingProfessional = new ProfessionalModel(form,null);
         existingProfessional.setAddress(address);
 
         existingProfessional.setAddress(new AddressModel(new AddressFormDTO("Old Street", 123, "Old City", "Old State", "Old Zip")));

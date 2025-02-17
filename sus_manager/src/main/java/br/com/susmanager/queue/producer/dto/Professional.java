@@ -6,19 +6,22 @@ import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Professional {
+public class Professional implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private UUID profissionalId;
     private String profissionalName;
     private ProfessionalType type;
     private List<Speciality> speciality;
-    private Boolean isProfessional;
+    private boolean isProfessional;
     private UUID unityId;
 
-    public Professional( UUID profissionalId, String profissionalName, ProfessionalType type, List<Speciality> speciality, Boolean isProfessional, UUID unityId) {
+    public Professional( UUID profissionalId, String profissionalName, ProfessionalType type, List<Speciality> speciality, boolean isProfessional, UUID unityId) {
         this.profissionalId = profissionalId;
         this.profissionalName = profissionalName;
         this.type = type;
@@ -35,12 +38,12 @@ public class Professional {
         this.profissionalName = professionalModel.getName();
         this.type = professionalModel.getType();
         this.speciality = getEspeciality(professionalModel.getSpeciality());
-        isProfessional = Boolean.TRUE;
+        isProfessional = true;
         unityId = idUnity;
     }
 
     public Professional(UUID idUnity) {
-        isProfessional = Boolean.FALSE;
+        isProfessional = false;
         unityId = idUnity;
     }
 

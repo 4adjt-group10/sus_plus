@@ -65,15 +65,6 @@ public class UnityController {
         return ResponseEntity.ok(unityService.updateOutQuantity(id,quantity));
     }
 
-    @PostMapping("/testeqeue")
-    public void testEqeue() {
-        for (int i = 0; i < 10; i++) {
-            producer.sendToManager("testeqeue: "  + i);
-            producer.sendToIntegrated("testeqeue: "  + i);
-            System.out.println("envio " + i);
-        }
-    }
-
     @PostMapping("/include/professional")
     public ResponseEntity includeProfessional(@RequestBody UnityProfessionalForm unityProfessionalForm) {
         unityService.includeProfessional(unityProfessionalForm);

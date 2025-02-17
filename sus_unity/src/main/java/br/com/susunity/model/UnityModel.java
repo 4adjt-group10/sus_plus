@@ -22,7 +22,7 @@ public class UnityModel {
     private AddressModel address;
     private Integer numberOfPatients;
     private Integer numberOfTotalPatients;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<ProfissionalUnityModel> profissional;
 
 
@@ -51,6 +51,8 @@ public class UnityModel {
         this.address = newAddress;
         this.numberOfTotalPatients = (unityInForm.numberOfToTalPatients() != null) ? unityInForm.numberOfToTalPatients() : 0;
     }
+
+
 
     public UUID getId() {
         return id;
@@ -95,10 +97,10 @@ public class UnityModel {
         this.numberOfTotalPatients = unityInForm.numberOfToTalPatients();
     }
 
-    public void setProfessional(Professional messageBody, UnityModel unityModel) {
-        if(Objects.isNull(profissional)){
+    public void setProfessional(Professional messageBody, UnityModel unityModel, List<SpecialityModel> specialityModels) {
+        if(Objects.isNull(profissional) || profissional.isEmpty()) {
             profissional = new ArrayList<>();
-            ProfissionalUnityModel profissionalUnityModel = new ProfissionalUnityModel(messageBody,unityModel);
+            ProfissionalUnityModel profissionalUnityModel = new ProfissionalUnityModel(messageBody,unityModel,specialityModels);
             profissional.add(profissionalUnityModel);
         }
     }

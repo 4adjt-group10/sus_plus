@@ -23,7 +23,7 @@ public class ProfissionalUnityModel {
     private ProfessionalType type;
     @ManyToMany
     private List<UnityModel> unityModel;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "Professional_Speciality",
             joinColumns = @JoinColumn(name = "professional_id"),
@@ -52,7 +52,7 @@ public class ProfissionalUnityModel {
 
 
 
-    public ProfissionalUnityModel(Professional messageBody, UnityModel unity) {
+    public ProfissionalUnityModel(Professional messageBody, UnityModel unity, List<SpecialityModel> specialityModels) {
         this.profissionalId = messageBody.getProfissionalId();
         this.profissionalName = messageBody.getProfissionalName();
         this.type = messageBody.getType();
@@ -62,9 +62,14 @@ public class ProfissionalUnityModel {
         }else{
             this.unityModel.add(unity);
         }
-
+        if(Objects.nonNull(specialityModels)||!specialityModels.isEmpty()){
+            this.speciality = new ArrayList<>();
+            messageBody.getSpeciality().forEach(specialityModel -> this.speciality.add (new SpecialityModel(specialityModel)));
+        }
 
     }
+
+
 
     public UUID getId() {
         return id;

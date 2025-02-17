@@ -1,14 +1,11 @@
 package br.com.susmanager.queue.consumer;
 
-
 import br.com.susmanager.config.RabbitConfig;
-import br.com.susmanager.queue.consumer.dto.unity.UnityProfessionalForm;
+import br.com.susmanager.queue.consumer.dto.unity.UnityProfessional;
 import br.com.susmanager.service.ProfessionalManagerService;
 import com.rabbitmq.client.Channel;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
@@ -25,17 +22,14 @@ public class RabbitMQReceiver {
         this.professionalManagerService = professionalManagerService;
     }
 
-
-    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_UNITY_MANAGER, ackMode = "MANUAL")
-    public void receiveUnityMessage(Message message,
+    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_UNITY_MANAGER, ackMode = "MANUAL", containerFactory = "rabbitListenerContainerFactory")
+    public void receiveUnityMessage(UnityProfessional messageBody,
                                     Channel channel,
                                     @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         try {
-            SimpleMessageConverter messageConverter = new SimpleMessageConverter();
-            UnityProfessionalForm messageBody = (UnityProfessionalForm) messageConverter.fromMessage(message);
-            logger.info(String.format("Received <%s>", messageBody));
+            logger.info(String.format("Received <%s>", messageBody.toString()));
             professionalManagerService.findProfessionalMQ(messageBody);
-            channel.basicAck(deliveryTag , false);
+            channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);
             // Se o processamento falhar, rejeite a mensagem sem reencaminhá-la para a fila

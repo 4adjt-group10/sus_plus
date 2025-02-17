@@ -4,9 +4,7 @@ import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import jakarta.persistence.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Table
 @Entity(name = "Professional")
@@ -24,7 +22,7 @@ public class ProfessionalModel {
     private AddressModel address;
     @Enumerated(EnumType.STRING)
     private ProfessionalType type;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Professional_Speciality",
             joinColumns = @JoinColumn(name = "professional_id"),
@@ -55,13 +53,17 @@ public class ProfessionalModel {
         this.availability = availability;
     }
 
-    public ProfessionalModel(ProfessionalCreateForm form) {
+    public ProfessionalModel(ProfessionalCreateForm form, List<SpecialityModel> specialities) {
         this.name = form.name();
         this.unity = form.unity();
         this.document = form.document();
         this.address = new AddressModel(form.address());
         this.type = form.type();
+        this.speciality = specialities;
+
     }
+
+
 
     public UUID getId() {
         return id;

@@ -4,9 +4,12 @@ import br.com.susunity.controller.dto.UnityInForm;
 import br.com.susunity.controller.dto.UnityDto;
 import br.com.susunity.controller.dto.UnityProfessionalForm;
 import br.com.susunity.model.AddressModel;
+import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
 import br.com.susunity.queue.consumer.dto.Professional;
+import br.com.susunity.queue.consumer.dto.Speciality;
 import br.com.susunity.queue.producer.MessageProducer;
+import br.com.susunity.queue.producer.dto.UnityProfessional;
 import br.com.susunity.repository.UnityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -22,11 +25,13 @@ public class UnityService {
     private final UnityRepository unityRepository;
     private final AddressService addressService;
     private final MessageProducer messageProducer;
+    private final SpecialityService specialityService;
 
-    public UnityService(UnityRepository unityRepository, AddressService addressService, MessageProducer messageProducer) {
+    public UnityService(UnityRepository unityRepository, AddressService addressService, MessageProducer messageProducer, SpecialityService specialityService) {
         this.unityRepository = unityRepository;
         this.addressService = addressService;
         this.messageProducer = messageProducer;
+        this.specialityService = specialityService;
     }
     @Transactional
     public UnityDto create(UnityInForm unityInForm) {
@@ -72,17 +77,23 @@ public class UnityService {
         return  new UnityDto(unityRepository.save(unity));
     }
 
-    public void includeProfessional(UnityProfessionalForm unityProfessionalForm) {
-        unityRepository.findById(unityProfessionalForm.unityId()).orElseThrow(EntityNotFoundException::new);
-        messageProducer.sendToManager(unityProfessionalForm.toString());
 
-    }
-
+    @Transactional
     public void updateProfessional(Professional messageBody) {
         if(messageBody.getProfessional()){
+            List<SpecialityModel> specialityModels = findSpeciality(messageBody.getSpeciality());
             UnityModel unityModel = unityRepository.findById(messageBody.getUnityId()).orElseThrow(EntityNotFoundException::new);
-            unityModel.setProfessional(messageBody,unityModel);
+            unityModel.setProfessional(messageBody,unityModel,specialityModels);
             unityRepository.save(unityModel);
         }
+    }
+
+    private List<SpecialityModel> findSpeciality(List<Speciality> speciality) {
+        return specialityService.findAllSpecialityes(speciality);
+    }
+
+    public void includeProfessional(UnityProfessionalForm unityProfessionalForm) {
+        unityRepository.findById(unityProfessionalForm.unityId()).orElseThrow(EntityNotFoundException::new);
+        messageProducer.sendToManager(new UnityProfessional(unityProfessionalForm));
     }
 }

@@ -15,7 +15,7 @@ public class SpecialityModel {
     private UUID id;
     @Column(unique = true)
     private String name;
-    @ManyToMany(mappedBy = "speciality")
+    @ManyToMany(mappedBy = "speciality",fetch = FetchType.EAGER)
     private List<ProfessionalModel> professionals;
 
 

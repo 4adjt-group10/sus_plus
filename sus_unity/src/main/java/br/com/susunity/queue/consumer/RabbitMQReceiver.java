@@ -6,7 +6,6 @@ import br.com.susunity.service.UnityService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import com.rabbitmq.client.Channel;
@@ -26,14 +25,12 @@ public class RabbitMQReceiver {
 
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_MANAGER_UNITY, ackMode = "MANUAL")
-    public void receiveProfessionalMessage(Message message,
+    public void receiveProfessionalMessage(Professional message,
                                        Channel channel,
                                        @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         try {
-            SimpleMessageConverter messageConverter = new SimpleMessageConverter();
-            Professional messageBody = (Professional) messageConverter.fromMessage(message);
-            logger.info(String.format("Received <%s>", messageBody));
-            unityService.updateProfessional(messageBody);
+            logger.info(String.format("Received <%s>", message.toString()));
+            unityService.updateProfessional(message);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);
