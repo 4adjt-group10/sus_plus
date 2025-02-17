@@ -16,7 +16,7 @@ public class SpecialityModel {
     private UUID id;
     @Column(unique = true)
     private String name;
-    @ManyToMany(mappedBy = "speciality",cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "speciality")
     private List<ProfissionalUnityModel> professionals;
 
     public SpecialityModel() {

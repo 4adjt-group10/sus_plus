@@ -22,7 +22,7 @@ public class UnityModel {
     private AddressModel address;
     private Integer numberOfPatients;
     private Integer numberOfTotalPatients;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "unity")
     private List<ProfissionalUnityModel> profissional;
 
 
