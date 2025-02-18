@@ -1,9 +1,11 @@
 package br.com.susunity.service;
 
+import br.com.susunity.controller.dto.ProfessionalOut;
 import br.com.susunity.controller.dto.UnityInForm;
 import br.com.susunity.controller.dto.UnityDto;
 import br.com.susunity.controller.dto.UnityProfessionalForm;
 import br.com.susunity.model.AddressModel;
+import br.com.susunity.model.ProfissionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
 import br.com.susunity.queue.consumer.dto.Professional;
@@ -15,9 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,17 +26,20 @@ public class UnityService {
     private final AddressService addressService;
     private final MessageProducer messageProducer;
     private final SpecialityService specialityService;
+    private final ProfissionalService profissionalService;
 
-    public UnityService(UnityRepository unityRepository, AddressService addressService, MessageProducer messageProducer, SpecialityService specialityService) {
+    public UnityService(UnityRepository unityRepository, AddressService addressService, MessageProducer messageProducer, SpecialityService specialityService, ProfissionalService profissionalService) {
         this.unityRepository = unityRepository;
         this.addressService = addressService;
         this.messageProducer = messageProducer;
         this.specialityService = specialityService;
+        this.profissionalService = profissionalService;
     }
     @Transactional
     public UnityDto create(UnityInForm unityInForm) {
         Optional<UnityModel> unity = unityRepository.findByname(unityInForm.name());
         if(unity.isPresent()){
+
             return new UnityDto(unity.get());
         }
         AddressModel newAddress =  addressService.createAddress(unityInForm.address());
@@ -78,12 +81,12 @@ public class UnityService {
     }
 
 
-    @Transactional
+
     public void updateProfessional(Professional messageBody) {
         if(messageBody.getProfessional()){
             List<SpecialityModel> specialityModels = findSpeciality(messageBody.getSpeciality());
             UnityModel unityModel = unityRepository.findById(messageBody.getUnityId()).orElseThrow(EntityNotFoundException::new);
-            unityModel.setProfessional(messageBody,unityModel,specialityModels);
+            unityModel.setProfessional(profissionalService.save(messageBody,specialityModels));
             unityRepository.save(unityModel);
         }
     }

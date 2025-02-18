@@ -22,7 +22,7 @@ public class ProfessionalModel {
     private AddressModel address;
     @Enumerated(EnumType.STRING)
     private ProfessionalType type;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "Professional_Speciality",
             joinColumns = @JoinColumn(name = "professional_id"),
@@ -62,8 +62,6 @@ public class ProfessionalModel {
         this.speciality = specialities;
 
     }
-
-
 
     public UUID getId() {
         return id;

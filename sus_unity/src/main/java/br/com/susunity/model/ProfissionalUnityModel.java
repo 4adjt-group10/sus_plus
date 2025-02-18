@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name ="PROFISSIONAL")
+@Table(name ="Professional")
 public class ProfissionalUnityModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -19,13 +19,9 @@ public class ProfissionalUnityModel {
     private String profissionalName;
     @Enumerated(EnumType.STRING)
     private ProfessionalType type;
-    @ManyToMany
-    @JoinTable(
-            name = "Professional_Unity",
-            joinColumns = @JoinColumn(name = "professional_id"),
-            inverseJoinColumns = @JoinColumn(name = "unity_id"))
+    @ManyToMany(mappedBy = "professional",fetch = FetchType.EAGER)
     private List<UnityModel> unity;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Professional_Speciality",
             joinColumns = @JoinColumn(name = "professional_id"),
@@ -64,13 +60,14 @@ public class ProfissionalUnityModel {
         }else{
             this.unity.add(unityIn);
         }
-        if(Objects.nonNull(specialityModels)||!specialityModels.isEmpty()){
-            this.speciality = new ArrayList<>();
-            messageBody.getSpeciality().forEach(specialityModel -> this.speciality.add (new SpecialityModel(specialityModel)));
-        }
-
     }
 
+    public ProfissionalUnityModel(Professional messageBody) {
+        this.profissionalId = messageBody.getProfissionalId();
+        this.profissionalName = messageBody.getProfissionalName();
+        this.type = messageBody.getType();
+
+    }
 
 
     public UUID getId() {
@@ -95,5 +92,9 @@ public class ProfissionalUnityModel {
 
     public List<SpecialityModel> getSpeciality() {
         return speciality;
+    }
+
+    public void setSpeciality(List<SpecialityModel> speciality) {
+        this.speciality = speciality;
     }
 }

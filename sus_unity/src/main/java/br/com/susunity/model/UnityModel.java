@@ -1,7 +1,6 @@
 package br.com.susunity.model;
 
 import br.com.susunity.controller.dto.UnityInForm;
-import br.com.susunity.queue.consumer.dto.Professional;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -22,28 +21,32 @@ public class UnityModel {
     private AddressModel address;
     private Integer numberOfPatients;
     private Integer numberOfTotalPatients;
-    @ManyToMany(mappedBy = "unity")
-    private List<ProfissionalUnityModel> profissional;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "Unity_Professional",
+            joinColumns = @JoinColumn(name = "unity_id"),
+            inverseJoinColumns = @JoinColumn(name = "professional_id"))
+    private List<ProfissionalUnityModel> professional;
 
 
     public UnityModel() {
     }
 
-    public UnityModel(UUID id, String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> profissional) {
+    public UnityModel(UUID id, String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> professional) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.numberOfPatients = numberOfPatients;
         this.numberOfTotalPatients = numberOfTotalPatients;
-        this.profissional = profissional;
+        this.professional = professional;
     }
 
-    public UnityModel(String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> profissional) {
+    public UnityModel(String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> professional) {
         this.name = name;
         this.address = address;
         this.numberOfPatients = numberOfPatients;
         this.numberOfTotalPatients = numberOfTotalPatients;
-        this.profissional = profissional;
+        this.professional = professional;
     }
 
     public UnityModel(UnityInForm unityInForm, AddressModel newAddress) {
@@ -74,8 +77,8 @@ public class UnityModel {
         return numberOfTotalPatients;
     }
 
-    public List<ProfissionalUnityModel> getProfissional() {
-        return profissional;
+    public List<ProfissionalUnityModel> getProfessional() {
+        return professional;
     }
 
     public void inPatiente(Integer numberOfPatients) {
@@ -97,11 +100,12 @@ public class UnityModel {
         this.numberOfTotalPatients = unityInForm.numberOfToTalPatients();
     }
 
-    public void setProfessional(Professional messageBody, UnityModel unityModel, List<SpecialityModel> specialityModels) {
-        if(Objects.isNull(profissional) || profissional.isEmpty()) {
-            profissional = new ArrayList<>();
-            ProfissionalUnityModel profissionalUnityModel = new ProfissionalUnityModel(messageBody,unityModel,specialityModels);
-            profissional.add(profissionalUnityModel);
+    public void setProfessional(ProfissionalUnityModel messageBody) {
+        if(Objects.isNull(professional) || professional.isEmpty()) {
+            professional = new ArrayList<>();
+            professional.add(messageBody);
         }
     }
+
+
 }

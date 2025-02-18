@@ -24,7 +24,8 @@ public record UnityDto(
                 unityModel.getAddress(),
                 unityModel.getNumberOfPatients(),
                 unityModel.getNumberOfTotalPatients(),
-                calculatePercent(unityModel.getNumberOfPatients(), unityModel.getNumberOfTotalPatients()));
+                calculatePercent(unityModel.getNumberOfPatients(),
+                        unityModel.getNumberOfTotalPatients()));
     }
     private static BigDecimal calculatePercent(Integer numberOfPatients, Integer numberOfToTalPatients) {
         if (numberOfToTalPatients == null || numberOfToTalPatients.equals(0)) {

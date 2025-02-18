@@ -4,19 +4,17 @@ import br.com.susunity.queue.consumer.dto.Speciality;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Entity
 @Table(name = "Speciality")
 public class SpecialityModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     @Column(unique = true)
     private String name;
-    @ManyToMany(mappedBy = "speciality")
+    @ManyToMany(mappedBy = "speciality",fetch = FetchType.EAGER)
     private List<ProfissionalUnityModel> professionals;
 
     public SpecialityModel() {
