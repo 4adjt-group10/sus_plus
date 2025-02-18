@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface ProfessionalRepository  extends JpaRepository<ProfissionalUnityModel, UUID> {
     Optional<ProfissionalUnityModel> findByProfissionalId(UUID profissionalId);
+
+    Optional<ProfissionalUnityModel> findByProfissionalIdAndUnityId(UUID profissionalId, UUID uuid);
 }

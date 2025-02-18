@@ -70,4 +70,10 @@ public class UnityController {
         unityService.includeProfessional(unityProfessionalForm);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/exclude/professional")
+    public ResponseEntity excludeProfessional(@RequestBody UnityProfessionalForm unityProfessionalForm) {
+        unityService.excludeProfessional(unityProfessionalForm);
+        return ResponseEntity.ok().build();
+    }
 }

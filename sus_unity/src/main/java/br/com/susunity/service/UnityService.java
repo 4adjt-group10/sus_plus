@@ -120,4 +120,13 @@ public class UnityService {
         unityRepository.findById(unityProfessionalForm.unityId()).orElseThrow(EntityNotFoundException::new);
         messageProducer.sendToManager(new UnityProfessional(unityProfessionalForm));
     }
+
+    public void excludeProfessional(UnityProfessionalForm unityProfessionalForm) {
+        UnityModel unityModel = unityRepository.findById(unityProfessionalForm.unityId()).orElseThrow(EntityNotFoundException::new);
+        Optional<ProfissionalUnityModel> professional = profissionalService.getProfessional(unityProfessionalForm.ProfessionalId());
+        if(professional.isPresent()){
+            unityModel.remove(professional.get());
+            unityRepository.saveAndFlush(unityModel);
+        }
+    }
 }

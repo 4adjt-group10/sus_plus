@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProfissionalService {
@@ -28,5 +29,9 @@ public class ProfissionalService {
             return professionalRepository.save(profissionalUnityModel);
         }
         return byProfissionalId.get();
+    }
+
+    public Optional<ProfissionalUnityModel> getProfessional(UUID uuid) {
+        return professionalRepository.findById(uuid);
     }
 }

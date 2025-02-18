@@ -108,4 +108,7 @@ public class UnityModel {
     }
 
 
+    public void remove(ProfissionalUnityModel profissionalUnityModel) {
+        professional.remove(profissionalUnityModel);
+    }
 }
