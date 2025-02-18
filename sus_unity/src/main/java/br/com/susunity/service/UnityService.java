@@ -39,21 +39,24 @@ public class UnityService {
     public UnityDto create(UnityInForm unityInForm) {
         Optional<UnityModel> unity = unityRepository.findByname(unityInForm.name());
         if(unity.isPresent()){
-
-            return new UnityDto(unity.get());
+            return getUnityDto(unity.get());
         }
         AddressModel newAddress =  addressService.createAddress(unityInForm.address());
-        return  new UnityDto(unityRepository.save(new UnityModel(unityInForm,newAddress)));
+
+        return  new UnityDto(unityRepository.save(new UnityModel(unityInForm,newAddress)),new ArrayList<>());
 
     }
 
     public List<UnityDto> findAll() {
         List<UnityModel> unityModels = unityRepository.findAll();
-        return unityModels.stream().map(UnityDto::new).collect(Collectors.toList());
+        List<UnityDto> unityDtos = new ArrayList<>();
+        unityModels.forEach(unity -> unityDtos.add(getUnityDto(unity)));
+        return unityDtos;
     }
 
     public UnityDto findById(UUID id) {
-        return unityRepository.findById(id).map(UnityDto::new).orElseThrow(EntityNotFoundException::new);
+        UnityModel unityModel = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return getUnityDto (unityModel);
     }
     @Transactional
     public UnityDto update(UUID id, UnityInForm unityInForm) {
@@ -61,7 +64,9 @@ public class UnityService {
 
         AddressModel newAddress =  addressService.findAdrress(unityInForm.address());
         unity.merge(unityInForm,newAddress);
-        return  new UnityDto(unityRepository.saveAndFlush(unity));
+        unity = unityRepository.saveAndFlush(unity);
+
+        return getUnityDto(unity);
     }
 
     public void delete(UUID id) {
@@ -71,15 +76,31 @@ public class UnityService {
     public UnityDto updateInQuantity(UUID id, Integer quantity) {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         unity.inPatiente(quantity);
-        return  new UnityDto(unityRepository.save(unity));
+        unity=  unityRepository.save(unity);
+        return getUnityDto(unity);
     }
 
     public UnityDto updateOutQuantity(UUID id, Integer quantity) {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         unity.outPatiente(quantity);
-        return  new UnityDto(unityRepository.save(unity));
+        unity = unityRepository.save(unity);
+        return getUnityDto(unity);
     }
 
+    private static UnityDto getUnityDto(UnityModel unity) {
+        if(Objects.nonNull(unity.getProfessional())) {
+            List<ProfissionalUnityModel> professional = unity.getProfessional();
+            List<ProfessionalOut> professionalOut = new ArrayList<>();
+            professional.stream().forEach(professionalUnityModel -> {
+                List<String> especilityes = new ArrayList<>();
+                professionalUnityModel.getSpeciality().forEach(speciality -> especilityes.add(speciality.getName()));
+                professionalOut.add(new ProfessionalOut(professionalUnityModel, especilityes));
+
+            });
+            return new UnityDto(unity, professionalOut);
+        }
+        return new UnityDto(unity, new ArrayList<>());
+    }
 
 
     public void updateProfessional(Professional messageBody) {

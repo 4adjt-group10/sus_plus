@@ -6,6 +6,8 @@ import br.com.susunity.model.UnityModel;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -16,8 +18,20 @@ public record UnityDto(
         AddressModel address,
         Integer numberOfPatients,
         Integer numberOfTotalPatients,
-        BigDecimal porcent
+        BigDecimal porcent,
+        List<ProfessionalOut> professional
 ) {
+    public UnityDto(UnityModel unityModel,List<ProfessionalOut> professional) {
+        this(unityModel.getId(),
+                unityModel.getName(),
+                unityModel.getAddress(),
+                unityModel.getNumberOfPatients(),
+                unityModel.getNumberOfTotalPatients(),
+                calculatePercent(unityModel.getNumberOfPatients(),
+                        unityModel.getNumberOfTotalPatients()),
+                professional);
+    }
+
     public UnityDto(UnityModel unityModel) {
         this(unityModel.getId(),
                 unityModel.getName(),
@@ -25,8 +39,11 @@ public record UnityDto(
                 unityModel.getNumberOfPatients(),
                 unityModel.getNumberOfTotalPatients(),
                 calculatePercent(unityModel.getNumberOfPatients(),
-                        unityModel.getNumberOfTotalPatients()));
+                        unityModel.getNumberOfTotalPatients()),
+                new ArrayList<>());
     }
+
+
     private static BigDecimal calculatePercent(Integer numberOfPatients, Integer numberOfToTalPatients) {
         if (numberOfToTalPatients == null || numberOfToTalPatients.equals(0)) {
             return new BigDecimal(0);
