@@ -77,7 +77,7 @@ public class ProfessionalManagerControllerTest {
         List<UUID> specialityIds = List.of(UUID.randomUUID());
         List<LocalDateTime> availabilities = List.of(LocalDateTime.now());
         ProfessionalCreateForm form = new ProfessionalCreateForm("New Professional", "unity", "789", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalManagerOut professional = new ProfessionalManagerOut(new ProfessionalModel(form));
+        ProfessionalManagerOut professional = new ProfessionalManagerOut(new ProfessionalModel(form,null));
 
         when(professionalManagerService.register(any(ProfessionalCreateForm.class))).thenReturn(professional);
 

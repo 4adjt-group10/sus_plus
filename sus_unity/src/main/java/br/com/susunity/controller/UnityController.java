@@ -2,9 +2,11 @@ package br.com.susunity.controller;
 
 import br.com.susunity.controller.dto.UnityInForm;
 import br.com.susunity.controller.dto.UnityDto;
+import br.com.susunity.controller.dto.UnityProfessionalForm;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.service.UnityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,12 +65,15 @@ public class UnityController {
         return ResponseEntity.ok(unityService.updateOutQuantity(id,quantity));
     }
 
-    @PostMapping("/testeqeue")
-    public void testEqeue() {
-        for (int i = 0; i < 10; i++) {
-            producer.sendToManager("testeqeue: "  + i);
-            producer.sendToIntegrated("testeqeue: "  + i);
-            System.out.println("envio " + i);
-        }
+    @PostMapping("/include/professional")
+    public ResponseEntity includeProfessional(@RequestBody UnityProfessionalForm unityProfessionalForm) {
+        unityService.includeProfessional(unityProfessionalForm);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/exclude/professional")
+    public ResponseEntity excludeProfessional(@RequestBody UnityProfessionalForm unityProfessionalForm) {
+        unityService.excludeProfessional(unityProfessionalForm);
+        return ResponseEntity.ok().build();
     }
 }

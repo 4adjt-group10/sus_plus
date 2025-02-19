@@ -26,7 +26,7 @@ public class ProfessionalHelper {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
         ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
-        ProfessionalModel professional = new ProfessionalModel(form);
+        ProfessionalModel professional = new ProfessionalModel(form, null);
 
         return professional;
     }
@@ -41,7 +41,7 @@ public class ProfessionalHelper {
         specialities.add(speciality);
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
-        ProfessionalManagerOut professional = new ProfessionalManagerOut(new ProfessionalModel(new ProfessionalCreateForm("Name", "unity", "123", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities)));
+        ProfessionalManagerOut professional = new ProfessionalManagerOut(new ProfessionalModel(new ProfessionalCreateForm("Name", "unity", "123", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities), null));
 
         return professional;
     }

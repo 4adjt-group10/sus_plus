@@ -5,7 +5,7 @@ import br.com.susmanager.model.ProfessionalModel;
 import java.util.List;
 import java.util.UUID;
 
-public record ProfessionalManagerOut(UUID id, String name, String document, ProfessionalType type, List<String> procedures) {
+public record ProfessionalManagerOut(UUID id, String name, String document, ProfessionalType type, List<String> Speciality) {
 
     public ProfessionalManagerOut(ProfessionalModel professional) {
         this(professional.getId(),
