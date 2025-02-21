@@ -10,13 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface SchedulingRepository extends JpaRepository<Scheduling, UUID> {
 
-    List<Scheduling> findAllByPatient_Id(UUID id);
+    List<Scheduling> findAllByPatientId(UUID patientId);
 
     List<Scheduling> findAllByProfessionalId(UUID id);
 
@@ -26,12 +25,6 @@ public interface SchedulingRepository extends JpaRepository<Scheduling, UUID> {
     List<Scheduling> findAllByStatus(SchedulingStatus status);
 
     List<Scheduling> findAllByAppointmentBetweenAndStatusIn(LocalDateTime now, LocalDateTime next24Hours, List<SchedulingStatus> statusList);
-
-    Optional<Scheduling> findFirstByPatient_DocumentAndStatusOrderByAppointmentDesc(String document, SchedulingStatus status);
-
-    default Optional<Scheduling> findByPatientDocumentAndStatus(String document, SchedulingStatus status) {
-        return findFirstByPatient_DocumentAndStatusOrderByAppointmentDesc(document, status);
-    }
 
     @Query(value = "SELECT * FROM Scheduling s WHERE s.patient_id =:id and CAST(s.appointment AS DATE) = :date", nativeQuery = true)
     List<Scheduling> findAllByPatientIdAndDate(UUID id, LocalDate date);

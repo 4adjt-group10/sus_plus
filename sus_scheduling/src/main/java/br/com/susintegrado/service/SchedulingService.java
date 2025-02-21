@@ -4,13 +4,15 @@ import br.com.susintegrado.controller.dto.scheduling.SchedulingDTO;
 import br.com.susintegrado.controller.dto.scheduling.SchedulingFormDTO;
 import br.com.susintegrado.controller.dto.scheduling.SchedulingUpdateDTO;
 import br.com.susintegrado.model.scheduling.Scheduling;
-import br.com.susintegrado.queue.MessageBodyForIntegrated;
-import br.com.susintegrado.queue.MessageBodyForUnity;
+import br.com.susintegrado.queue.consumer.MessageBodyByIntegrated;
+import br.com.susintegrado.queue.consumer.MessageBodyByUnity;
+import br.com.susintegrado.queue.producer.MessageBodyForIntegrated;
+import br.com.susintegrado.queue.producer.MessageBodyForUnity;
 import br.com.susintegrado.queue.producer.MessageProducer;
 import br.com.susintegrado.repository.SchedulingRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.query.Procedure;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import static br.com.susintegrado.model.scheduling.SchedulingStatus.*;
 @Service
 public class SchedulingService {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(SchedulingService.class);
     private final SchedulingRepository schedulingRepository;
     private final MessageProducer messageProducer;
 
@@ -40,26 +43,51 @@ public class SchedulingService {
     @Transactional
     public SchedulingDTO register(SchedulingFormDTO formDTO) {
         // TODO: Enviar menssageria para serviço de unidade para saber se tem vaga para aquela especialidade naquele dia (obtem informações de profissional: id, nome, cargo)
-        messageProducer.sendToUnity(new MessageBodyForUnity(formDTO));
-        messageProducer.sendToIntegrated(new MessageBodyForIntegrated(formDTO.patientId()));
+        Scheduling scheduling = schedulingRepository.save(new Scheduling(formDTO));
+        messageProducer.sendToIntegrated(new MessageBodyForIntegrated(formDTO.patientId(), scheduling.getId()));
         // TODO: Caso não seja possível agendar, retornar aviso ao paciente e enviar via messageria para serviço externo que utiliza IA para sugerir encaminhamento para outra unidade mais próxima com profissional disponível
         // TODO: enviar menssageria para serviço de paciente para validar id (ou documento) e retornar nome
-        Scheduling schedulingUnderAnalysis = new Scheduling(formDTO);
-        schedulingRepository.save(schedulingUnderAnalysis);
         //TODO: mandar email via serviço externo
-        logger.info("New appointment: " + schedulingUnderAnalysis);
-        return new SchedulingDTO(schedulingUnderAnalysis);
+        logger.info("New appointment: " + scheduling);
+        return new SchedulingDTO(scheduling);
+    }
+
+    public void postValidateUnity(MessageBodyByUnity message) {
+        if (message.isValidated()) {
+            Scheduling scheduling = findById(message.schedulingId());
+            scheduling.approve();
+            schedulingRepository.save(scheduling);
+        } else {
+            cancelScheduling(message.schedulingId());
+            logger.info("Sending email to external service for scheduling: " + message.schedulingId());
+        }
+    }
+
+    public void postValidateIntegrated(MessageBodyByIntegrated message) {
+        if (message.validatedPatient()) {
+            Scheduling scheduling = findById(message.schedulingId());
+            messageProducer.sendToUnity(new MessageBodyForUnity(scheduling.getSpecialityId(), scheduling.getUnityId(), scheduling.getId()));
+        } else {
+            cancelScheduling(message.schedulingId());
+        }
+    }
+
+    private void cancelScheduling(UUID message) {
+        Scheduling scheduling = findById(message);
+        scheduling.cancel();
+        schedulingRepository.save(scheduling);
+        logger.info("Canceled appointment: " + scheduling);
     }
 
     public List<SchedulingDTO> findAllByPatientId(UUID id, Optional<LocalDate> date) {
         return date.map(d -> schedulingRepository.findAllByPatientIdAndDate(id, d))
-                .orElseGet(() -> schedulingRepository.findAllByPatient_Id(id))
+                .orElseGet(() -> schedulingRepository.findAllByPatientId(id))
                 .stream().map(SchedulingDTO::new).toList();
     }
 
     public List<SchedulingDTO> findAllByProfessionalId(UUID id, Optional<LocalDate> date) {
         return date.map(d -> schedulingRepository.findAllByProfessionalIdAndDate(id, d))
-                .orElseGet(() -> schedulingRepository.findAllByProfessional_Id(id))
+                .orElseGet(() -> schedulingRepository.findAllByProfessionalId(id))
                 .stream().map(SchedulingDTO::new).toList();
     }
 
@@ -70,14 +98,8 @@ public class SchedulingService {
     @Transactional
     public SchedulingDTO update(UUID id, SchedulingUpdateDTO updateDTO){
         Scheduling scheduling = findById(id);
-        Procedure procedure = procedureService
-                .findByIdAndProfessionalId(updateDTO.procedureId(), updateDTO.professionalId());
-        updateDTO.appointment().ifPresentOrElse(appointment -> {
-            ProfessionalAvailability availability = professionalAvailabilityService
-                    .findAvailabilityByProfessionalAndAvailableTime(updateDTO.professionalId(), appointment);
-            scheduling.merge(procedure, availability.getAvailableTime(), updateDTO.status());
-        }, () -> scheduling.merge(procedure, updateDTO.status()));
-
+        updateDTO.appointment()
+                .ifPresent(appointment -> messageProducer.sendToUnity(new MessageBodyForUnity(scheduling.getSpecialityId(), scheduling.getUnityId(), scheduling.getId())));
         schedulingRepository.save(scheduling);
         return new SchedulingDTO(scheduling);
     }
@@ -107,7 +129,6 @@ public class SchedulingService {
         lateSchedules.forEach(scheduling -> {
             scheduling.late();
             schedulingRepository.save(scheduling);
-            patientRecordService.findLastByPatientId(scheduling.getPatientId()).isLate();
             //TODO: send notification to external service
             System.out.println("Late appointment: " + scheduling);
         });
@@ -124,9 +145,7 @@ public class SchedulingService {
         List<Scheduling> lateSchedules = schedulingRepository.findAllByStatus(LATE);
         lateSchedules.forEach(scheduling -> {
             scheduling.cancel();
-            scheduling.getPatient().block();
             schedulingRepository.save(scheduling);
-            patientRecordService.findLastByPatientId(scheduling.getPatient().getId()).isCanceled();
             //TODO: send notification to external service
             System.out.println("Canceled appointment: " + scheduling);
         });

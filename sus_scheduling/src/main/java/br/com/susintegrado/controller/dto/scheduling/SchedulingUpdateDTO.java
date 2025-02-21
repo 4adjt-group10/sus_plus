@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public record SchedulingUpdateDTO(
-        @NotNull UUID procedureId,
         @NotNull UUID professionalId,
         @FutureOrPresent Optional<LocalDateTime> appointment,
         @NotNull SchedulingStatus status

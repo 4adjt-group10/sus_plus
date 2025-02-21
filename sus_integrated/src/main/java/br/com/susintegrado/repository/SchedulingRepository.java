@@ -35,7 +35,4 @@ public interface SchedulingRepository extends JpaRepository<Scheduling, UUID> {
 
     @Query(value = "SELECT * FROM Scheduling s WHERE s.patient_id =:id and CAST(s.appointment AS DATE) = :date", nativeQuery = true)
     List<Scheduling> findAllByPatientIdAndDate(UUID id, LocalDate date);
-
-//    @Query(value = "SELECT * FROM Scheduling s WHERE s.professional_id =:id and CAST(s.appointment AS DATE) = :date", nativeQuery = true)
-//    List<Scheduling> findAllByProfessionalIdAndDate(UUID id, LocalDate date);
 }

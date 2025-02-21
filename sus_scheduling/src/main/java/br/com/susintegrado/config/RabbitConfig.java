@@ -6,6 +6,8 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,11 +33,6 @@ public class RabbitConfig {
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(EXCHANGE_NAME);
-    }
-
-    @Bean
-    public RabbitTemplate rabbitTemplate(CachingConnectionFactory connectionFactory) {
-        return new RabbitTemplate(connectionFactory);
     }
 
     //producer
@@ -78,5 +75,21 @@ public class RabbitConfig {
     @Bean
     public Binding bindingIntegratedScheduling(Queue queueIntegratedScheduling, TopicExchange exchange) {
         return BindingBuilder.bind(queueIntegratedScheduling).to(exchange).with(ROUTING_KEY_INTEGRATED_SCHEDULING);
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+        DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
+        typeMapper.setTrustedPackages("*");
+        converter.setJavaTypeMapper(typeMapper);
+        return converter;
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(CachingConnectionFactory connectionFactory, Jackson2JsonMessageConverter messageConverter) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter);
+        return template;
     }
 }
