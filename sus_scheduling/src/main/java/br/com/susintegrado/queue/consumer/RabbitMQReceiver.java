@@ -1,11 +1,10 @@
 package br.com.susintegrado.queue.consumer;
 
 import br.com.susintegrado.config.RabbitConfig;
+import br.com.susintegrado.service.SchedulingService;
 import com.rabbitmq.client.Channel;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +16,19 @@ public class RabbitMQReceiver {
 
     private final Logger logger = Logger.getLogger(RabbitMQReceiver.class.getName());
 
+    private final SchedulingService schedulingService;
+
+    public RabbitMQReceiver(SchedulingService schedulingService) {
+        this.schedulingService = schedulingService;
+    }
+
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_UNITY_SCHEDULING, ackMode = "MANUAL")
-    public void receiveUnityMessage(Message message,
+    public void receiveUnityMessage(MessageBodyByUnity message,
                                Channel channel,
                                @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
         try {
-            SimpleMessageConverter messageConverter = new SimpleMessageConverter();
-            String messageBody = (String) messageConverter.fromMessage(message);
-            logger.info(String.format("Received <%s>", messageBody));
-            // Adicione aqui a lógica para processar a mensagem
-            // Se o processamento for bem-sucedido, confirme a mensagem
+            logger.info(String.format("Received <%s>", message));
+            schedulingService.postValidateUnity(message);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.severe("Error processing message: ".concat(e.getMessage()));
@@ -40,15 +42,12 @@ public class RabbitMQReceiver {
     }
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_INTEGRATED_SCHEDULING, ackMode = "MANUAL")
-    public void receiveIntegratedMessage(Message message,
+    public void receiveIntegratedMessage(MessageBodyByIntegrated message,
                                Channel channel,
                                @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
         try {
-            SimpleMessageConverter messageConverter = new SimpleMessageConverter();
-            String messageBody = (String) messageConverter.fromMessage(message);
-            logger.info(String.format("Received <%s>", messageBody));
-            // Adicione aqui a lógica para processar a mensagem
-            // Se o processamento for bem-sucedido, confirme a mensagem
+            logger.info(String.format("Received <%s>", message));
+            schedulingService.postValidateIntegrated(message);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.severe("Error processing message: ".concat(e.getMessage()));

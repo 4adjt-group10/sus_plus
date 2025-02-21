@@ -130,7 +130,7 @@ public class Scheduling {
         this.status = LATE;
     }
 
-    private void reschedule(LocalDateTime newAppointment) {
-        this.appointment = newAppointment;
+    public void approve() {
+        this.status = SCHEDULED;
     }
 }
