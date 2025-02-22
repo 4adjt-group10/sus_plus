@@ -1,7 +1,7 @@
 package br.com.susunity.service;
 
 import br.com.susunity.model.SpecialityModel;
-import br.com.susunity.queue.consumer.dto.Speciality;
+import br.com.susunity.queue.consumer.dto.manager.Speciality;
 import br.com.susunity.repository.SpecialityRepository;
 import org.springframework.stereotype.Service;
 

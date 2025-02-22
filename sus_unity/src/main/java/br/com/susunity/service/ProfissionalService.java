@@ -2,7 +2,7 @@ package br.com.susunity.service;
 
 import br.com.susunity.model.ProfissionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
-import br.com.susunity.queue.consumer.dto.Professional;
+import br.com.susunity.queue.consumer.dto.manager.Professional;
 import br.com.susunity.repository.ProfessionalRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

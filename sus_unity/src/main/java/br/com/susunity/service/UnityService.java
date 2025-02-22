@@ -8,17 +8,18 @@ import br.com.susunity.model.AddressModel;
 import br.com.susunity.model.ProfissionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
-import br.com.susunity.queue.consumer.dto.Professional;
-import br.com.susunity.queue.consumer.dto.Speciality;
+import br.com.susunity.queue.consumer.dto.manager.Professional;
+import br.com.susunity.queue.consumer.dto.manager.Speciality;
+import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyForUnity;
 import br.com.susunity.queue.producer.MessageProducer;
-import br.com.susunity.queue.producer.dto.UnityProfessional;
+import br.com.susunity.queue.producer.dto.manager.UnityProfessional;
+import br.com.susunity.queue.producer.dto.scheduler.MessageBodyForScheduler;
 import br.com.susunity.repository.UnityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UnityService {
@@ -128,5 +129,28 @@ public class UnityService {
             unityModel.remove(professional.get());
             unityRepository.saveAndFlush(unityModel);
         }
+    }
+
+    public void getUnityForScheduler(MessageBodyForUnity message) {
+        unityRepository.findById(message.unityId())
+                .ifPresentOrElse(
+                        unityModel -> {
+                            boolean isSpecialityValid = validateEpeciality(unityModel, message);
+                            messageProducer.sendToScheduler(new MessageBodyForScheduler(isSpecialityValid, true, message.schedulingId()));
+                        },
+                        () -> messageProducer.sendToScheduler(new MessageBodyForScheduler(false, false, message.schedulingId()))
+                );
+    }
+
+
+    private boolean validateEpeciality(UnityModel unityModel, MessageBodyForUnity message) {
+        if (unityModel.getProfessional().isEmpty()) {
+            return false;
+        }
+
+        return unityModel.getProfessional().stream()
+                .flatMap(professionalUnityModel -> professionalUnityModel.getSpeciality().stream())
+                .map(SpecialityModel::getId)
+                .anyMatch(id -> id.equals(message.specialityId()));
     }
 }

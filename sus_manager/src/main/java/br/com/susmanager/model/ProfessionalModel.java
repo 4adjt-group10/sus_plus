@@ -22,13 +22,13 @@ public class ProfessionalModel {
     private AddressModel address;
     @Enumerated(EnumType.STRING)
     private ProfessionalType type;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Professional_Speciality",
             joinColumns = @JoinColumn(name = "professional_id"),
             inverseJoinColumns = @JoinColumn(name = "speciality_id"))
     private List<SpecialityModel> speciality;
-    @OneToMany(mappedBy = "professional")
+    @OneToMany(mappedBy = "professional",fetch = FetchType.EAGER)
     private List<ProfessionalAvailabilityModel> availability;
 
     @Deprecated(since = "Only for framework use")
@@ -62,6 +62,8 @@ public class ProfessionalModel {
         this.speciality = specialities;
 
     }
+
+
 
     public UUID getId() {
         return id;

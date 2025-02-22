@@ -32,4 +32,12 @@ public class UnityProfessional implements Serializable {
     public void setUnityId(UUID unityId) {
         this.unityId = unityId;
     }
+
+    @Override
+    public String toString() {
+        return "UnityProfessional{" +
+                "ProfessionalId=" + ProfessionalId +
+                ", unityId=" + unityId +
+                '}';
+    }
 }

@@ -1,9 +1,9 @@
 package br.com.susunity.queue.consumer;
 
 import br.com.susunity.config.RabbitConfig;
-import br.com.susunity.queue.consumer.dto.Professional;
+import br.com.susunity.queue.consumer.dto.manager.Professional;
+import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyForUnity;
 import br.com.susunity.service.UnityService;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -31,6 +31,21 @@ public class RabbitMQReceiver {
         try {
             logger.info(String.format("Received <%s>", message.toString()));
             unityService.updateProfessional(message);
+            channel.basicAck(deliveryTag , false);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);
+            // Se o processamento falhar, rejeite a mensagem sem reencaminhá-la para a fila
+            channel.basicNack(deliveryTag, false, false);
+        }
+    }
+
+    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_SCHEDULING_UNITY, ackMode = "MANUAL")
+    public void receiveSchedulingMessage(MessageBodyForUnity message,
+                                         Channel channel,
+                                         @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
+        try {
+            logger.info(String.format("Received <%s>", message.toString()));
+            unityService.getUnityForScheduler(message);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);

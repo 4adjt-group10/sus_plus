@@ -1,6 +1,6 @@
 package br.com.susunity.model;
 
-import br.com.susunity.queue.consumer.dto.Speciality;
+import br.com.susunity.queue.consumer.dto.manager.Speciality;
 import jakarta.persistence.*;
 
 import java.util.List;
