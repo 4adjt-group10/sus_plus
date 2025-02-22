@@ -135,7 +135,7 @@ public class UnityService {
         unityRepository.findById(message.unityId())
                 .ifPresentOrElse(
                         unityModel -> {
-                            boolean isSpecialityValid = validaEspecialidade(unityModel, message);
+                            boolean isSpecialityValid = validateEpeciality(unityModel, message);
                             messageProducer.sendToScheduler(new MessageBodyForScheduler(isSpecialityValid, true, message.schedulingId()));
                         },
                         () -> messageProducer.sendToScheduler(new MessageBodyForScheduler(false, false, message.schedulingId()))
@@ -143,7 +143,7 @@ public class UnityService {
     }
 
 
-    private boolean validaEspecialidade(UnityModel unityModel, MessageBodyForUnity message) {
+    private boolean validateEpeciality(UnityModel unityModel, MessageBodyForUnity message) {
         if (unityModel.getProfessional().isEmpty()) {
             return false;
         }
