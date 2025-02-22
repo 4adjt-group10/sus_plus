@@ -28,7 +28,7 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
     ports:
       - "8082:8080"
-      - "5007:5005"
+      - "5008:5005"
     networks:
       - sus-scheduling-network
       - rabbitmq_go_net

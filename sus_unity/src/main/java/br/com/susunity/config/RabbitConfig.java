@@ -15,12 +15,17 @@ public class RabbitConfig {
     //producer
     public static final String QUEUE_NAME_UNITY_MANAGER = "UnityManagerQueue";
     public static final String ROUTING_KEY_UNITY_MANAGER = "routing.key.unity_manager";
+
+    public static final String QUEUE_NAME_UNITY_SCHEDULE = "UnitySchedulingQueue";
+    public static final String ROUTING_KEY_UNITY_SCHEDULE = "routing.key.unity_scheduling";
+
     public static final String QUEUE_NAME_UNITY_INTEGRATED = "UnityIntegratedQueue";
     public static final String ROUTING_KEY_UNITY_INTEGRATED = "routing.key.unity_integrated";
     //consumer
     public static final String QUEUE_NAME_MANAGER_UNITY = "ManagerUnityQueue";
     public static final String ROUTING_KEY_MANAGER_UNITY = "routing.key.manager_unity";
-
+    public static final String QUEUE_NAME_SCHEDULING_UNITY = "SchedulingUnityQueue";
+    public static final String ROUTING_KEY_SCHEDULING_UNITY = "routing.key.scheduling_unity";
 
     public static final String EXCHANGE_NAME = "OrderExchange";
 
@@ -54,6 +59,14 @@ public class RabbitConfig {
         return BindingBuilder.bind(queueManagerUnity).to(exchange).with(ROUTING_KEY_MANAGER_UNITY);
     }
 
+    @Bean
+    public Queue queueSchedulingUnity() {
+        return new Queue(QUEUE_NAME_SCHEDULING_UNITY, true); // true indica que a fila é durável
+    }
+    @Bean
+    public Binding bindingSchedulingUnity(Queue queueSchedulingUnity, TopicExchange exchange) {
+        return BindingBuilder.bind(queueSchedulingUnity).to(exchange).with(ROUTING_KEY_SCHEDULING_UNITY);
+    }
 
 
     //producer
@@ -64,6 +77,15 @@ public class RabbitConfig {
     @Bean
     public Binding bindingUnityManager(Queue queueUnityManager, TopicExchange exchange) {
         return BindingBuilder.bind(queueUnityManager).to(exchange).with(ROUTING_KEY_UNITY_MANAGER);
+    }
+
+    @Bean
+    public Queue queueUnitySchedule() {
+        return new Queue(QUEUE_NAME_UNITY_SCHEDULE, true); // true indica que a fila é durável
+    }
+    @Bean
+    public Binding bindingUnitySchedule(Queue queueUnitySchedule, TopicExchange exchange) {
+        return BindingBuilder.bind(queueUnitySchedule).to(exchange).with(ROUTING_KEY_UNITY_SCHEDULE);
     }
 
     @Bean
