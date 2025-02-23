@@ -1,6 +1,6 @@
 package br.com.suspatientrecord.service;
 
-import br.com.suspatientrecord.model.PatientRecord;
+import br.com.suspatientrecord.model.PatientRecordModel;
 import br.com.suspatientrecord.repository.PatientRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,20 +13,20 @@ public class PatientRecordService {
     @Autowired
     private PatientRecordRepository patientRecordRepository;
 
-    public PatientRecord createPatientRecord(PatientRecord patientRecord) {
+    public PatientRecordModel createPatientRecord(PatientRecordModel patientRecord) {
         return patientRecordRepository.save(patientRecord);
     }
 
-    public PatientRecord getPatientRecordById(UUID id) {
-        Optional<PatientRecord> patientRecord = patientRecordRepository.findById(id);
+    public PatientRecordModel getPatientRecordById(UUID id) {
+        Optional<PatientRecordModel> patientRecord = patientRecordRepository.findById(id);
         return patientRecord.orElse(null);
     }
 
-    public List<PatientRecord> getAllPatientRecords() {
+    public List<PatientRecordModel> getAllPatientRecords() {
         return patientRecordRepository.findAll();
     }
 
-    public PatientRecord updatePatientRecord(UUID id, PatientRecord patientRecord) {
+    public PatientRecordModel updatePatientRecord(UUID id, PatientRecordModel patientRecord) {
         if (patientRecordRepository.existsById(id)) {
             patientRecord.setId(id);
             return patientRecordRepository.save(patientRecord);
@@ -40,5 +40,15 @@ public class PatientRecordService {
             return true;
         }
         return false;
+    }
+
+    public PatientRecordModel getPatientRecordByUnityIdAndPatientId(UUID unityId, UUID patientId) {
+        Optional<PatientRecordModel> patientRecord = patientRecordRepository.getPatientRecordByUnityIdAndPatientId(unityId, patientId);
+        return patientRecord.orElse(null);
+    }
+
+    public List<PatientRecordModel> getAllPatientRecordByProfessionalId(UUID professionalId) {
+        Optional<List<PatientRecordModel>> patientRecord = patientRecordRepository.getAllPatientRecordByProfessionalId(professionalId);
+        return patientRecord.orElse(null);
     }
 }
