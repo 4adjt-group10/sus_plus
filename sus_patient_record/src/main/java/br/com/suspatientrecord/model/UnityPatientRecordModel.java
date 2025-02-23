@@ -1,16 +1,14 @@
-package br.com.susunity.model;
+package br.com.suspatientrecord.model;
 
-import br.com.susunity.controller.dto.UnityInForm;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "UNITY")
-public class UnityModel {
+public class UnityPatientRecordModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
@@ -31,13 +29,12 @@ public class UnityModel {
             name = "Unity_Professional",
             joinColumns = @JoinColumn(name = "unity_id"),
             inverseJoinColumns = @JoinColumn(name = "professional_id"))
-    private List<ProfissionalUnityModel> professional;
+    private List<ProfissionalPatientRecordModel> professional;
 
-
-    public UnityModel() {
+    public UnityPatientRecordModel() {
     }
 
-    public UnityModel(UUID id, String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> professional) {
+    public UnityPatientRecordModel(UUID id, String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalPatientRecordModel> professional) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -46,20 +43,13 @@ public class UnityModel {
         this.professional = professional;
     }
 
-    public UnityModel(String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> professional) {
+    public UnityPatientRecordModel(String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalPatientRecordModel> professional) {
         this.name = name;
         this.address = address;
         this.numberOfPatients = numberOfPatients;
         this.numberOfTotalPatients = numberOfTotalPatients;
         this.professional = professional;
     }
-
-    public UnityModel(UnityInForm unityInForm, AddressModel newAddress) {
-        this.name = unityInForm.name();
-        this.address = newAddress;
-        this.numberOfTotalPatients = (unityInForm.numberOfToTalPatients() != null) ? unityInForm.numberOfToTalPatients() : 0;
-    }
-
 
 
     public UUID getId() {
@@ -82,7 +72,7 @@ public class UnityModel {
         return numberOfTotalPatients;
     }
 
-    public List<ProfissionalUnityModel> getProfessional() {
+    public List<ProfissionalPatientRecordModel> getProfessional() {
         return professional;
     }
 
@@ -96,24 +86,7 @@ public class UnityModel {
         }
     }
 
-
-    public void merge(UnityInForm unityInForm,AddressModel newAddress) {
-        if(!this.name.equals(unityInForm.name())){
-            this.name = unityInForm.name();
-        }
-        this.address = newAddress;
-        this.numberOfTotalPatients = unityInForm.numberOfToTalPatients();
-    }
-
-    public void setProfessional(ProfissionalUnityModel messageBody) {
-        if(Objects.isNull(professional) || professional.isEmpty()) {
-            professional = new ArrayList<>();
-            professional.add(messageBody);
-        }
-    }
-
-
-    public void remove(ProfissionalUnityModel profissionalUnityModel) {
+    public void remove(ProfissionalPatientRecordModel profissionalUnityModel) {
         professional.remove(profissionalUnityModel);
     }
 }

@@ -1,6 +1,6 @@
-package br.com.susunity.model;
+package br.com.suspatientrecord.model;
 
-import br.com.susunity.queue.consumer.dto.manager.Professional;
+import br.com.susunity.queue.consumer.dto.Professional;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name ="Professional")
-public class ProfissionalUnityModel {
+public class ProfissionalPatientRecordModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
@@ -24,7 +24,7 @@ public class ProfissionalUnityModel {
     private ProfessionalType type;
 
     @ManyToMany(mappedBy = "professional",fetch = FetchType.EAGER)
-    private List<UnityModel> unity;
+    private List<UnityPatientRecordModel> unity;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -33,10 +33,10 @@ public class ProfissionalUnityModel {
             inverseJoinColumns = @JoinColumn(name = "speciality_id"))
     private List<SpecialityModel> speciality;
 
-    public ProfissionalUnityModel() {
+    public ProfissionalPatientRecordModel() {
     }
 
-    public ProfissionalUnityModel(UUID id, UUID profissionalId, String profissionalName, ProfessionalType type, List<UnityModel> unity, List<SpecialityModel> speciality) {
+    public ProfissionalPatientRecordModel(UUID id, UUID profissionalId, String profissionalName, ProfessionalType type, List<UnityPatientRecordModel> unity, List<SpecialityModel> speciality) {
         this.id = id;
         this.profissionalId = profissionalId;
         this.profissionalName = profissionalName;
@@ -45,7 +45,7 @@ public class ProfissionalUnityModel {
         this.speciality = speciality;
     }
 
-    public ProfissionalUnityModel(UUID profissionalId, String profissionalName, ProfessionalType type, List<UnityModel> unity, List<SpecialityModel> speciality) {
+    public ProfissionalPatientRecordModel(UUID profissionalId, String profissionalName, ProfessionalType type, List<UnityPatientRecordModel> unity, List<SpecialityModel> speciality) {
         this.profissionalId = profissionalId;
         this.profissionalName = profissionalName;
         this.type = type;
@@ -55,7 +55,7 @@ public class ProfissionalUnityModel {
 
 
 
-    public ProfissionalUnityModel(Professional messageBody, UnityModel unityIn, List<SpecialityModel> specialityModels) {
+    public ProfissionalPatientRecordModel(Professional messageBody, UnityPatientRecordModel unityIn, List<SpecialityModel> specialityModels) {
         this.profissionalId = messageBody.getProfissionalId();
         this.profissionalName = messageBody.getProfissionalName();
         this.type = messageBody.getType();
@@ -67,7 +67,7 @@ public class ProfissionalUnityModel {
         }
     }
 
-    public ProfissionalUnityModel(Professional messageBody) {
+    public ProfissionalPatientRecordModel(Professional messageBody) {
         this.profissionalId = messageBody.getProfissionalId();
         this.profissionalName = messageBody.getProfissionalName();
         this.type = messageBody.getType();
@@ -91,7 +91,7 @@ public class ProfissionalUnityModel {
         return type;
     }
 
-    public List<UnityModel> getUnity() {
+    public List<UnityPatientRecordModel> getUnity() {
         return unity;
     }
 
