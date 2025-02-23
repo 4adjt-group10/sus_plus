@@ -83,7 +83,7 @@ public class PatientService {
                 .ifPresentOrElse(patient -> {
                     messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(true, patient.getName()));
                 }, () -> {
-                    messageProducer.sendToPatientRecord(new MessageBodyForScheduling(false, null));
+                    messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(false, null));
                 });
     }
 }
