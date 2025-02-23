@@ -1,6 +1,7 @@
 package br.com.susintegrated.queue.producer;
 
 import br.com.susintegrated.config.RabbitConfig;
+import br.com.susintegrated.queue.producer.dto.MessageBodyForPatientRecord;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -37,5 +38,12 @@ public class MessageProducer {
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
         Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_INTEGRATED_SCHEDULING, rabbitMessage);
+    }
+
+    public void sendToPatientRecord(MessageBodyForPatientRecord messageBodyForPatientRecord) {
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(messageBodyForPatientRecord, messageProperties);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_INTEGRATED, rabbitMessage);
     }
 }

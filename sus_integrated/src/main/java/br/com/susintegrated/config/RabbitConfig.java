@@ -30,6 +30,12 @@ public class RabbitConfig {
     public static final String QUEUE_NAME_SCHEDULING_INTEGRATED = "SchedulingIntegratedQueue";
     public static final String ROUTING_KEY_SCHEDULING_INTEGRATED = "routing.key.scheduling_integrated";
 
+    public static final String QUEUE_NAME_PATIENT_RECORD_INTEGRATED = "PatientRecordIntegratedQueue";
+    public static final String ROUTING_KEY_PATIENT_RECORD_INTEGRATED = "routing.key.patient_record_integrated";
+
+
+
+
     public static final String EXCHANGE_NAME = "OrderExchange";
 
     @Bean
@@ -71,6 +77,17 @@ public class RabbitConfig {
     public Binding bindingSchedulingIntegrated(Queue queueSchedulingIntegrated, TopicExchange exchange) {
         return BindingBuilder.bind(queueSchedulingIntegrated).to(exchange).with(ROUTING_KEY_SCHEDULING_INTEGRATED);
     }
+
+
+    @Bean
+    public Queue queuePatientRecordIntegrated() {
+        return new Queue(QUEUE_NAME_PATIENT_RECORD_INTEGRATED, true); // true indica que a fila é durável
+    }
+    @Bean
+    public Binding bindingPatientRecordIntegrated(Queue queuePatientRecordIntegrated, TopicExchange exchange) {
+        return BindingBuilder.bind(queuePatientRecordIntegrated).to(exchange).with(ROUTING_KEY_PATIENT_RECORD_INTEGRATED);
+    }
+
 
 
     //producer

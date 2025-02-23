@@ -5,8 +5,10 @@ import br.com.susintegrated.controller.dto.patient.PatientFormDTO;
 import br.com.susintegrated.model.address.Address;
 import br.com.susintegrated.model.patient.Patient;
 import br.com.susintegrated.queue.consumer.MessageBodyByScheduling;
+import br.com.susintegrated.queue.consumer.dto.MessageBodyByPatienteRecord;
 import br.com.susintegrated.queue.producer.MessageBodyForScheduling;
 import br.com.susintegrated.queue.producer.MessageProducer;
+import br.com.susintegrated.queue.producer.dto.MessageBodyForPatientRecord;
 import br.com.susintegrated.repository.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -73,6 +75,15 @@ public class PatientService {
                     messageProducer.sendToScheduling(new MessageBodyForScheduling(true, message.schedulingId()));
                 }, () -> {
                     messageProducer.sendToScheduling(new MessageBodyForScheduling(false, message.schedulingId()));
+                });
+    }
+
+    public void validatePatientToPatientRecord(MessageBodyByPatienteRecord message) {
+        patientRepository.findById(message.getPatientId())
+                .ifPresentOrElse(patient -> {
+                    messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(true, patient.getName()));
+                }, () -> {
+                    messageProducer.sendToPatientRecord(new MessageBodyForScheduling(false, null));
                 });
     }
 }

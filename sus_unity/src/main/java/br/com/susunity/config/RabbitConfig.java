@@ -26,6 +26,8 @@ public class RabbitConfig {
     public static final String ROUTING_KEY_MANAGER_UNITY = "routing.key.manager_unity";
     public static final String QUEUE_NAME_SCHEDULING_UNITY = "SchedulingUnityQueue";
     public static final String ROUTING_KEY_SCHEDULING_UNITY = "routing.key.scheduling_unity";
+    public static final String QUEUE_NAME_PATIENT_RECORD_UNITY = "PatientRecordUnityQueue";
+    public static final String ROUTING_KEY_PATIENT_RECORD_UNITY = "routing.key.patient_record_Unity";
 
     public static final String EXCHANGE_NAME = "OrderExchange";
 
@@ -68,7 +70,14 @@ public class RabbitConfig {
         return BindingBuilder.bind(queueSchedulingUnity).to(exchange).with(ROUTING_KEY_SCHEDULING_UNITY);
     }
 
-
+    @Bean
+    public Queue queuePatientRecordUnity() {
+        return new Queue(QUEUE_NAME_PATIENT_RECORD_UNITY, true); // true indica que a fila é durável
+    }
+    @Bean
+    public Binding bindingPatientRecordUnity(Queue queuePatientRecordUnity, TopicExchange exchange) {
+        return BindingBuilder.bind(queuePatientRecordUnity).to(exchange).with(ROUTING_KEY_PATIENT_RECORD_UNITY);
+    }
     //producer
     @Bean
     public Queue queueUnityManager() {

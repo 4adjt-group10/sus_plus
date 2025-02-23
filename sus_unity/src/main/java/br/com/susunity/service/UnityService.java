@@ -10,9 +10,11 @@ import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
 import br.com.susunity.queue.consumer.dto.manager.Professional;
 import br.com.susunity.queue.consumer.dto.manager.Speciality;
+import br.com.susunity.queue.consumer.dto.patientrecord.MessageBodyByPatientRecord;
 import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyForUnity;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.queue.producer.dto.manager.UnityProfessional;
+import br.com.susunity.queue.producer.dto.patientrecord.MessageBodyForPatientRecord;
 import br.com.susunity.queue.producer.dto.scheduler.MessageBodyForScheduler;
 import br.com.susunity.repository.UnityRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -153,4 +155,41 @@ public class UnityService {
                 .map(SpecialityModel::getId)
                 .anyMatch(id -> id.equals(message.specialityId()));
     }
+
+
+    public void getUnityForPatientRecord(MessageBodyByPatientRecord message) {
+        unityRepository.findById(message.getUnityId())
+                .ifPresentOrElse(unityModel -> {
+                    unityModel.getProfessional().stream()
+                            .filter(professionalModel -> professionalModel.getId().equals(message.getProfessionalId()))
+                            .findFirst()
+                            .ifPresentOrElse(professionalModel -> {
+                                boolean specialityFound = professionalModel.getSpeciality().stream()
+                                        .anyMatch(specialityModel -> specialityModel.getId().equals(message.getSpecialityId()));
+                                String specialityName = specialityFound ? professionalModel.getSpeciality().stream()
+                                        .filter(specialityModel -> specialityModel.getId().equals(message.getSpecialityId()))
+                                        .findFirst().get().getName() : null;
+                                messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(
+                                        message.getPatientRecordId(),
+                                        professionalModel.getProfissionalName(),
+                                        unityModel.getName(),
+                                        specialityName,
+                                        specialityFound
+                                ));
+                            }, () -> messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(
+                                    message.getPatientRecordId(),
+                                    null,
+                                    null,
+                                    null,
+                                    false
+                            )));
+                }, () -> messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(
+                        message.getPatientRecordId(),
+                        null,
+                        null,
+                        null,
+                        false
+                )));
+    }
+
 }

@@ -13,14 +13,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
     //producer
-    public static final String QUEUE_NAME_PATIENT_RECORD_MANAGER = "PatientRecordManagerQueue";
-    public static final String ROUTING_KEY_PATIENT_RECORD_MANAGER = "routing.key.patient_record_manager";
+    public static final String QUEUE_NAME_PATIENT_RECORD_UNITY = "PatientRecordUnityQueue";
+    public static final String ROUTING_KEY_PATIENT_RECORD_UNITY = "routing.key.patient_record_Unity";
     public static final String QUEUE_NAME_PATIENT_RECORD_INTEGRATED = "PatientRecordIntegratedQueue";
     public static final String ROUTING_KEY_PATIENT_RECORD_INTEGRATED = "routing.key.patient_record_integrated";
     //consumer
-    public static final String QUEUE_NAME_MANAGER_PATIENT_RECORD = "ManagerPatientRecordQueue";
-    public static final String ROUTING_KEY_MANAGER_PATIENT_RECORD = "routing.key.manager_patient_record";
-
+    public static final String QUEUE_NAME_UNITY_PATIENT_RECORD = "UnityPatientRecordQueue";
+    public static final String ROUTING_KEY_UNITY_PATIENT_RECORD = "routing.key.unity_patient_record";
+    public static final String QUEUE_NAME_INTEGRATED_PATIENT_RECORD = "IntegratedPatientRecordQueue";
+    public static final String ROUTING_KEY_INTEGRATED_PATIENT_RECORD = "routing.key.Integrated_patient_record";
 
     public static final String EXCHANGE_NAME = "OrderExchange";
 
@@ -46,24 +47,33 @@ public class RabbitConfig {
 
     //consumer
     @Bean
-    public Queue queueManagerPatientRecord() {
-        return new Queue(QUEUE_NAME_MANAGER_PATIENT_RECORD, true); // true indica que a fila é durável
+    public Queue queueUnityPatientRecord() {
+        return new Queue(QUEUE_NAME_UNITY_PATIENT_RECORD, true); // true indica que a fila é durável
     }
     @Bean
-    public Binding bindingManagerPatientRecord(Queue queueManagerPatientRecord, TopicExchange exchange) {
-        return BindingBuilder.bind(queueManagerPatientRecord).to(exchange).with(ROUTING_KEY_MANAGER_PATIENT_RECORD);
+    public Binding bindingUnityPatientRecord(Queue queueUnityPatientRecord, TopicExchange exchange) {
+        return BindingBuilder.bind(queueUnityPatientRecord).to(exchange).with(ROUTING_KEY_UNITY_PATIENT_RECORD);
+    }
+
+    @Bean
+    public Queue queueIntegratedPatientRecord() {
+        return new Queue(QUEUE_NAME_INTEGRATED_PATIENT_RECORD, true); // true indica que a fila é durável
+    }
+    @Bean
+    public Binding bindingIntegratedPatientRecord(Queue queueIntegratedPatientRecord, TopicExchange exchange) {
+        return BindingBuilder.bind(queueIntegratedPatientRecord).to(exchange).with(ROUTING_KEY_INTEGRATED_PATIENT_RECORD);
     }
 
 
 
     //producer
     @Bean
-    public Queue queuePatientRecordManager() {
-        return new Queue(QUEUE_NAME_PATIENT_RECORD_MANAGER, true); // true indica que a fila é durável
+    public Queue queuePatientRecordUnity() {
+        return new Queue(QUEUE_NAME_PATIENT_RECORD_UNITY, true); // true indica que a fila é durável
     }
     @Bean
-    public Binding bindingPatientRecordManager(Queue queuePatientRecordManager, TopicExchange exchange) {
-        return BindingBuilder.bind(queuePatientRecordManager).to(exchange).with(ROUTING_KEY_PATIENT_RECORD_MANAGER);
+    public Binding bindingPatientRecordUnity(Queue queuePatientRecordUnity, TopicExchange exchange) {
+        return BindingBuilder.bind(queuePatientRecordUnity).to(exchange).with(ROUTING_KEY_PATIENT_RECORD_UNITY);
     }
 
     @Bean

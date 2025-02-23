@@ -1,6 +1,7 @@
 package br.com.susintegrated.queue.consumer;
 
 import br.com.susintegrated.config.RabbitConfig;
+import br.com.susintegrated.queue.consumer.dto.MessageBodyByPatienteRecord;
 import br.com.susintegrated.service.PatientService;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
@@ -50,6 +51,22 @@ public class RabbitMQReceiver {
         try {
             logger.info(String.format("Received <%s>", message));
             patientService.validatePatientToScheduling(message);
+            channel.basicAck(deliveryTag , false);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);
+            // Se o processamento falhar, rejeite a mensagem sem reencaminhá-la para a fila
+            channel.basicNack(deliveryTag, false, false);
+        }
+    }
+
+
+    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_PATIENT_RECORD_INTEGRATED, ackMode = "MANUAL")
+    public void receivePatientRecordMessage(MessageBodyByPatienteRecord message,
+                                            Channel channel,
+                                            @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
+        try {
+            logger.info(String.format("Received <%s>", message));
+            patientService.validatePatientToPatientRecord(message);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);
