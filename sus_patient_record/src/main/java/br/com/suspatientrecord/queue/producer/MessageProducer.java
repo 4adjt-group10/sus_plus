@@ -1,7 +1,8 @@
 package br.com.suspatientrecord.queue.producer;
 
 import br.com.suspatientrecord.config.RabbitConfig;
-import br.com.suspatientrecord.queue.producer.dto.PatientRecordProfessional;
+import br.com.suspatientrecord.queue.producer.dto.RecordToIntegrated;
+import br.com.suspatientrecord.queue.producer.dto.RecordToUnity;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,14 +20,16 @@ public class MessageProducer {
     }
 
 
-    public void sendToManager(PatientRecordProfessional message) {
+    public void sendToIntegrated(RecordToIntegrated message) {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
         Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
-        rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_MANAGER, rabbitMessage);
-    }
+        rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_INTEGRATED, rabbitMessage);    }
 
-    public void sendToIntegrated(String message) {
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_INTEGRATED, message);
+    public void sendToUnity(RecordToUnity recordToUnity) {
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(recordToUnity, messageProperties);
+        rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_UNITY, rabbitMessage);
     }
 }

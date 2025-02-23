@@ -6,7 +6,6 @@ import br.com.susunity.controller.dto.UnityProfessionalForm;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.service.UnityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

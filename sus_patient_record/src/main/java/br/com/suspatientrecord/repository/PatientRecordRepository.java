@@ -11,7 +11,4 @@ import java.util.UUID;
 @Repository
 public interface PatientRecordRepository extends JpaRepository<PatientRecordModel, UUID> {
 
-    Optional<PatientRecordModel> getPatientRecordByUnityIdAndPatientId(UUID unityId, UUID patientId);
-
-    Optional<List<PatientRecordModel>> getAllPatientRecordByProfessionalId(UUID professionalId);
 }
