@@ -56,7 +56,7 @@ public class ProfessionalManagerServiceTest {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
 
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
         ProfessionalModel professional = new ProfessionalModel(form,null);
         professional.setAddress(address);
 
@@ -88,7 +88,7 @@ public class ProfessionalManagerServiceTest {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
 
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", document, "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", document,  addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
         ProfessionalModel professional = new ProfessionalModel(form,null);
 
         when(professionalRepository.findByDocument(document)).thenReturn(Optional.of(professional));
@@ -121,7 +121,7 @@ public class ProfessionalManagerServiceTest {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
 
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "12345", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "12345",  addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
         ProfessionalModel professional = new ProfessionalModel(form,null);
 
         when(professionalRepository.findById(id)).thenReturn(Optional.of(professional));
@@ -154,7 +154,7 @@ public class ProfessionalManagerServiceTest {
         specialities.add(speciality);
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", "unity", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456",  addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
         ProfessionalModel existingProfessional = new ProfessionalModel(form,null);
         existingProfessional.setAddress(address);
 

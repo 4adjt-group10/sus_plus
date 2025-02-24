@@ -81,9 +81,9 @@ public class PatientService {
     public void validatePatientToPatientRecord(MessageBodyByPatienteRecord message) {
         patientRepository.findById(message.getPatientId())
                 .ifPresentOrElse(patient -> {
-                    messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(true, patient.getName()));
+                    messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(message.getPatienteRecordId(),true, patient.getName()));
                 }, () -> {
-                    messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(false, null));
+                    messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(message.getPatienteRecordId(),false, null));
                 });
     }
 }

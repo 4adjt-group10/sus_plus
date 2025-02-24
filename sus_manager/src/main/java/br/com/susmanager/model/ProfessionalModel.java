@@ -15,7 +15,6 @@ public class ProfessionalModel {
     private UUID id;
     @Column(name = "name", length = 50, nullable = false, unique = true)
     private String name;
-    private String unity;
     @Column(name = "document", nullable = false, unique = true)
     private String document;
     @OneToOne
@@ -37,7 +36,6 @@ public class ProfessionalModel {
 
     public ProfessionalModel(UUID id,
                              String name,
-                             String unity,
                              String document,
                              AddressModel address,
                              ProfessionalType type,
@@ -45,7 +43,6 @@ public class ProfessionalModel {
                              List<ProfessionalAvailabilityModel> availability) {
         this.id = id;
         this.name = name;
-        this.unity = unity;
         this.document = document;
         this.address = address;
         this.type = type;
@@ -55,7 +52,6 @@ public class ProfessionalModel {
 
     public ProfessionalModel(ProfessionalCreateForm form, List<SpecialityModel> specialities) {
         this.name = form.name();
-        this.unity = form.unity();
         this.document = form.document();
         this.address = new AddressModel(form.address());
         this.type = form.type();
@@ -71,10 +67,6 @@ public class ProfessionalModel {
 
     public String getName() {
         return name;
-    }
-
-    public String getUnity() {
-        return unity;
     }
 
     public String getDocument() {

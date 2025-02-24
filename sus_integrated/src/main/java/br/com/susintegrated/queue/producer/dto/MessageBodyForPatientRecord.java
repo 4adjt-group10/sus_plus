@@ -1,4 +1,6 @@
 package br.com.susintegrated.queue.producer.dto;
 
-public record MessageBodyForPatientRecord(boolean isValidated, String patientName) {
+import java.util.UUID;
+
+public record MessageBodyForPatientRecord(UUID patientRecordId, boolean isValidated, String patientName) {
 }

@@ -7,17 +7,17 @@ public class MessageBodyByUnity {
     private String professionalName;
     private String unityName;
     private String specilityName;
-    private boolean isValidated;
+    private boolean validated;
 
     public MessageBodyByUnity() {
     }
 
-    public MessageBodyByUnity(UUID patientRecordId, String professionalName, String unityName, String specilityName, boolean isValidated) {
+    public MessageBodyByUnity(UUID patientRecordId, String professionalName, String unityName, String specilityName, boolean validated) {
         this.patientRecordId = patientRecordId;
         this.professionalName = professionalName;
         this.unityName = unityName;
         this.specilityName = specilityName;
-        this.isValidated = isValidated;
+        this.validated = validated;
     }
 
     public UUID getPatientRecordId() {
@@ -37,6 +37,6 @@ public class MessageBodyByUnity {
     }
 
     public boolean isValidated() {
-        return isValidated;
+        return validated;
     }
 }

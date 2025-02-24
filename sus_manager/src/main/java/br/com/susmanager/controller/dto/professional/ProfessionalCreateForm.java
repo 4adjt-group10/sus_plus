@@ -11,7 +11,6 @@ import java.util.UUID;
 public record ProfessionalCreateForm(
         @NotBlank String name,
         @NotBlank String document,
-        @NotBlank String unity,
         @NotNull AddressFormDTO address,
         @NotNull ProfessionalType type,
         @Nullable List<UUID> specialityIds,

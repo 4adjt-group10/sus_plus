@@ -110,6 +110,7 @@ public class UnityModel {
             professional = new ArrayList<>();
             professional.add(messageBody);
         }
+        professional.add(messageBody);
     }
 
 
