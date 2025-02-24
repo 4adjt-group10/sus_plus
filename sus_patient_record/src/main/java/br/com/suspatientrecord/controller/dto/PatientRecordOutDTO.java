@@ -1,5 +1,7 @@
 package br.com.suspatientrecord.controller.dto;
 
+import br.com.suspatientrecord.model.PatientRecordModel;
+
 import java.util.UUID;
 
 public record PatientRecordOutDTO(
@@ -10,15 +12,15 @@ public record PatientRecordOutDTO(
     String unityName,
     String patientRecord) {
 
-    public PatientRecordOutDTO(UUID id, String patientName, String professionalName, String specialityName, String unityName, String patientRecord) {
-            this.id = id;
-            this.patientName = patientName;
-            this.professionalName = professionalName;
-            this.specialityName = specialityName;
-            this.unityName = unityName;
-            this.patientRecord = patientRecord;
-        }
 
+    public PatientRecordOutDTO(PatientRecordModel patientRecordModel) {
+        this(patientRecordModel.getId(),
+                patientRecordModel.getPatientName(),
+                patientRecordModel.getProfessionName(),
+                patientRecordModel.getSpecialityName(),
+                patientRecordModel.getUnityName(),
+                patientRecordModel.getDescription());
+    }
 }
 
 

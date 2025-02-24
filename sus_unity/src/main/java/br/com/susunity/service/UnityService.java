@@ -160,21 +160,26 @@ public class UnityService {
     public void getUnityForPatientRecord(MessageBodyByPatientRecord message) {
         unityRepository.findById(message.getUnityId())
                 .ifPresentOrElse(unityModel -> {
+
                     unityModel.getProfessional().stream()
-                            .filter(professionalModel -> professionalModel.getId().equals(message.getProfessionalId()))
+                            .filter(professionalModel -> professionalModel.getProfissionalId().equals(message.getProfessionalId()))
                             .findFirst()
                             .ifPresentOrElse(professionalModel -> {
+
                                 boolean specialityFound = professionalModel.getSpeciality().stream()
                                         .anyMatch(specialityModel -> specialityModel.getId().equals(message.getSpecialityId()));
+
                                 String specialityName = specialityFound ? professionalModel.getSpeciality().stream()
                                         .filter(specialityModel -> specialityModel.getId().equals(message.getSpecialityId()))
                                         .findFirst().get().getName() : null;
+
                                 messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(
                                         message.getPatientRecordId(),
                                         professionalModel.getProfissionalName(),
                                         unityModel.getName(),
                                         specialityName,
                                         specialityFound
+                                        
                                 ));
                             }, () -> messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(
                                     message.getPatientRecordId(),

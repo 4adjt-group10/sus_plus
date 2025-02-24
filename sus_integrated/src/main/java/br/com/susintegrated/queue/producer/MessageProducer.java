@@ -44,6 +44,6 @@ public class MessageProducer {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
         Message rabbitMessage = jackson2JsonMessageConverter.toMessage(messageBodyForPatientRecord, messageProperties);
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_INTEGRATED, rabbitMessage);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_INTEGRATED_PATIENT_RECORD, rabbitMessage);
     }
 }

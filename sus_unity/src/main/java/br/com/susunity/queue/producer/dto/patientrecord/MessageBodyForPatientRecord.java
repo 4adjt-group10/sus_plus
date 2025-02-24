@@ -1,8 +1,10 @@
 package br.com.susunity.queue.producer.dto.patientrecord;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class MessageBodyForPatientRecord {
+public class MessageBodyForPatientRecord implements Serializable {
+    private static final long serialVersionUID = 1L;
     private UUID patientRecordId;
     private String professionalName;
     private String unityName;

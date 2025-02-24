@@ -21,6 +21,9 @@ public class RabbitConfig {
 
     public static final String QUEUE_NAME_UNITY_INTEGRATED = "UnityIntegratedQueue";
     public static final String ROUTING_KEY_UNITY_INTEGRATED = "routing.key.unity_integrated";
+
+    public static final String QUEUE_NAME_UNITY_PATIENT_RECORD = "UnityPatientRecordQueue";
+    public static final String ROUTING_KEY_UNITY_PATIENT_RECORD = "routing.key.unity_patient_record";
     //consumer
     public static final String QUEUE_NAME_MANAGER_UNITY = "ManagerUnityQueue";
     public static final String ROUTING_KEY_MANAGER_UNITY = "routing.key.manager_unity";
@@ -104,6 +107,15 @@ public class RabbitConfig {
     @Bean
     public Binding bindingUnityIntegrated(Queue queueUnityIntegrated, TopicExchange exchange) {
         return BindingBuilder.bind(queueUnityIntegrated).to(exchange).with(ROUTING_KEY_UNITY_INTEGRATED);
+    }
+
+    @Bean
+    public Queue queueUnityPatientRecord() {
+        return new Queue(QUEUE_NAME_UNITY_PATIENT_RECORD, true); // true indica que a fila é durável
+    }
+    @Bean
+    public Binding bindingUnityPatientRecord(Queue queueUnityPatientRecord, TopicExchange exchange) {
+        return BindingBuilder.bind(queueUnityPatientRecord).to(exchange).with(ROUTING_KEY_UNITY_PATIENT_RECORD);
     }
 
 

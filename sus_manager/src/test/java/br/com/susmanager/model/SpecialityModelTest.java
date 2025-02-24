@@ -48,8 +48,8 @@ public class SpecialityModelTest {
 
     @Test
     void testGetProfessionalsNames_populated() {
-        ProfessionalModel professional1 = new ProfessionalModel(UUID.randomUUID(), "Dr. Smith", "Unity", "123", null, null, null, null);
-        ProfessionalModel professional2 = new ProfessionalModel(UUID.randomUUID(), "Dr. Jones", "Unity", "456", null, null, null, null);
+        ProfessionalModel professional1 = new ProfessionalModel(UUID.randomUUID(), "Dr. Smith", "123", null, null, null, null);
+        ProfessionalModel professional2 = new ProfessionalModel(UUID.randomUUID(), "Dr. Jones",  "456", null, null, null, null);
         List<ProfessionalModel> professionals = List.of(professional1, professional2);
         SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiologia",List.of(UUID.randomUUID())), professionals);
 
@@ -63,7 +63,7 @@ public class SpecialityModelTest {
     @Test
     void testAddProfessional() {
         SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiologia",List.of(UUID.randomUUID())), new ArrayList<>());
-        ProfessionalModel professional = new ProfessionalModel(UUID.randomUUID(), "Dr. Smith", "Unity", "123", null, null, null, null);
+        ProfessionalModel professional = new ProfessionalModel(UUID.randomUUID(), "Dr. Smith",  "123", null, null, null, null);
 
         speciality.addProfessional(professional);
 
@@ -101,7 +101,7 @@ public class SpecialityModelTest {
 
     @Test
     void testGetProfessionals() {
-        ProfessionalModel professional1 = new ProfessionalModel(UUID.randomUUID(), "Dr. Smith", "Unity", "123", null, null, null, null);
+        ProfessionalModel professional1 = new ProfessionalModel(UUID.randomUUID(), "Dr. Smith",  "123", null, null, null, null);
         List<ProfessionalModel> professionals = List.of(professional1);
         SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiologia",List.of(UUID.randomUUID())), professionals);
 

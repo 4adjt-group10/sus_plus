@@ -17,8 +17,8 @@ public class PatientRecordModel {
     private UUID patientId;
     private UUID professionId;
     private UUID unityId;
-    private UUID especialityId;
-    private String especialityName;
+    private UUID specialityId;
+    private String specialityName;
     private String description;
     private String patientName;
     private String professionName;
@@ -27,12 +27,12 @@ public class PatientRecordModel {
     public PatientRecordModel() {
     }
 
-    public PatientRecordModel(UUID patientId, UUID professionId, UUID unityId, UUID especialityId, String especialityName, String description, String patientName, String professionName, String unityName) {
+    public PatientRecordModel(UUID patientId, UUID professionId, UUID unityId, UUID specialityId, String specialityName, String description, String patientName, String professionName, String unityName) {
         this.patientId = patientId;
         this.professionId = professionId;
         this.unityId = unityId;
-        this.especialityId = especialityId;
-        this.especialityName = especialityName;
+        this.specialityId = specialityId;
+        this.specialityName = specialityName;
         this.description = description;
         this.patientName = patientName;
         this.professionName = professionName;
@@ -44,7 +44,7 @@ public class PatientRecordModel {
         this.professionId = patientRecord.professionalID();
         this.unityId = patientRecord.unityID();
         this.description = patientRecord.observation();
-        this.especialityId = patientRecord.especialityId();
+        this.specialityId = patientRecord.especialityId();
 
     }
 
@@ -80,16 +80,16 @@ public class PatientRecordModel {
         return unityName;
     }
 
-    public UUID getEspecialityId() {
-        return especialityId;
+    public UUID getSpecialityId() {
+        return specialityId;
     }
 
-    public String getEspecialityName() {
-        return especialityName;
+    public String getSpecialityName() {
+        return specialityName;
     }
 
-    public void setEspecialityName(String especialityName) {
-        this.especialityName = especialityName;
+    public void setSpecialityName(String especialityName) {
+        this.specialityName = especialityName;
     }
 
     public void setDescription(String description) {

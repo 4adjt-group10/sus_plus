@@ -55,7 +55,7 @@ public class RabbitMQReceiver {
         }
     }
 
-    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_SCHEDULING_UNITY, ackMode = "MANUAL")
+    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_PATIENT_RECORD_UNITY, ackMode = "MANUAL")
     public void receivePatientRecordMessage(MessageBodyByPatientRecord message,
                                             Channel channel,
                                             @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {

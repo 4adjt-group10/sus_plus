@@ -1,39 +1,37 @@
-//package br.com.suspatientrecord.controller;
-//
-//import br.com.suspatientrecord.controller.dto.PatientRecordFormDTO;
-//import br.com.suspatientrecord.controller.dto.PatientRecordOutDTO;
-//import br.com.suspatientrecord.model.PatientRecordModel;
-//import br.com.suspatientrecord.service.PatientRecordService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.List;
-//import java.util.UUID;
-//
-//@RestController
-//@RequestMapping("/patient-records")
-//public class PatientRecordController {
-//
-//    @Autowired
-//    private PatientRecordService patientRecordService;
-//
-//    @PostMapping
-//    public ResponseEntity<PatientRecordOutDTO> createPatientRecord(@RequestBody PatientRecordFormDTO patientRecord) {
-//        PatientRecordModel createdPatientRecord = patientRecordService.createPatientRecord(patientRecord);
-//        return new ResponseEntity<>(createdPatientRecord, HttpStatus.CREATED);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<PatientRecordOutDTO> getPatientRecordById(@PathVariable UUID id) {
-//        PatientRecordModel patientRecord = patientRecordService.getPatientRecordById(id);
-//        if (patientRecord != null) {
-//            return new ResponseEntity<>(patientRecord, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
+package br.com.suspatientrecord.controller;
+
+import br.com.suspatientrecord.controller.dto.PatientRecordFormDTO;
+import br.com.suspatientrecord.controller.dto.PatientRecordOutDTO;
+import br.com.suspatientrecord.model.PatientRecordModel;
+import br.com.suspatientrecord.service.PatientRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/patient-records")
+public class PatientRecordController {
+
+
+    private final PatientRecordService patientRecordService;
+
+    public PatientRecordController(PatientRecordService patientRecordService) {
+        this.patientRecordService = patientRecordService;
+    }
+
+    @PostMapping
+    public ResponseEntity<PatientRecordOutDTO> createPatientRecord(@RequestBody PatientRecordFormDTO patientRecord) {
+        return ResponseEntity.ok(patientRecordService.createPatientRecord(patientRecord));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientRecordOutDTO> getPatientRecordById(@PathVariable UUID id) {
+        return ResponseEntity.ok(patientRecordService.getPatientRecordById(id));
+    }
 //
 //    @GetMapping("/unity/{unityId}/patient/{patientId}")
 //    public ResponseEntity<PatientRecordOutDTO> getPatientRecordByUnityIdAndPatientId(@PathVariable UUID unityId, @PathVariable UUID patientId) {
@@ -80,4 +78,4 @@
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //        }
 //    }
-//}
+}

@@ -1,6 +1,7 @@
 package br.com.suspatientrecord.service;
 
 import br.com.suspatientrecord.controller.dto.PatientRecordFormDTO;
+import br.com.suspatientrecord.controller.dto.PatientRecordOutDTO;
 import br.com.suspatientrecord.model.PatientRecordModel;
 import br.com.suspatientrecord.queue.consumer.dto.MessageBodyByIntegrated;
 import br.com.suspatientrecord.queue.consumer.dto.MessageBodyByUnity;
@@ -11,6 +12,7 @@ import br.com.suspatientrecord.repository.PatientRecordRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
@@ -26,10 +28,10 @@ public class PatientRecordService {
         this.messageProducer = messageProducer;
     }
 
-    public PatientRecordModel createPatientRecord(PatientRecordFormDTO patientRecord) {
+    public PatientRecordOutDTO createPatientRecord(PatientRecordFormDTO patientRecord) {
         PatientRecordModel patientRecordModel = patientRecordRepository.save(new PatientRecordModel(patientRecord));
         messageProducer.sendToIntegrated(new RecordToIntegrated(patientRecordModel.getPatientId(), patientRecordModel.getId()));
-        return patientRecordRepository.save(patientRecordModel);
+        return new PatientRecordOutDTO(patientRecordModel);
     }
 
 
@@ -54,12 +56,19 @@ public class PatientRecordService {
             PatientRecordModel patientRecordModel = patientRecordRepository.findById(message.getPatientRecordId()).
                     orElseThrow(EntityNotFoundException::new);
             patientRecordModel.setUnityName(message.getUnityName());
-            patientRecordModel.setEspecialityName(message.getSpecilityName());
+            patientRecordModel.setSpecialityName(message.getSpecilityName());
             patientRecordModel.setProfessionName(message.getProfessionalName());
             patientRecordRepository.save(patientRecordModel);
         }else{
             logger.warning("Unity , professional or speciality not valid, deleting record");
             patientRecordRepository.deleteById(message.getPatientRecordId());
         }
+    }
+
+    public PatientRecordOutDTO getPatientRecordById(UUID id) {
+        PatientRecordModel patientRecordModel = patientRecordRepository.findById(id).
+                orElseThrow(EntityNotFoundException::new);
+        return new PatientRecordOutDTO(patientRecordModel);
+
     }
 }
