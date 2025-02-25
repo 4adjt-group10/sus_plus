@@ -46,21 +46,11 @@ public class UnityModel {
         this.professional = professional;
     }
 
-    public UnityModel(String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> professional) {
-        this.name = name;
-        this.address = address;
-        this.numberOfPatients = numberOfPatients;
-        this.numberOfTotalPatients = numberOfTotalPatients;
-        this.professional = professional;
-    }
-
     public UnityModel(UnityInForm unityInForm, AddressModel newAddress) {
         this.name = unityInForm.name();
         this.address = newAddress;
         this.numberOfTotalPatients = (unityInForm.numberOfToTalPatients() != null) ? unityInForm.numberOfToTalPatients() : 0;
     }
-
-
 
     public UUID getId() {
         return id;
