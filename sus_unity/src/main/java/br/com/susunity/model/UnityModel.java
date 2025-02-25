@@ -109,10 +109,16 @@ public class UnityModel {
         if(Objects.isNull(professional) || professional.isEmpty()) {
             professional = new ArrayList<>();
             professional.add(messageBody);
+        } else if(!validateProfessional(messageBody.getProfissionalId())) {
+            professional.add(messageBody);
         }
-        professional.add(messageBody);
     }
 
+    public boolean validateProfessional(UUID professionalId) {
+        return this.professional
+                .stream()
+                .anyMatch(p -> p.getProfissionalId().equals(professionalId));
+    }
 
     public void remove(ProfissionalUnityModel profissionalUnityModel) {
         professional.remove(profissionalUnityModel);

@@ -98,8 +98,19 @@ public class ProfessionalModel {
         this.document = professionalFormDTO.document();
         this.type = professionalFormDTO.type();
         this.address.merge(professionalFormDTO.address());
-        this.speciality = specialties;
+        updateSpeciality(specialties);
     }
+
+    private void updateSpeciality(List<SpecialityModel> specialties) {
+        this.speciality.forEach(s -> {
+            specialties.stream()
+                    .filter(sm -> sm.getId().equals(s.getId()))
+                    .findFirst()
+                    .ifPresent(specialties::remove);
+        });
+        this.speciality.addAll(specialties);
+    }
+
     public List<String> getSpecialityNames() {
         return Optional.ofNullable(speciality)
                 .map(procedureList -> procedureList.stream().map(SpecialityModel::getName).toList())
