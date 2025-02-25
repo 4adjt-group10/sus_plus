@@ -32,50 +32,16 @@ public class PatientRecordController {
     public ResponseEntity<PatientRecordOutDTO> getPatientRecordById(@PathVariable UUID id) {
         return ResponseEntity.ok(patientRecordService.getPatientRecordById(id));
     }
-//
-//    @GetMapping("/unity/{unityId}/patient/{patientId}")
-//    public ResponseEntity<PatientRecordOutDTO> getPatientRecordByUnityIdAndPatientId(@PathVariable UUID unityId, @PathVariable UUID patientId) {
-//        PatientRecordModel patientRecord = patientRecordService.getPatientRecordByUnityIdAndPatientId(unityId, patientId);
-//        if (patientRecord != null) {
-//            return new ResponseEntity<>(patientRecord, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-//
-//    @GetMapping("/professional/{professionalId}")
-//    public ResponseEntity<List<PatientRecordOutDTO>> getAllPatientRecordByProfessionalId(@PathVariable UUID professionalId) {
-//        List<PatientRecordModel> patientRecord = patientRecordService.getAllPatientRecordByProfessionalId(professionalId);
-//        if (patientRecord != null) {
-//            return new ResponseEntity<>(patientRecord, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<List<PatientRecordOutDTO>> getAllPatientRecords() {
-//        List<PatientRecordModel> patientRecords = patientRecordService.getAllPatientRecords();
-//        return new ResponseEntity<>(patientRecords, HttpStatus.OK);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<PatientRecordModel> updatePatientRecord(@PathVariable UUID id, @RequestBody PatientRecordModel patientRecord) {
-//        PatientRecordModel updatedPatientRecord = patientRecordService.updatePatientRecord(id, patientRecord);
-//        if (updatedPatientRecord != null) {
-//            return new ResponseEntity<>(updatedPatientRecord, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deletePatientRecord(@PathVariable UUID id) {
-//        boolean isDeleted = patientRecordService.deletePatientRecord(id);
-//        if (isDeleted) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
+
+    @GetMapping("/unity/{unityId}/patient/{patientId}")
+    public ResponseEntity<List<PatientRecordOutDTO>> getPatientRecordByUnityIdAndPatientId(@PathVariable UUID unityId, @PathVariable UUID patientId) {
+        return ResponseEntity.ok(patientRecordService.getPatientRecordByUnityIdAndPatientId(unityId, patientId));
+
+    }
+
+    @GetMapping("/professional/{professionalId}")
+    public ResponseEntity<List<PatientRecordOutDTO>> getAllPatientRecordByProfessionalId(@PathVariable UUID professionalId) {
+        return ResponseEntity.ok(patientRecordService.getAllPatientRecordByProfessionalId(professionalId));
+    }
+
 }
