@@ -55,6 +55,16 @@ public class SpecialityModel {
 
     public void merge(SpecialityForm procedureFormDTO, List<ProfessionalModel> professionals) {
         this.name = procedureFormDTO.name();
-        this.professionals = professionals;
+        updateProfessional(professionals);
+    }
+
+    private void updateProfessional(List<ProfessionalModel> professionals) {
+        this.professionals.forEach(p -> {
+            professionals.stream()
+                    .filter(pm -> pm.getId().equals(p.getId()))
+                    .findFirst()
+                    .ifPresent(professionals::remove);
+        });
+        this.professionals.addAll(professionals);
     }
 }
