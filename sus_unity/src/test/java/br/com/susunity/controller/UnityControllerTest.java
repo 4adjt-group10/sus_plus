@@ -6,11 +6,13 @@ import br.com.susunity.controller.dto.UnityDto;
 import br.com.susunity.controller.dto.UnityInForm;
 import br.com.susunity.controller.dto.UnityProfessionalForm;
 import br.com.susunity.model.UnityModel;
+import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.service.UnityService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +24,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UnityControllerTest {
-
+class UnityControllerTest {
     @InjectMocks
     private UnityController unityController;
 
     @Mock
     private UnityService unityService;
 
+    @Mock
+    private MessageProducer producer;
+
+
+    private AutoCloseable mocks;
+
+    @BeforeEach
+    void setup() {
+        mocks = MockitoAnnotations.openMocks(this);
+        unityController = new UnityController(unityService);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mocks.close();
+    }
+
     @Test
     public void testCreateUnity() {
-        UnityInForm unityInForm = new UnityInForm("Unity",10, new AddressFormDTO("street", 1, "neighborhood","city","state"));
+        UnityInForm unityInForm = new UnityInForm("Unity", 10, new AddressFormDTO("street", 1, "neighborhood", "city", "state"));
         UnityDto unityDto = new UnityDto(new UnityModel());
         when(unityService.create(unityInForm)).thenReturn(unityDto);
 
@@ -71,7 +89,7 @@ public class UnityControllerTest {
     @Test
     public void testAlterUnity() {
         UUID id = UUID.randomUUID();
-        UnityInForm unityInForm = new UnityInForm("Unity",10, new AddressFormDTO("street", 1, "neighborhood","city","state"));
+        UnityInForm unityInForm = new UnityInForm("Unity", 10, new AddressFormDTO("street", 1, "neighborhood", "city", "state"));
         UnityDto unityDto = new UnityDto(new UnityModel());
         when(unityService.update(id, unityInForm)).thenReturn(unityDto);
 
@@ -123,7 +141,7 @@ public class UnityControllerTest {
 
     @Test
     public void testIncludeProfessional() {
-        UnityProfessionalForm unityProfessionalForm = new UnityProfessionalForm(UUID.randomUUID(),UUID.randomUUID());
+        UnityProfessionalForm unityProfessionalForm = new UnityProfessionalForm(UUID.randomUUID(), UUID.randomUUID());
 
         ResponseEntity<Void> response = unityController.includeProfessional(unityProfessionalForm);
 
@@ -133,7 +151,7 @@ public class UnityControllerTest {
 
     @Test
     public void testExcludeProfessional() {
-        UnityProfessionalForm unityProfessionalForm = new UnityProfessionalForm(UUID.randomUUID(),UUID.randomUUID());
+        UnityProfessionalForm unityProfessionalForm = new UnityProfessionalForm(UUID.randomUUID(), UUID.randomUUID());
 
         ResponseEntity<Void> response = unityController.excludeProfessional(unityProfessionalForm);
 
