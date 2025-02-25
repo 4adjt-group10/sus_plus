@@ -12,8 +12,10 @@ import br.com.suspatientrecord.repository.PatientRecordRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientRecordService {
@@ -70,5 +72,19 @@ public class PatientRecordService {
                 orElseThrow(EntityNotFoundException::new);
         return new PatientRecordOutDTO(patientRecordModel);
 
+    }
+
+    public List<PatientRecordOutDTO> getPatientRecordByUnityIdAndPatientId(UUID unityId, UUID patientId) {
+        List<PatientRecordModel> patientRecords = patientRecordRepository.findAllByUnityIdAndPatientId(unityId, patientId);
+        return patientRecords.stream()
+                .map(PatientRecordOutDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<PatientRecordOutDTO> getAllPatientRecordByProfessionalId(UUID professionalId) {
+        List<PatientRecordModel> patientRecords = patientRecordRepository.findAllByProfessionId(professionalId);
+        return patientRecords.stream()
+                .map(PatientRecordOutDTO::new)
+                .collect(Collectors.toList());
     }
 }
