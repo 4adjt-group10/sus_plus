@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>br.com.susunity</groupId>
-    <artifactId>SusUnity</artifactId>
+    <artifactId>sus_unity</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>susunity</name>
     <description>A Unity API for sus</description>
