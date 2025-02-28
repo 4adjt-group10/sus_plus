@@ -1,4 +1,4 @@
-package br.com.susintegrated.queue.producer;
+package br.com.susintegrated.queue.producer.dto;
 
 import java.util.UUID;
 

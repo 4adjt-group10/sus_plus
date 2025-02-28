@@ -1,4 +1,4 @@
-package br.com.susintegrated.queue.consumer;
+package br.com.susintegrated.queue.consumer.dto;
 
 import java.io.Serializable;
 import java.util.UUID;

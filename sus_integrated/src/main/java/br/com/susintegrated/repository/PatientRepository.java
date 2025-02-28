@@ -13,6 +13,4 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
     Optional<Patient> findByDocument(String document);
 
-    List<Patient> findAllByBlockedTrue();
-
 }

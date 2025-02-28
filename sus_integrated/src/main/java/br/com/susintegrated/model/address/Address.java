@@ -1,30 +1,35 @@
 package br.com.susintegrated.model.address;
 
 import br.com.susintegrated.controller.dto.address.AddressFormDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
-import java.util.UUID;
-
-@Entity
-@Table(name = "Address")
 public class Address {
 
-    @Id
-    private UUID id;
     private String street;
-    private int number;
+    private Integer number;
     private String neighborhood;
     private String city;
     private String state;
+    private String zipCode;
 
-    @Deprecated(since = "Only for use of frameworks")
-    public Address() {
+    public Address(String street, Integer number, String neighborhood, String city, String state, String zipCode) {
+        this.street = street;
+        this.number = number;
+        this.neighborhood = neighborhood;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
     }
 
     public Address(AddressFormDTO formDTO) {
-        this.id = UUID.randomUUID();
+        this.neighborhood = formDTO.neighborhood();
+        this.city = formDTO.city();
+        this.state = formDTO.state();
+        this.number = formDTO.number();
+        this.street = formDTO.street();
+        this.zipCode = formDTO.zipCode();
+    }
+
+    public void merge(AddressFormDTO formDTO) {
         this.neighborhood = formDTO.neighborhood();
         this.city = formDTO.city();
         this.state = formDTO.state();
@@ -32,15 +37,11 @@ public class Address {
         this.street = formDTO.street();
     }
 
-    public UUID getId() {
-        return id;
-    }
-
     public String getStreet() {
         return street;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
@@ -56,11 +57,7 @@ public class Address {
         return state;
     }
 
-    public void merge(AddressFormDTO formDTO) {
-        this.neighborhood = formDTO.neighborhood();
-        this.city = formDTO.city();
-        this.state = formDTO.state();
-        this.number = formDTO.number();
-        this.street = formDTO.street();
+    public String getZipCode() {
+        return zipCode;
     }
 }
