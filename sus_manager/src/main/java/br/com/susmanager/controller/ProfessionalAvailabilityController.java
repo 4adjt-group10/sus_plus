@@ -18,13 +18,11 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/professional-availability")
 public class ProfessionalAvailabilityController {
 
-
     private final ProfessionalAvailabilityService availabilityService;
 
     public ProfessionalAvailabilityController(ProfessionalAvailabilityService availabilityService) {
         this.availabilityService = availabilityService;
     }
-
 
     @PostMapping("/create")
     public ResponseEntity<ProfessionalAvailabilityDTO> addRegister(@RequestBody @Valid ProfessionalAvailabilityFormDTO professionalAvailabilityFormDTO){
@@ -55,11 +53,6 @@ public class ProfessionalAvailabilityController {
     public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByHour(@PathVariable("hour") Integer hour) {
         return ResponseEntity.ok(availabilityService.listAvailabilitiesByHour(hour));
     }
-
-//    @GetMapping("/procedure/{id}")
-//    public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByProcedure(@PathVariable("id") UUID id) {
-//        return ResponseEntity.ok(availabilityService.findByProcedureId(id));
-//    }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProfessionalAvailabilityDTO> updateAvailability(@PathVariable("id") UUID id,

@@ -2,7 +2,7 @@ package br.com.susmanager.service;
 
 import br.com.susmanager.controller.dto.professional.*;
 import br.com.susmanager.controller.dto.speciality.SpecialityForm;
-import br.com.susmanager.model.AddressModel;
+import br.com.susmanager.model.Address;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
 import br.com.susmanager.repository.ProfessionalAvailabilityRepository;
@@ -35,9 +35,6 @@ public class ProfessionalManagerServiceTest {
     private SpecialityRepository specialityRepository;
 
     @Mock
-    private AddressService addressService;
-
-    @Mock
     private ProfessionalAvailabilityRepository professionalAvailabilityRepository;
 
     @InjectMocks
@@ -45,8 +42,8 @@ public class ProfessionalManagerServiceTest {
 
     @Test
     void testRegisterProfessional() {
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "city", "state", "zip");
+        Address address = new Address(addressForm);
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -60,7 +57,6 @@ public class ProfessionalManagerServiceTest {
         professional.setAddress(address);
 
         when(specialityRepository.findAllById(specialityIds)).thenReturn(specialities);
-        when(addressService.register(addressForm)).thenReturn(address);
         when(professionalRepository.save(any(ProfessionalModel.class))).thenReturn(professional);
         when(professionalAvailabilityRepository.saveAll(anyList())).thenReturn(List.of());
 
@@ -70,15 +66,14 @@ public class ProfessionalManagerServiceTest {
         assertEquals("Name", output.name());
         verify(professionalRepository).save(any(ProfessionalModel.class));
         verify(professionalAvailabilityRepository).saveAll(anyList());
-        verify(addressService).register(addressForm);
         verify(specialityRepository).findAllById(specialityIds);
     }
 
     @Test
     void testFindByDocument() {
         String document = "123456";
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "city", "state", "zip");
+        Address address = new Address(addressForm);
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -111,7 +106,7 @@ public class ProfessionalManagerServiceTest {
     @Test
     void testFindProfessionalById() {
         UUID id = UUID.randomUUID();
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "city", "state", "zip");
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();

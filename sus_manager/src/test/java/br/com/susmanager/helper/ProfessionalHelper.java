@@ -5,7 +5,7 @@ import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalManagerOut;
 import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import br.com.susmanager.controller.dto.speciality.SpecialityForm;
-import br.com.susmanager.model.AddressModel;
+import br.com.susmanager.model.Address;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
 
@@ -17,7 +17,7 @@ import java.util.UUID;
 public class ProfessionalHelper {
 
     public ProfessionalModel createProfessionalModel(){
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "City", "State", "Zip");
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -32,8 +32,8 @@ public class ProfessionalHelper {
     }
 
     public ProfessionalManagerOut createProfessionalManagerOut(){
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "City", "State", "Zip");
+        Address address = new Address(addressForm);
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -47,7 +47,7 @@ public class ProfessionalHelper {
     }
 
     public ProfessionalCreateForm createProfessionalForm(String document, String name){
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "City", "State", "Zip");
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();

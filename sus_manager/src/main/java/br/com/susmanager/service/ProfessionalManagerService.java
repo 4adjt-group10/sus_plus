@@ -3,7 +3,6 @@ package br.com.susmanager.service;
 import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalManagerOut;
 import br.com.susmanager.exception.DoctorException;
-import br.com.susmanager.model.AddressModel;
 import br.com.susmanager.model.ProfessionalAvailabilityModel;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
@@ -26,33 +25,34 @@ public class ProfessionalManagerService {
 
     private final ProfessionalManagerRepository professionalRepository;
 
-    private final SpecialityRepository speciality;
-
-    private final AddressService addressService;
+    private final SpecialityRepository specialityRepository;
 
     private final ProfessionalAvailabilityRepository professionalAvailabilityRepository;
 
     private final MessageProducer messageProducer;
-    public ProfessionalManagerService(ProfessionalManagerRepository professionalRepository, SpecialityRepository speciality, AddressService addressService, ProfessionalAvailabilityRepository professionalAvailabilityRepository, MessageProducer messageProducer) {
+
+    public ProfessionalManagerService(ProfessionalManagerRepository professionalRepository,
+                                      SpecialityRepository specialityRepository,
+                                      ProfessionalAvailabilityRepository professionalAvailabilityRepository,
+                                      MessageProducer messageProducer) {
         this.professionalRepository = professionalRepository;
-        this.speciality = speciality;
-        this.addressService = addressService;
+        this.specialityRepository = specialityRepository;
         this.professionalAvailabilityRepository = professionalAvailabilityRepository;
         this.messageProducer = messageProducer;
     }
 
     public ProfessionalManagerOut register(ProfessionalCreateForm form) {
-        List<SpecialityModel> specialities = this.speciality.findAllById(form.specialityIds() != null ? form.specialityIds() : new ArrayList<>());
+        List<SpecialityModel> specialities = this.specialityRepository.findAllById(form.specialityIds() != null ? form.specialityIds() : new ArrayList<>());
         ProfessionalModel professional = new ProfessionalModel(form,specialities);
-        List<ProfessionalAvailabilityModel> availabilities = form.availabilities()
-                .stream()
-                .map(availability -> new ProfessionalAvailabilityModel(professional, availability))
-                .toList();
         specialities.forEach(speciality -> speciality.addProfessional(professional));
-        AddressModel address = addressService.register(form.address());
-        professional.setAddress(address);
+        if(form.availabilities() != null) {
+            List<ProfessionalAvailabilityModel> availabilities = form.availabilities()
+                    .stream()
+                    .map(availability -> new ProfessionalAvailabilityModel(professional, availability))
+                    .toList();
+            professionalAvailabilityRepository.saveAll(availabilities);
+        }
         professionalRepository.save(professional);
-        professionalAvailabilityRepository.saveAll(availabilities);
         return new ProfessionalManagerOut(professional);
     }
 
@@ -83,7 +83,7 @@ public class ProfessionalManagerService {
 
     @Transactional
     public ProfessionalManagerOut update(UUID id, ProfessionalCreateForm professionalFormDTO) {
-        List<SpecialityModel> procedures = speciality.findAllById(professionalFormDTO.specialityIds());
+        List<SpecialityModel> procedures = specialityRepository.findAllById(professionalFormDTO.specialityIds());
         ProfessionalModel professional = findProfessionalById(id);
         professionalAvailabilityRepository.deleteAll(professional.getAvailability());
         professional.merge(professionalFormDTO, procedures);

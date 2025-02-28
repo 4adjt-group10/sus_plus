@@ -3,30 +3,40 @@ package br.com.susmanager.model;
 import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.*;
 
 @Table
 @Entity(name = "Professional")
 public class ProfessionalModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
-    @Column(name = "name", length = 50, nullable = false, unique = true)
+
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
+
     @Column(name = "document", nullable = false, unique = true)
     private String document;
-    @OneToOne
-    private AddressModel address;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Address address;
+
     @Enumerated(EnumType.STRING)
     private ProfessionalType type;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Professional_Speciality",
             joinColumns = @JoinColumn(name = "professional_id"),
             inverseJoinColumns = @JoinColumn(name = "speciality_id"))
     private List<SpecialityModel> speciality;
+
     @OneToMany(mappedBy = "professional",fetch = FetchType.EAGER)
     private List<ProfessionalAvailabilityModel> availability;
 
@@ -37,7 +47,7 @@ public class ProfessionalModel {
     public ProfessionalModel(UUID id,
                              String name,
                              String document,
-                             AddressModel address,
+                             Address address,
                              ProfessionalType type,
                              List<SpecialityModel> speciality,
                              List<ProfessionalAvailabilityModel> availability) {
@@ -53,13 +63,11 @@ public class ProfessionalModel {
     public ProfessionalModel(ProfessionalCreateForm form, List<SpecialityModel> specialities) {
         this.name = form.name();
         this.document = form.document();
-        this.address = new AddressModel(form.address());
+        this.address = new Address(form.address());
         this.type = form.type();
         this.speciality = specialities;
 
     }
-
-
 
     public UUID getId() {
         return id;
@@ -73,7 +81,7 @@ public class ProfessionalModel {
         return document;
     }
 
-    public AddressModel getAddress() {
+    public Address getAddress() {
         return address;
     }
 
@@ -89,7 +97,7 @@ public class ProfessionalModel {
         return availability;
     }
 
-    public void setAddress(AddressModel address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 

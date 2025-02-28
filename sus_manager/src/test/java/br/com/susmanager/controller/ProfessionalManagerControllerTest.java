@@ -73,7 +73,7 @@ public class ProfessionalManagerControllerTest {
 
     @Test
     void testCreate() {
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "City", "State", "Zip");
         List<UUID> specialityIds = List.of(UUID.randomUUID());
         List<LocalDateTime> availabilities = List.of(LocalDateTime.now());
         ProfessionalCreateForm form = new ProfessionalCreateForm("New Professional",  "789", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
