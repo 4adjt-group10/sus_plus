@@ -1,6 +1,6 @@
 package br.com.susunity.controller.dto;
 
-import br.com.susunity.model.AddressModel;
+import br.com.susunity.model.Address;
 import br.com.susunity.model.UnityModel;
 
 
@@ -15,7 +15,7 @@ public record UnityDto(
 
         UUID id,
         String name,
-        AddressModel address,
+        Address address,
         Integer numberOfPatients,
         Integer numberOfTotalPatients,
         BigDecimal porcent,

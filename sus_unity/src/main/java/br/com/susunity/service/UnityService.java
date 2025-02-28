@@ -4,7 +4,6 @@ import br.com.susunity.controller.dto.ProfessionalOut;
 import br.com.susunity.controller.dto.UnityInForm;
 import br.com.susunity.controller.dto.UnityDto;
 import br.com.susunity.controller.dto.UnityProfessionalForm;
-import br.com.susunity.model.AddressModel;
 import br.com.susunity.model.ProfissionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
@@ -26,14 +25,15 @@ import java.util.*;
 @Service
 public class UnityService {
     private final UnityRepository unityRepository;
-    private final AddressService addressService;
     private final MessageProducer messageProducer;
     private final SpecialityService specialityService;
     private final ProfissionalService profissionalService;
 
-    public UnityService(UnityRepository unityRepository, AddressService addressService, MessageProducer messageProducer, SpecialityService specialityService, ProfissionalService profissionalService) {
+    public UnityService(UnityRepository unityRepository,
+                        MessageProducer messageProducer,
+                        SpecialityService specialityService,
+                        ProfissionalService profissionalService) {
         this.unityRepository = unityRepository;
-        this.addressService = addressService;
         this.messageProducer = messageProducer;
         this.specialityService = specialityService;
         this.profissionalService = profissionalService;
@@ -41,13 +41,8 @@ public class UnityService {
     @Transactional
     public UnityDto create(UnityInForm unityInForm) {
         Optional<UnityModel> unity = unityRepository.findByname(unityInForm.name());
-        if(unity.isPresent()){
-            return getUnityDto(unity.get());
-        }
-        AddressModel newAddress =  addressService.createAddress(unityInForm.address());
-
-        return  new UnityDto(unityRepository.save(new UnityModel(unityInForm,newAddress)),new ArrayList<>());
-
+        return unity.map(UnityService::getUnityDto)
+                .orElseGet(() -> new UnityDto(unityRepository.save(new UnityModel(unityInForm)), new ArrayList<>()));
     }
 
     public List<UnityDto> findAll() {
@@ -65,8 +60,7 @@ public class UnityService {
     public UnityDto update(UUID id, UnityInForm unityInForm) {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        AddressModel newAddress =  addressService.findAdrress(unityInForm.address());
-        unity.merge(unityInForm,newAddress);
+        unity.merge(unityInForm);
         unity = unityRepository.saveAndFlush(unity);
 
         return getUnityDto(unity);
