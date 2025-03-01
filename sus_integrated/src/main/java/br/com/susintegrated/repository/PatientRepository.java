@@ -1,10 +1,9 @@
 package br.com.susintegrated.repository;
 
-import br.com.susintegrated.model.patient.Patient;
+import br.com.susintegrated.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,7 +11,5 @@ import java.util.UUID;
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
     Optional<Patient> findByDocument(String document);
-
-    List<Patient> findAllByBlockedTrue();
 
 }

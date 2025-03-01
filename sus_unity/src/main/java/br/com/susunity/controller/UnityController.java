@@ -1,11 +1,9 @@
 package br.com.susunity.controller;
 
-import br.com.susunity.controller.dto.UnityInForm;
-import br.com.susunity.controller.dto.UnityDto;
-import br.com.susunity.controller.dto.UnityProfessionalForm;
-import br.com.susunity.queue.producer.MessageProducer;
+import br.com.susunity.controller.dto.unity.UnityInForm;
+import br.com.susunity.controller.dto.unity.UnityDto;
+import br.com.susunity.controller.dto.professional.UnityProfessionalForm;
 import br.com.susunity.service.UnityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +13,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/unity")
 public class UnityController {
-    @Autowired
-    private MessageProducer producer;
 
     private final UnityService unityService;
 
     public UnityController(UnityService unityService) {
         this.unityService = unityService;
     }
-
 
     @PostMapping("/create")
     public ResponseEntity<UnityDto> createUnity(@RequestBody UnityInForm unityInForm) {
@@ -38,7 +33,7 @@ public class UnityController {
     @GetMapping("/find/{id}")
     public ResponseEntity<UnityDto> findUnity(@PathVariable UUID id) {
 
-        return ResponseEntity.ok(unityService.findById(id));
+        return ResponseEntity.ok(unityService.getById(id));
     }
 
     @PostMapping("/update/{id}")

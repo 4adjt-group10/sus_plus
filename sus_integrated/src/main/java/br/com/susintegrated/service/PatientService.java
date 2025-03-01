@@ -2,13 +2,12 @@ package br.com.susintegrated.service;
 
 import br.com.susintegrated.controller.dto.patient.PatientDTO;
 import br.com.susintegrated.controller.dto.patient.PatientFormDTO;
-import br.com.susintegrated.model.address.Address;
-import br.com.susintegrated.model.patient.Patient;
-import br.com.susintegrated.queue.consumer.MessageBodyByScheduling;
+import br.com.susintegrated.model.Patient;
 import br.com.susintegrated.queue.consumer.dto.MessageBodyByPatienteRecord;
-import br.com.susintegrated.queue.producer.MessageBodyForScheduling;
+import br.com.susintegrated.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susintegrated.queue.producer.MessageProducer;
 import br.com.susintegrated.queue.producer.dto.MessageBodyForPatientRecord;
+import br.com.susintegrated.queue.producer.dto.MessageBodyForScheduling;
 import br.com.susintegrated.repository.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -22,21 +21,16 @@ import java.util.UUID;
 public class PatientService {
 
     private final PatientRepository patientRepository;
-    private final AddressService addressService;
     private final MessageProducer messageProducer;
 
-    public PatientService(PatientRepository patientRepository,
-                          AddressService addressService, MessageProducer messageProducer) {
+    public PatientService(PatientRepository patientRepository, MessageProducer messageProducer) {
         this.patientRepository = patientRepository;
-        this.addressService = addressService;
         this.messageProducer = messageProducer;
     }
 
     @Transactional
     public PatientDTO register(PatientFormDTO patientFormDTO) {
         Patient patient = new Patient(patientFormDTO);
-        Address address = addressService.register(patientFormDTO.address());
-//        patient.setAddress(address);
         patientRepository.save(patient);
         return new PatientDTO(patient);
     }
@@ -44,11 +38,7 @@ public class PatientService {
     @Transactional
     public PatientDTO update(UUID id, PatientFormDTO patientFormDTO) {
         Patient patient = findPatientById(id);
-        if(!patient.hasAddess()) {
-            Address address = addressService.register(patientFormDTO.address());
-//            patient.setAddress(address);
-        }
-//        patient.merge(patientFormDTO);
+        patient.merge(patientFormDTO);
         return new PatientDTO(patient);
     }
 

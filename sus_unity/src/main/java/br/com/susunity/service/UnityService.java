@@ -1,21 +1,19 @@
 package br.com.susunity.service;
 
-import br.com.susunity.controller.dto.ProfessionalOut;
-import br.com.susunity.controller.dto.UnityInForm;
-import br.com.susunity.controller.dto.UnityDto;
-import br.com.susunity.controller.dto.UnityProfessionalForm;
-import br.com.susunity.model.AddressModel;
-import br.com.susunity.model.ProfissionalUnityModel;
+import br.com.susunity.controller.dto.professional.ProfessionalOut;
+import br.com.susunity.controller.dto.unity.UnityInForm;
+import br.com.susunity.controller.dto.unity.UnityDto;
+import br.com.susunity.controller.dto.professional.UnityProfessionalForm;
+import br.com.susunity.model.ProfessionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
 import br.com.susunity.queue.consumer.dto.manager.Professional;
 import br.com.susunity.queue.consumer.dto.manager.Speciality;
 import br.com.susunity.queue.consumer.dto.patientrecord.MessageBodyByPatientRecord;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyForUnity;
+import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
 import br.com.susunity.queue.producer.MessageProducer;
-import br.com.susunity.queue.producer.dto.manager.UnityProfessional;
-import br.com.susunity.queue.producer.dto.patientrecord.MessageBodyForPatientRecord;
-import br.com.susunity.queue.producer.dto.scheduler.MessageBodyForScheduler;
+import br.com.susunity.queue.producer.dto.MessageBodyForManager;
+import br.com.susunity.queue.producer.dto.MessageBodyForPatientRecord;
 import br.com.susunity.repository.UnityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -23,31 +21,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static java.util.Objects.nonNull;
+
 @Service
 public class UnityService {
+
     private final UnityRepository unityRepository;
-    private final AddressService addressService;
     private final MessageProducer messageProducer;
     private final SpecialityService specialityService;
-    private final ProfissionalService profissionalService;
+    private final ProfessionalService professionalService;
 
-    public UnityService(UnityRepository unityRepository, AddressService addressService, MessageProducer messageProducer, SpecialityService specialityService, ProfissionalService profissionalService) {
+    public UnityService(UnityRepository unityRepository,
+                        MessageProducer messageProducer,
+                        SpecialityService specialityService,
+                        ProfessionalService professionalService) {
         this.unityRepository = unityRepository;
-        this.addressService = addressService;
         this.messageProducer = messageProducer;
         this.specialityService = specialityService;
-        this.profissionalService = profissionalService;
+        this.professionalService = professionalService;
     }
     @Transactional
     public UnityDto create(UnityInForm unityInForm) {
         Optional<UnityModel> unity = unityRepository.findByname(unityInForm.name());
-        if(unity.isPresent()){
-            return getUnityDto(unity.get());
-        }
-        AddressModel newAddress =  addressService.createAddress(unityInForm.address());
-
-        return  new UnityDto(unityRepository.save(new UnityModel(unityInForm,newAddress)),new ArrayList<>());
-
+        return unity.map(UnityService::getUnityDto)
+                .orElseGet(() -> new UnityDto(unityRepository.save(new UnityModel(unityInForm))));
     }
 
     public List<UnityDto> findAll() {
@@ -57,16 +54,20 @@ public class UnityService {
         return unityDtos;
     }
 
-    public UnityDto findById(UUID id) {
+    public UnityDto getById(UUID id) {
         UnityModel unityModel = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return getUnityDto (unityModel);
     }
+
+    public Optional<UnityModel> findUnityById(UUID id) {
+        return unityRepository.findById(id);
+    }
+
     @Transactional
     public UnityDto update(UUID id, UnityInForm unityInForm) {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        AddressModel newAddress =  addressService.findAdrress(unityInForm.address());
-        unity.merge(unityInForm,newAddress);
+        unity.merge(unityInForm);
         unity = unityRepository.saveAndFlush(unity);
 
         return getUnityDto(unity);
@@ -91,26 +92,25 @@ public class UnityService {
     }
 
     private static UnityDto getUnityDto(UnityModel unity) {
-        if(Objects.nonNull(unity.getProfessional())) {
-            List<ProfissionalUnityModel> professional = unity.getProfessional();
+        if(nonNull(unity.getProfessional())) {
+            List<ProfessionalUnityModel> professional = unity.getProfessional();
             List<ProfessionalOut> professionalOut = new ArrayList<>();
             professional.stream().forEach(professionalUnityModel -> {
                 List<String> especilityes = new ArrayList<>();
                 professionalUnityModel.getSpeciality().forEach(speciality -> especilityes.add(speciality.getName()));
                 professionalOut.add(new ProfessionalOut(professionalUnityModel, especilityes));
-
             });
             return new UnityDto(unity, professionalOut);
         }
-        return new UnityDto(unity, new ArrayList<>());
+        return new UnityDto(unity);
     }
 
 
     public void updateProfessional(Professional messageBody) {
-        if(messageBody.getProfessional()){
+        if(messageBody.isValidProfessional()){
             List<SpecialityModel> specialityModels = findSpeciality(messageBody.getSpeciality());
             UnityModel unityModel = unityRepository.findById(messageBody.getUnityId()).orElseThrow(EntityNotFoundException::new);
-            unityModel.setProfessional(profissionalService.save(messageBody,specialityModels));
+            unityModel.setProfessional(professionalService.save(messageBody,specialityModels));
             unityRepository.save(unityModel);
         }
     }
@@ -121,31 +121,19 @@ public class UnityService {
 
     public void includeProfessional(UnityProfessionalForm unityProfessionalForm) {
         unityRepository.findById(unityProfessionalForm.unityId()).orElseThrow(EntityNotFoundException::new);
-        messageProducer.sendToManager(new UnityProfessional(unityProfessionalForm));
+        messageProducer.sendToManager(new MessageBodyForManager(unityProfessionalForm));
     }
 
     public void excludeProfessional(UnityProfessionalForm unityProfessionalForm) {
         UnityModel unityModel = unityRepository.findById(unityProfessionalForm.unityId()).orElseThrow(EntityNotFoundException::new);
-        Optional<ProfissionalUnityModel> professional = profissionalService.getProfessional(unityProfessionalForm.ProfessionalId());
+        Optional<ProfessionalUnityModel> professional = professionalService.getProfessional(unityProfessionalForm.ProfessionalId());
         if(professional.isPresent()){
             unityModel.remove(professional.get());
             unityRepository.saveAndFlush(unityModel);
         }
     }
 
-    public void getUnityForScheduler(MessageBodyForUnity message) {
-        unityRepository.findById(message.unityId())
-                .ifPresentOrElse(
-                        unityModel -> {
-                            boolean isSpecialityValid = validateEspeciality(unityModel, message);
-                            messageProducer.sendToScheduler(new MessageBodyForScheduler(isSpecialityValid, true, message.schedulingId()));
-                        },
-                        () -> messageProducer.sendToScheduler(new MessageBodyForScheduler(false, false, message.schedulingId()))
-                );
-    }
-
-
-    private boolean validateEspeciality(UnityModel unityModel, MessageBodyForUnity message) {
+    protected boolean validateEspeciality(UnityModel unityModel, MessageBodyByScheduling message) {
         if (unityModel.getProfessional().isEmpty()) {
             return false;
         }
@@ -162,7 +150,7 @@ public class UnityService {
                 .ifPresentOrElse(unityModel -> {
 
                     unityModel.getProfessional().stream()
-                            .filter(professionalModel -> professionalModel.getProfissionalId().equals(message.getProfessionalId()))
+                            .filter(professionalModel -> professionalModel.getProfessionalId().equals(message.getProfessionalId()))
                             .findFirst()
                             .ifPresentOrElse(professionalModel -> {
 
@@ -175,7 +163,7 @@ public class UnityService {
 
                                 messageProducer.sendToPatientRecord(new MessageBodyForPatientRecord(
                                         message.getPatientRecordId(),
-                                        professionalModel.getProfissionalName(),
+                                        professionalModel.getProfessionalName(),
                                         unityModel.getName(),
                                         specialityName,
                                         specialityFound

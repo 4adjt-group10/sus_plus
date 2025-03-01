@@ -2,7 +2,8 @@ package br.com.susmanager.queue.producer;
 
 
 import br.com.susmanager.config.RabbitConfig;
-import br.com.susmanager.queue.producer.dto.Professional;
+import br.com.susmanager.queue.producer.dto.MessageBodyForScheduling;
+import br.com.susmanager.queue.producer.dto.MessageBodyForUnity;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,22 +12,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageProducer {
+    
     private final RabbitTemplate rabbitTemplate;
     private final Jackson2JsonMessageConverter jackson2JsonMessageConverter;
-
-
+    
     public MessageProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
         this.jackson2JsonMessageConverter = new Jackson2JsonMessageConverter();
     }
-    public void sendToUnity(Professional message) {
+
+    private static MessageProperties getProperties() {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_MANAGER_UNITY, rabbitMessage);
+        return messageProperties;
     }
-
-    public void sendToIntegrated(String message) {
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_MANAGER_INTEGRATED, message);
+    
+    public void sendToUnity(MessageBodyForUnity message) {
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_MANAGER_UNITY, rabbitMessage);
     }
 }

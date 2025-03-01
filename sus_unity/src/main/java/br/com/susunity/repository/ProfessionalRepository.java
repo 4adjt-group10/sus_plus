@@ -1,13 +1,14 @@
 package br.com.susunity.repository;
 
-import br.com.susunity.model.ProfissionalUnityModel;
+import br.com.susunity.model.ProfessionalUnityModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ProfessionalRepository  extends JpaRepository<ProfissionalUnityModel, UUID> {
-    Optional<ProfissionalUnityModel> findByProfissionalId(UUID profissionalId);
+public interface ProfessionalRepository  extends JpaRepository<ProfessionalUnityModel, UUID> {
 
-    Optional<ProfissionalUnityModel> findByProfissionalIdAndUnityId(UUID profissionalId, UUID uuid);
+    Optional<ProfessionalUnityModel> findByProfessionalId(UUID profissionalId);
+
+    Optional<ProfessionalUnityModel> findByProfessionalIdAndUnity_id(UUID profissionalId, UUID uuid);
 }
