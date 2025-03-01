@@ -3,7 +3,8 @@ package br.com.susunity.queue.consumer;
 import br.com.susunity.config.RabbitConfig;
 import br.com.susunity.queue.consumer.dto.manager.Professional;
 import br.com.susunity.queue.consumer.dto.patientrecord.MessageBodyByPatientRecord;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyForUnity;
+import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
+import br.com.susunity.service.ProfessionalAvailabilityService;
 import br.com.susunity.service.UnityService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -17,11 +18,15 @@ import java.util.logging.Logger;
 
 @Component
 public class RabbitMQReceiver {
+
     private final UnityService unityService;
+    private final ProfessionalAvailabilityService professionalAvailabilityService;
+
     private final Logger logger = Logger.getLogger(RabbitMQReceiver.class.getName());
 
-    public RabbitMQReceiver(UnityService unityService) {
+    public RabbitMQReceiver(UnityService unityService, ProfessionalAvailabilityService professionalAvailabilityService) {
         this.unityService = unityService;
+        this.professionalAvailabilityService = professionalAvailabilityService;
     }
 
 
@@ -41,12 +46,12 @@ public class RabbitMQReceiver {
     }
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_SCHEDULING_UNITY, ackMode = "MANUAL")
-    public void receiveSchedulingMessage(MessageBodyForUnity message,
+    public void receiveSchedulingMessage(MessageBodyByScheduling message,
                                          Channel channel,
                                          @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         try {
             logger.info(String.format("Received <%s>", message.toString()));
-            unityService.getUnityForScheduler(message);
+            professionalAvailabilityService.validateForScheduling(message);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);

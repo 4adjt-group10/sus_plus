@@ -37,9 +37,6 @@ public class ProfessionalModel {
             inverseJoinColumns = @JoinColumn(name = "speciality_id"))
     private List<SpecialityModel> speciality;
 
-    @OneToMany(mappedBy = "professional",fetch = FetchType.EAGER)
-    private List<ProfessionalAvailabilityModel> availability;
-
     @Deprecated(since = "Only for framework use")
     public ProfessionalModel() {
     }
@@ -49,15 +46,13 @@ public class ProfessionalModel {
                              String document,
                              Address address,
                              ProfessionalType type,
-                             List<SpecialityModel> speciality,
-                             List<ProfessionalAvailabilityModel> availability) {
+                             List<SpecialityModel> speciality) {
         this.id = id;
         this.name = name;
         this.document = document;
         this.address = address;
         this.type = type;
         this.speciality = speciality;
-        this.availability = availability;
     }
 
     public ProfessionalModel(ProfessionalCreateForm form, List<SpecialityModel> specialities) {
@@ -91,10 +86,6 @@ public class ProfessionalModel {
 
     public List<SpecialityModel> getSpeciality() {
         return speciality;
-    }
-
-    public List<ProfessionalAvailabilityModel> getAvailability() {
-        return availability;
     }
 
     public void setAddress(Address address) {

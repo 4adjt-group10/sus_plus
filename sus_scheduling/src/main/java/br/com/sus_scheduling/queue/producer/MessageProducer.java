@@ -1,6 +1,9 @@
 package br.com.sus_scheduling.queue.producer;
 
 import br.com.sus_scheduling.config.RabbitConfig;
+import br.com.sus_scheduling.queue.producer.dto.MessageBodyForIntegrated;
+import br.com.sus_scheduling.queue.producer.dto.MessageBodyForManager;
+import br.com.sus_scheduling.queue.producer.dto.MessageBodyForUnity;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,16 +22,23 @@ public class MessageProducer {
     }
 
     public void sendToUnity(MessageBodyForUnity message) {
-        MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_SCHEDULING_UNITY, rabbitMessage);
     }
 
     public void sendToIntegrated(MessageBodyForIntegrated message) {
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_SCHEDULING_INTEGRATED, rabbitMessage);
+    }
+
+    public void sendToManager(MessageBodyForManager message) {
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_SCHEDULING_MANAGER, rabbitMessage);
+    }
+
+    private static MessageProperties getProperties() {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_SCHEDULING_INTEGRATED, rabbitMessage);
+        return messageProperties;
     }
 }

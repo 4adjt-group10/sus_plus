@@ -1,6 +1,6 @@
 package br.com.susunity.model;
 
-import br.com.susunity.controller.dto.UnityInForm;
+import br.com.susunity.controller.dto.unity.UnityInForm;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -35,7 +35,7 @@ public class UnityModel {
             name = "Unity_Professional",
             joinColumns = @JoinColumn(name = "unity_id"),
             inverseJoinColumns = @JoinColumn(name = "professional_id"))
-    private List<ProfissionalUnityModel> professional;
+    private List<ProfessionalUnityModel> professional;
 
     @Deprecated(since = "Only for use of frameworks")
     public UnityModel() {
@@ -46,7 +46,7 @@ public class UnityModel {
                       Address address,
                       Integer numberOfPatients,
                       Integer numberOfTotalPatients,
-                      List<ProfissionalUnityModel> professional) {
+                      List<ProfessionalUnityModel> professional) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -81,7 +81,7 @@ public class UnityModel {
         return numberOfTotalPatients;
     }
 
-    public List<ProfissionalUnityModel> getProfessional() {
+    public List<ProfessionalUnityModel> getProfessional() {
         return professional;
     }
 
@@ -103,11 +103,11 @@ public class UnityModel {
         this.numberOfTotalPatients = unityInForm.numberOfToTalPatients();
     }
 
-    public void setProfessional(ProfissionalUnityModel messageBody) {
+    public void setProfessional(ProfessionalUnityModel messageBody) {
         if(Objects.isNull(professional) || professional.isEmpty()) {
             professional = new ArrayList<>();
             professional.add(messageBody);
-        } else if(!validateProfessional(messageBody.getProfissionalId())) {
+        } else if(!validateProfessional(messageBody.getProfessionalId())) {
             professional.add(messageBody);
         }
     }
@@ -115,10 +115,10 @@ public class UnityModel {
     public boolean validateProfessional(UUID professionalId) {
         return this.professional
                 .stream()
-                .anyMatch(p -> p.getProfissionalId().equals(professionalId));
+                .anyMatch(p -> p.getProfessionalId().equals(professionalId));
     }
 
-    public void remove(ProfissionalUnityModel profissionalUnityModel) {
-        professional.remove(profissionalUnityModel);
+    public void remove(ProfessionalUnityModel professionalUnityModel) {
+        professional.remove(professionalUnityModel);
     }
 }

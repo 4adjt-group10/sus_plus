@@ -44,6 +44,7 @@ public class Scheduling {
         this.patientId = formDTO.patientId();
         this.specialityId = formDTO.specialityId();
         this.unityId = formDTO.unityId();
+        this.professionalId = formDTO.professionalId();
         this.appointment = formDTO.appointment();
         this.status = UNDER_ANALYSIS;
     }

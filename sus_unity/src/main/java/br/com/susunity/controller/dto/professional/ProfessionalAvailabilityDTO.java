@@ -1,6 +1,6 @@
-package br.com.susmanager.controller.dto.professional;
+package br.com.susunity.controller.dto.professional;
 
-import br.com.susmanager.model.ProfessionalAvailabilityModel;
+import br.com.susunity.model.ProfessionalAvailabilityModel;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

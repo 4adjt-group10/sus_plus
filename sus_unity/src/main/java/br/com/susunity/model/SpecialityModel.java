@@ -15,18 +15,18 @@ public class SpecialityModel {
     @Column(unique = true)
     private String name;
     @ManyToMany(mappedBy = "speciality",fetch = FetchType.EAGER)
-    private List<ProfissionalUnityModel> professionals;
+    private List<ProfessionalUnityModel> professionals;
 
     public SpecialityModel() {
     }
 
-    public SpecialityModel(UUID id, String name, List<ProfissionalUnityModel> professionals) {
+    public SpecialityModel(UUID id, String name, List<ProfessionalUnityModel> professionals) {
         this.id = id;
         this.name = name;
         this.professionals = professionals;
     }
 
-    public SpecialityModel(String name, List<ProfissionalUnityModel> professionals) {
+    public SpecialityModel(String name, List<ProfessionalUnityModel> professionals) {
         this.name = name;
         this.professionals = professionals;
     }
@@ -44,7 +44,7 @@ public class SpecialityModel {
         return name;
     }
 
-    public List<ProfissionalUnityModel> getProfessionals() {
+    public List<ProfessionalUnityModel> getProfessionals() {
         return professionals;
     }
 }

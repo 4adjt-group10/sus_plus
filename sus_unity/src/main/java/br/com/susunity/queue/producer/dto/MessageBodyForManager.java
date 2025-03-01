@@ -1,6 +1,6 @@
 package br.com.susunity.queue.producer.dto;
 
-import br.com.susunity.controller.dto.UnityProfessionalForm;
+import br.com.susunity.controller.dto.professional.UnityProfessionalForm;
 
 import java.io.Serializable;
 import java.util.UUID;

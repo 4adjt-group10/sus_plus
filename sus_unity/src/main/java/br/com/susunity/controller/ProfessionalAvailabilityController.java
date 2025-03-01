@@ -1,8 +1,8 @@
-package br.com.susmanager.controller;
+package br.com.susunity.controller;
 
-import br.com.susmanager.controller.dto.professional.ProfessionalAvailabilityDTO;
-import br.com.susmanager.controller.dto.professional.ProfessionalAvailabilityFormDTO;
-import br.com.susmanager.service.ProfessionalAvailabilityService;
+import br.com.susunity.controller.dto.professional.ProfessionalAvailabilityDTO;
+import br.com.susunity.controller.dto.professional.ProfessionalAvailabilityFormDTO;
+import br.com.susunity.service.ProfessionalAvailabilityService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

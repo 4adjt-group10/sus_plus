@@ -1,5 +1,6 @@
-package br.com.susunity.controller.dto;
+package br.com.susunity.controller.dto.unity;
 
+import br.com.susunity.controller.dto.professional.ProfessionalOut;
 import br.com.susunity.model.Address;
 import br.com.susunity.model.UnityModel;
 

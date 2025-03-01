@@ -1,6 +1,6 @@
-package br.com.susmanager.model;
+package br.com.susunity.model;
 
-import br.com.susmanager.controller.dto.professional.ProfessionalAvailabilityFormDTO;
+import br.com.susunity.controller.dto.professional.ProfessionalAvailabilityFormDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,11 +17,11 @@ public class ProfessionalAvailabilityModel {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "professional_id")
-    private ProfessionalModel professional;
+    private ProfessionalUnityModel professional;
 
     private LocalDateTime availableTime;
 
-    public ProfessionalAvailabilityModel(ProfessionalModel professional, LocalDateTime availableTime) {
+    public ProfessionalAvailabilityModel(ProfessionalUnityModel professional, LocalDateTime availableTime) {
         this.id = UUID.randomUUID();
         this.professional = professional;
         this.availableTime = availableTime;
@@ -35,7 +35,7 @@ public class ProfessionalAvailabilityModel {
         return id;
     }
 
-    public ProfessionalModel getProfessional() {
+    public ProfessionalUnityModel getProfessional() {
         return professional;
     }
 
@@ -44,7 +44,7 @@ public class ProfessionalAvailabilityModel {
     }
 
     public String getProfessionalName() {
-        return professional.getName();
+        return professional.getProfessionalName();
     }
 
     public void merge(ProfessionalAvailabilityFormDTO formDTO) {

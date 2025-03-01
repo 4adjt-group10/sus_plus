@@ -9,7 +9,6 @@ import br.com.susmanager.model.Address;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,9 +22,7 @@ public class ProfessionalHelper {
         List<SpecialityModel> specialities = new ArrayList<>();
         SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
         specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456",  addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456",  addressForm, ProfessionalType.DOCTOR, specialityIds);
         ProfessionalModel professional = new ProfessionalModel(form, null);
 
         return professional;
@@ -39,9 +36,7 @@ public class ProfessionalHelper {
         List<SpecialityModel> specialities = new ArrayList<>();
         SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
         specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
-        ProfessionalManagerOut professional = new ProfessionalManagerOut(new ProfessionalModel(new ProfessionalCreateForm("Name", "123", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities), null));
+        ProfessionalManagerOut professional = new ProfessionalManagerOut(new ProfessionalModel(new ProfessionalCreateForm("Name", "123", addressForm, ProfessionalType.DOCTOR, specialityIds), null));
 
         return professional;
     }
@@ -53,9 +48,7 @@ public class ProfessionalHelper {
         List<SpecialityModel> specialities = new ArrayList<>();
         SpecialityModel speciality = new SpecialityModel(new SpecialityForm("Cardiology", new ArrayList<>()), new ArrayList<>());
         specialities.add(speciality);
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        availabilities.add(LocalDateTime.now());
 
-        return new ProfessionalCreateForm(name, document,  addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        return new ProfessionalCreateForm(name, document,  addressForm, ProfessionalType.DOCTOR, specialityIds);
     }
 }

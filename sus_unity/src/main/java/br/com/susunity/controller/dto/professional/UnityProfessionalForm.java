@@ -1,4 +1,4 @@
-package br.com.susunity.controller.dto;
+package br.com.susunity.controller.dto.professional;
 
 
 import java.util.UUID;

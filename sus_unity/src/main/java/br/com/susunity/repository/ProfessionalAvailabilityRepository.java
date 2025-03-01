@@ -1,6 +1,6 @@
-package br.com.susmanager.repository;
+package br.com.susunity.repository;
 
-import br.com.susmanager.model.ProfessionalAvailabilityModel;
+import br.com.susunity.model.ProfessionalAvailabilityModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,5 +36,5 @@ public interface ProfessionalAvailabilityRepository extends JpaRepository<Profes
 
     Optional<ProfessionalAvailabilityModel> findByProfessionalIdAndAvailableTime(UUID professionalId, LocalDateTime date);
 
-//    List<ProfessionalAvailabilityModel> findAllByProfessional_Procedures_id(UUID procedureId);
+    List<ProfessionalAvailabilityModel> findAllByProfessional_Speciality_id(UUID specialityId);
 }

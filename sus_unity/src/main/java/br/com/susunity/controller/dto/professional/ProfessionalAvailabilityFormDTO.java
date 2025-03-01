@@ -1,4 +1,4 @@
-package br.com.susmanager.controller.dto.professional;
+package br.com.susunity.controller.dto.professional;
 
 import jakarta.validation.constraints.NotNull;
 

@@ -1,6 +1,6 @@
 package br.com.susunity.model;
 
-import br.com.susunity.controller.dto.AddressFormDTO;
+import br.com.susunity.controller.dto.unity.AddressFormDTO;
 
 public class Address {
 
