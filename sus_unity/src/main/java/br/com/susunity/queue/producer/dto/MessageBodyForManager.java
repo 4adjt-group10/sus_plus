@@ -1,34 +1,35 @@
-package br.com.susunity.queue.producer.dto.manager;
+package br.com.susunity.queue.producer.dto;
 
 import br.com.susunity.controller.dto.UnityProfessionalForm;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-public class UnityProfessional implements Serializable {
+public class MessageBodyForManager implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    private UUID ProfessionalId;
+    private UUID professionalId;
     private UUID unityId;
 
-    public UnityProfessional(UUID professionalId, UUID unityId) {
-        ProfessionalId = professionalId;
+    public MessageBodyForManager(UUID professionalId, UUID unityId) {
+        this.professionalId = professionalId;
         this.unityId = unityId;
     }
 
-    public UnityProfessional() {
+    public MessageBodyForManager() {
     }
 
-    public UnityProfessional(UnityProfessionalForm unityProfessionalForm) {
-        this.ProfessionalId = unityProfessionalForm.ProfessionalId();
+    public MessageBodyForManager(UnityProfessionalForm unityProfessionalForm) {
+        this.professionalId = unityProfessionalForm.ProfessionalId();
         this.unityId = unityProfessionalForm.unityId();
     }
 
     public UUID getProfessionalId() {
-        return ProfessionalId;
+        return professionalId;
     }
 
     public void setProfessionalId(UUID professionalId) {
-        ProfessionalId = professionalId;
+        this.professionalId = professionalId;
     }
 
     public UUID getUnityId() {

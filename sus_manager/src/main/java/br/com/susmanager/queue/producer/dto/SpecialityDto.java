@@ -12,14 +12,14 @@ import java.util.UUID;
         "id",
         "name"
 })
-public class Speciality implements Serializable {
+public class SpecialityDto implements Serializable {
 
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("name")
     private String name;
 
-    public Speciality(SpecialityModel specialityModel) {
+    public SpecialityDto(SpecialityModel specialityModel) {
         this.id = specialityModel.getId();
         this.name = specialityModel.getName();
     }
