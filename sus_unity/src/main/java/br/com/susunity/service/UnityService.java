@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static java.util.Objects.nonNull;
+
 @Service
 public class UnityService {
     private final UnityRepository unityRepository;
@@ -42,7 +44,7 @@ public class UnityService {
     public UnityDto create(UnityInForm unityInForm) {
         Optional<UnityModel> unity = unityRepository.findByname(unityInForm.name());
         return unity.map(UnityService::getUnityDto)
-                .orElseGet(() -> new UnityDto(unityRepository.save(new UnityModel(unityInForm)), new ArrayList<>()));
+                .orElseGet(() -> new UnityDto(unityRepository.save(new UnityModel(unityInForm))));
     }
 
     public List<UnityDto> findAll() {
@@ -85,23 +87,22 @@ public class UnityService {
     }
 
     private static UnityDto getUnityDto(UnityModel unity) {
-        if(Objects.nonNull(unity.getProfessional())) {
+        if(nonNull(unity.getProfessional())) {
             List<ProfissionalUnityModel> professional = unity.getProfessional();
             List<ProfessionalOut> professionalOut = new ArrayList<>();
             professional.stream().forEach(professionalUnityModel -> {
                 List<String> especilityes = new ArrayList<>();
                 professionalUnityModel.getSpeciality().forEach(speciality -> especilityes.add(speciality.getName()));
                 professionalOut.add(new ProfessionalOut(professionalUnityModel, especilityes));
-
             });
             return new UnityDto(unity, professionalOut);
         }
-        return new UnityDto(unity, new ArrayList<>());
+        return new UnityDto(unity);
     }
 
 
     public void updateProfessional(Professional messageBody) {
-        if(messageBody.getProfessional()){
+        if(messageBody.isValidProfessional()){
             List<SpecialityModel> specialityModels = findSpeciality(messageBody.getSpeciality());
             UnityModel unityModel = unityRepository.findById(messageBody.getUnityId()).orElseThrow(EntityNotFoundException::new);
             unityModel.setProfessional(profissionalService.save(messageBody,specialityModels));

@@ -2,7 +2,7 @@ package br.com.susintegrated.service;
 
 import br.com.susintegrated.controller.dto.patient.PatientDTO;
 import br.com.susintegrated.controller.dto.patient.PatientFormDTO;
-import br.com.susintegrated.model.patient.Patient;
+import br.com.susintegrated.model.Patient;
 import br.com.susintegrated.queue.consumer.dto.MessageBodyByPatienteRecord;
 import br.com.susintegrated.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susintegrated.queue.producer.MessageProducer;
