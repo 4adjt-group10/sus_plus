@@ -1,4 +1,4 @@
-package br.com.sus_scheduling.queue.consumer;
+package br.com.sus_scheduling.queue.consumer.dto;
 
 import java.util.UUID;
 

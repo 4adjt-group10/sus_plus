@@ -1,4 +1,4 @@
-package br.com.sus_scheduling.queue.producer;
+package br.com.sus_scheduling.queue.producer.dto;
 
 import br.com.sus_scheduling.controller.dto.scheduling.SchedulingFormDTO;
 import jakarta.validation.constraints.NotNull;

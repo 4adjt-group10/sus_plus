@@ -1,21 +1,23 @@
-package br.com.susmanager.queue.consumer.dto.unity;
+package br.com.susmanager.queue.consumer.dto;
 
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class UnityProfessional implements Serializable {
+public class MessageBodyByUnity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private UUID ProfessionalId;
     private UUID unityId;
 
-    public UnityProfessional(UUID professionalId, UUID unityId) {
+    public MessageBodyByUnity(UUID professionalId, UUID unityId) {
         ProfessionalId = professionalId;
         this.unityId = unityId;
     }
 
-    public UnityProfessional() {
+    public MessageBodyByUnity() {
     }
 
     public UUID getProfessionalId() {

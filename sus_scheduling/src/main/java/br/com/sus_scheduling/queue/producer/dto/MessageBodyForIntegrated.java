@@ -1,4 +1,4 @@
-package br.com.sus_scheduling.queue.producer;
+package br.com.sus_scheduling.queue.producer.dto;
 
 import java.io.Serializable;
 import java.util.UUID;

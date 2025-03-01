@@ -1,4 +1,4 @@
-package br.com.susunity.queue.producer.dto.patientrecord;
+package br.com.susunity.queue.producer.dto;
 
 import java.io.Serializable;
 import java.util.UUID;
