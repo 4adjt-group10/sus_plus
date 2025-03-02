@@ -9,8 +9,8 @@ import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
 import br.com.susunity.queue.consumer.dto.manager.Professional;
 import br.com.susunity.queue.consumer.dto.manager.Speciality;
-import br.com.susunity.queue.consumer.dto.patientrecord.MessageBodyByPatientRecord;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
+import br.com.susunity.queue.consumer.dto.MessageBodyByPatientRecord;
+import br.com.susunity.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.queue.producer.dto.MessageBodyForManager;
 import br.com.susunity.queue.producer.dto.MessageBodyForPatientRecord;
@@ -148,7 +148,6 @@ public class UnityService {
     public void getUnityForPatientRecord(MessageBodyByPatientRecord message) {
         unityRepository.findById(message.getUnityId())
                 .ifPresentOrElse(unityModel -> {
-
                     unityModel.getProfessional().stream()
                             .filter(professionalModel -> professionalModel.getProfessionalId().equals(message.getProfessionalId()))
                             .findFirst()

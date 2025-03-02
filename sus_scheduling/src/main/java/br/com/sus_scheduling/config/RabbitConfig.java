@@ -21,8 +21,6 @@ public class RabbitConfig {
     public static final String QUEUE_NAME_SCHEDULING_INTEGRATED = "SchedulingIntegratedQueue";
     public static final String ROUTING_KEY_SCHEDULING_INTEGRATED = "routing.key.scheduling_integrated";
 
-    public static final String QUEUE_NAME_SCHEDULING_MANAGER = "SchedulingManagerQueue";
-    public static final String ROUTING_KEY_SCHEDULING_MANAGER = "routing.key.scheduling_manager";
 
     //consumer
     public static final String QUEUE_NAME_UNITY_SCHEDULING = "UnitySchedulingQueue";
@@ -30,9 +28,6 @@ public class RabbitConfig {
 
     public static final String QUEUE_NAME_INTEGRATED_SCHEDULING = "IntegratedSchedulingQueue";
     public static final String ROUTING_KEY_INTEGRATED_SCHEDULING = "routing.key.integrated_scheduling";
-
-    public static final String QUEUE_NAME_MANAGER_SCHEDULING = "ManagerSchedulingQueue";
-    public static final String ROUTING_KEY_MANAGER_SCHEDULING = "routing.key.manager_scheduling";
 
     public static final String EXCHANGE_NAME = "OrderExchange";
 
@@ -78,16 +73,6 @@ public class RabbitConfig {
         return BindingBuilder.bind(queueSchedulingIntegrated).to(exchange).with(ROUTING_KEY_SCHEDULING_INTEGRATED);
     }
 
-    @Bean
-    public Queue queueSchedulingManager() {
-        return new Queue(QUEUE_NAME_SCHEDULING_MANAGER, true);
-    }
-
-    @Bean
-    public Binding bindingSchedulingManager(Queue queueSchedulingManager, TopicExchange exchange) {
-        return BindingBuilder.bind(queueSchedulingManager).to(exchange).with(ROUTING_KEY_SCHEDULING_MANAGER);
-    }
-
     //consumer
     @Bean
     public Queue queueUnityScheduling() {
@@ -107,15 +92,5 @@ public class RabbitConfig {
     @Bean
     public Binding bindingIntegratedScheduling(Queue queueIntegratedScheduling, TopicExchange exchange) {
         return BindingBuilder.bind(queueIntegratedScheduling).to(exchange).with(ROUTING_KEY_INTEGRATED_SCHEDULING);
-    }
-
-    @Bean
-    public Queue queueManagerScheduling() {
-        return new Queue(QUEUE_NAME_MANAGER_SCHEDULING, true);
-    }
-
-    @Bean
-    public Binding bindingManagerScheduling(Queue queueManagerScheduling, TopicExchange exchange) {
-        return BindingBuilder.bind(queueManagerScheduling).to(exchange).with(ROUTING_KEY_MANAGER_SCHEDULING);
     }
 }

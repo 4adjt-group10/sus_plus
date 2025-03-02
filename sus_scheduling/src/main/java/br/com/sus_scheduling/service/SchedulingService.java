@@ -25,7 +25,6 @@ import static br.com.sus_scheduling.model.SchedulingStatus.*;
 @Service
 public class SchedulingService {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(SchedulingService.class);
     private final SchedulingRepository schedulingRepository;
     private final MessageProducer messageProducer;
 
@@ -64,17 +63,6 @@ public class SchedulingService {
     public void postValidateUnity(MessageBodyByUnity message) {
         Scheduling scheduling = findById(message.schedulingId());
         if (message.isValidated()) {
-            scheduling.approve();
-            schedulingRepository.save(scheduling);
-        } else {
-            cancelScheduling(message.schedulingId());
-            logger.info("Sending email to external service for scheduling: " + message.schedulingId());
-        }
-    }
-
-    public void postValidateManager(MessageBodyByManager message) {
-        Scheduling scheduling = findById(message.schedulingId());
-        if (message.isValidAppointment()) {
             scheduling.approve();
             schedulingRepository.save(scheduling);
         } else {

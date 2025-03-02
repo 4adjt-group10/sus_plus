@@ -2,8 +2,8 @@ package br.com.susunity.queue.consumer;
 
 import br.com.susunity.config.RabbitConfig;
 import br.com.susunity.queue.consumer.dto.manager.Professional;
-import br.com.susunity.queue.consumer.dto.patientrecord.MessageBodyByPatientRecord;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
+import br.com.susunity.queue.consumer.dto.MessageBodyByPatientRecord;
+import br.com.susunity.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susunity.service.ProfessionalAvailabilityService;
 import br.com.susunity.service.UnityService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
