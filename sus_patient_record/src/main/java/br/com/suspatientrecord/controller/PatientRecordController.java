@@ -2,10 +2,7 @@ package br.com.suspatientrecord.controller;
 
 import br.com.suspatientrecord.controller.dto.PatientRecordFormDTO;
 import br.com.suspatientrecord.controller.dto.PatientRecordOutDTO;
-import br.com.suspatientrecord.model.PatientRecordModel;
 import br.com.suspatientrecord.service.PatientRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
