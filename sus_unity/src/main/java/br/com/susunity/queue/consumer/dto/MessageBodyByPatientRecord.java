@@ -1,4 +1,4 @@
-package br.com.susunity.queue.consumer.dto.patientrecord;
+package br.com.susunity.queue.consumer.dto;
 
 import java.util.UUID;
 
