@@ -1,5 +1,6 @@
 package br.com.susmanager.service;
 
+import br.com.susmanager.controller.dto.professional.ProfessionalAlterForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalManagerOut;
 import br.com.susmanager.exception.DoctorException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,7 +46,7 @@ public class ProfessionalManagerService {
     }
 
     public ProfessionalManagerOut findByDocument(String document) {
-         var profissional = professionalRepository.findByDocument(document)
+        var profissional = professionalRepository.findByDocument(document)
                 .orElseThrow(() -> new EntityNotFoundException("Professional not found"));
         return new ProfessionalManagerOut(profissional);
     }
@@ -69,11 +71,9 @@ public class ProfessionalManagerService {
     }
 
     @Transactional
-    public ProfessionalManagerOut update(UUID id, ProfessionalCreateForm professionalFormDTO) {
-        List<SpecialityModel> procedures = specialityRepository.findAllById(professionalFormDTO.specialityIds());
+    public ProfessionalManagerOut update(UUID id, ProfessionalAlterForm professionalFormDTO) {
         ProfessionalModel professional = findProfessionalById(id);
-        professional.merge(professionalFormDTO, procedures);
-        procedures.forEach(procedure -> procedure.addProfessional(professional));
+        professional.merge(professionalFormDTO);
         professionalRepository.save(professional);
         return new ProfessionalManagerOut(professional);
     }
@@ -91,6 +91,26 @@ public class ProfessionalManagerService {
         }catch (Exception e){
             MessageBodyForUnity messageBodyForUnity = new MessageBodyForUnity(messageBody.getUnityId());
             messageProducer.sendToUnity(messageBodyForUnity);
+        }
+    }
+    @Transactional
+    public void includeSpeciality(UUID professionalId, UUID idSpeciality) {
+        Optional<SpecialityModel> specialities = this.specialityRepository.findById(idSpeciality);
+        if(specialities.isPresent()){
+            ProfessionalModel professional = findProfessionalById(professionalId);
+            specialities.get().addProfessional(professional);
+            professional.addSpeciality(specialities.get());
+            professionalRepository.save(professional);
+        }
+    }
+
+    public void excludSpeciality(UUID professionalId, UUID idSpeciality) {
+        Optional<SpecialityModel> specialities = this.specialityRepository.findById(idSpeciality);
+        if(specialities.isPresent()){
+            ProfessionalModel professional = findProfessionalById(professionalId);
+            specialities.get().addProfessional(professional);
+            professional.removeSpeciality(specialities.get());
+            professionalRepository.save(professional);
         }
     }
 }

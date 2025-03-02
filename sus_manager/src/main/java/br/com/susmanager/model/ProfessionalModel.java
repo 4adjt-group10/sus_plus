@@ -1,5 +1,6 @@
 package br.com.susmanager.model;
 
+import br.com.susmanager.controller.dto.professional.ProfessionalAlterForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import jakarta.persistence.*;
@@ -92,12 +93,11 @@ public class ProfessionalModel {
         this.address = address;
     }
 
-    public void merge(ProfessionalCreateForm professionalFormDTO, List<SpecialityModel> specialties) {
+    public void merge(ProfessionalAlterForm professionalFormDTO) {
         this.name = professionalFormDTO.name();
         this.document = professionalFormDTO.document();
         this.type = professionalFormDTO.type();
         this.address.merge(professionalFormDTO.address());
-        updateSpeciality(specialties);
     }
 
     private void updateSpeciality(List<SpecialityModel> specialties) {
@@ -118,5 +118,9 @@ public class ProfessionalModel {
 
     public void addSpeciality(SpecialityModel speciality) {
         this.speciality.add(speciality);
+    }
+
+    public void removeSpeciality(SpecialityModel speciality) {
+        this.speciality.remove(speciality);
     }
 }
