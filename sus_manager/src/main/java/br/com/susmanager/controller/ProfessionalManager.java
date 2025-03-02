@@ -1,10 +1,10 @@
 package br.com.susmanager.controller;
 
+import br.com.susmanager.controller.dto.professional.ProfessionalAlterForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalCreateForm;
 import br.com.susmanager.controller.dto.professional.ProfessionalManagerOut;
 import br.com.susmanager.queue.producer.MessageProducer;
 import br.com.susmanager.service.ProfessionalManagerService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +38,23 @@ public class ProfessionalManager {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ProfessionalManagerOut> create(@RequestBody @Valid ProfessionalCreateForm form) {
+    public ResponseEntity<ProfessionalManagerOut> create(@RequestBody ProfessionalCreateForm form) {
         return ResponseEntity.status(CREATED).body(professionalManagerService.register(form));
     }
 
     @PutMapping("/alter/{professionalId}")
-    public void alter(@PathVariable UUID professionalId, @RequestBody ProfessionalCreateForm form) {
+    public void alter(@PathVariable UUID professionalId, @RequestBody ProfessionalAlterForm form) {
         professionalManagerService.update(professionalId,form);
+    }
+
+    @PutMapping("/include-speciality/{professionalId}/{idSpeciality}")
+    public void include(@PathVariable UUID professionalId, @PathVariable UUID idSpeciality) {
+        professionalManagerService.includeSpeciality(professionalId,idSpeciality);
+    }
+
+    @PutMapping("/exclude-speciality/{professionalId}/{idSpeciality}")
+    public void exclude(@PathVariable UUID professionalId, @PathVariable UUID idSpeciality) {
+        professionalManagerService.excludSpeciality(professionalId,idSpeciality);
     }
 
     @DeleteMapping("/delete/{professionalId}")
