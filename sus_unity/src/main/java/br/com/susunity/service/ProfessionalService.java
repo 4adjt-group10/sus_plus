@@ -2,7 +2,7 @@ package br.com.susunity.service;
 
 import br.com.susunity.model.ProfessionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
-import br.com.susunity.queue.consumer.dto.manager.Professional;
+import br.com.susunity.queue.consumer.dto.manager.MessageBodyByManager;
 import br.com.susunity.repository.ProfessionalRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ public class ProfessionalService {
     }
 
     @Transactional
-    public ProfessionalUnityModel save(Professional messageBody, List<SpecialityModel> specialityModels) {
-        Optional<ProfessionalUnityModel> byProfissionalId = professionalRepository.findByProfessionalId(messageBody.getProfissionalId());
+    public ProfessionalUnityModel save(MessageBodyByManager messageBody, List<SpecialityModel> specialityModels) {
+        Optional<ProfessionalUnityModel> byProfissionalId = professionalRepository.findByProfessionalId(messageBody.professionalId());
         if(!byProfissionalId.isPresent()){
             ProfessionalUnityModel professionalUnityModel = new ProfessionalUnityModel(messageBody);
             professionalRepository.save(professionalUnityModel);

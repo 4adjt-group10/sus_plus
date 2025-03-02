@@ -1,7 +1,5 @@
 package br.com.susmanager.queue.producer.dto;
 
-
-
 import br.com.susmanager.controller.dto.professional.ProfessionalType;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
@@ -12,21 +10,27 @@ import java.util.List;
 import java.util.UUID;
 
 public class MessageBodyForUnity implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
-    private UUID profissionalId;
-    private String profissionalName;
+    private UUID professionalId;
+    private String professionalName;
     private ProfessionalType type;
-    private List<SpecialityDto> specialityDto;
-    private boolean isProfessional;
+    private List<SpecialityDto> speciality;
+    private boolean professionalValidated;
     private UUID unityId;
 
-    public MessageBodyForUnity(UUID profissionalId, String profissionalName, ProfessionalType type, List<SpecialityDto> specialityDto, boolean isProfessional, UUID unityId) {
-        this.profissionalId = profissionalId;
-        this.profissionalName = profissionalName;
+    public MessageBodyForUnity(UUID professionalId,
+                               String professionalName,
+                               ProfessionalType type,
+                               List<SpecialityDto> speciality,
+                               boolean professionalValidated,
+                               UUID unityId) {
+        this.professionalId = professionalId;
+        this.professionalName = professionalName;
         this.type = type;
-        this.specialityDto = specialityDto;
-        this.isProfessional = isProfessional;
+        this.speciality = speciality;
+        this.professionalValidated = professionalValidated;
         this.unityId = unityId;
     }
 
@@ -34,16 +38,16 @@ public class MessageBodyForUnity implements Serializable {
     }
 
     public MessageBodyForUnity(ProfessionalModel professionalModel, UUID idUnity) {
-        this.profissionalId = professionalModel.getId();
-        this.profissionalName = professionalModel.getName();
+        this.professionalId = professionalModel.getId();
+        this.professionalName = professionalModel.getName();
         this.type = professionalModel.getType();
-        this.specialityDto = getEspeciality(professionalModel.getSpeciality());
-        isProfessional = true;
+        this.speciality = getEspeciality(professionalModel.getSpeciality());
+        professionalValidated = true;
         unityId = idUnity;
     }
 
     public MessageBodyForUnity(UUID idUnity) {
-        isProfessional = false;
+        professionalValidated = false;
         unityId = idUnity;
     }
 
@@ -56,12 +60,12 @@ public class MessageBodyForUnity implements Serializable {
         return especialityList;
     }
 
-    public UUID getProfissionalId() {
-        return profissionalId;
+    public UUID getProfessionalId() {
+        return professionalId;
     }
 
-    public String getProfissionalName() {
-        return profissionalName;
+    public String getProfessionalName() {
+        return professionalName;
     }
 
     public ProfessionalType getType() {
@@ -69,11 +73,11 @@ public class MessageBodyForUnity implements Serializable {
     }
 
     public List<SpecialityDto> getSpeciality() {
-        return specialityDto;
+        return speciality;
     }
 
-    public Boolean getProfessional() {
-        return isProfessional;
+    public Boolean getProfessionalValidated() {
+        return professionalValidated;
     }
 
     public UUID getUnityId() {

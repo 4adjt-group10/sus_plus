@@ -7,10 +7,10 @@ import br.com.susunity.controller.dto.professional.UnityProfessionalForm;
 import br.com.susunity.model.ProfessionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
-import br.com.susunity.queue.consumer.dto.manager.Professional;
+import br.com.susunity.queue.consumer.dto.manager.MessageBodyByManager;
 import br.com.susunity.queue.consumer.dto.manager.Speciality;
-import br.com.susunity.queue.consumer.dto.patientrecord.MessageBodyByPatientRecord;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
+import br.com.susunity.queue.consumer.dto.MessageBodyByPatientRecord;
+import br.com.susunity.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.queue.producer.dto.MessageBodyForManager;
 import br.com.susunity.queue.producer.dto.MessageBodyForPatientRecord;
@@ -79,14 +79,14 @@ public class UnityService {
 
     public UnityDto updateInQuantity(UUID id, Integer quantity) {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        unity.inPatiente(quantity);
+        unity.inPatient(quantity);
         unity=  unityRepository.save(unity);
         return getUnityDto(unity);
     }
 
     public UnityDto updateOutQuantity(UUID id, Integer quantity) {
         UnityModel unity = unityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        unity.outPatiente(quantity);
+        unity.outPatient(quantity);
         unity = unityRepository.save(unity);
         return getUnityDto(unity);
     }
@@ -106,10 +106,10 @@ public class UnityService {
     }
 
 
-    public void updateProfessional(Professional messageBody) {
-        if(messageBody.isValidProfessional()){
-            List<SpecialityModel> specialityModels = findSpeciality(messageBody.getSpeciality());
-            UnityModel unityModel = unityRepository.findById(messageBody.getUnityId()).orElseThrow(EntityNotFoundException::new);
+    public void updateProfessional(MessageBodyByManager messageBody) {
+        if(messageBody.professionalValidated()){
+            List<SpecialityModel> specialityModels = findSpeciality(messageBody.speciality());
+            UnityModel unityModel = unityRepository.findById(messageBody.unityId()).orElseThrow(EntityNotFoundException::new);
             unityModel.setProfessional(professionalService.save(messageBody,specialityModels));
             unityRepository.save(unityModel);
         }
@@ -148,7 +148,6 @@ public class UnityService {
     public void getUnityForPatientRecord(MessageBodyByPatientRecord message) {
         unityRepository.findById(message.getUnityId())
                 .ifPresentOrElse(unityModel -> {
-
                     unityModel.getProfessional().stream()
                             .filter(professionalModel -> professionalModel.getProfessionalId().equals(message.getProfessionalId()))
                             .findFirst()
