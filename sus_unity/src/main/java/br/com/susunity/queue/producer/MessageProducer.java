@@ -28,7 +28,7 @@ public class MessageProducer {
         rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_UNITY_MANAGER, rabbitMessage);
     }
 
-    public void sendToScheduler(MessageBodyForScheduler message) {
+    public void sendToScheduling(MessageBodyForScheduler message) {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
         Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);

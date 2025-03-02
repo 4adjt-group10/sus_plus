@@ -4,7 +4,7 @@ import br.com.susunity.controller.dto.professional.ProfessionalAvailabilityDTO;
 import br.com.susunity.controller.dto.professional.ProfessionalAvailabilityFormDTO;
 import br.com.susunity.model.ProfessionalAvailabilityModel;
 import br.com.susunity.model.ProfessionalUnityModel;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
+import br.com.susunity.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.queue.producer.dto.MessageBodyForScheduler;
 import br.com.susunity.repository.ProfessionalAvailabilityRepository;
@@ -96,13 +96,13 @@ public class ProfessionalAvailabilityService {
                                     .map(professional -> professional.validateAppointment(message.appointment()))
                                     .orElse(false);
 
-                            messageProducer.sendToScheduler(new MessageBodyForScheduler(isSpecialityValid,
+                            messageProducer.sendToScheduling(new MessageBodyForScheduler(isSpecialityValid,
                                     true,
                                     isProfessionalValid,
                                     isAppointmentValid,
                                     message.schedulingId()));
                         },
-                        () -> messageProducer.sendToScheduler(new MessageBodyForScheduler(false,
+                        () -> messageProducer.sendToScheduling(new MessageBodyForScheduler(false,
                                 false,
                                 false,
                                 false,
