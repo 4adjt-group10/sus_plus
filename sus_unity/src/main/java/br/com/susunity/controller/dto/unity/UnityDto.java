@@ -18,19 +18,19 @@ public record UnityDto(
         String name,
         Address address,
         Integer numberOfPatients,
-        Integer numberOfTotalPatients,
-        BigDecimal porcent,
-        List<ProfessionalOut> professional
+        Integer supportedPatients,
+        BigDecimal occupancyPercentage,
+        List<ProfessionalOut> professionals
 ) {
-    public UnityDto(UnityModel unityModel,List<ProfessionalOut> professional) {
+    public UnityDto(UnityModel unityModel,List<ProfessionalOut> professionals) {
         this(unityModel.getId(),
                 unityModel.getName(),
                 unityModel.getAddress(),
                 unityModel.getNumberOfPatients(),
-                unityModel.getNumberOfTotalPatients(),
-                calculatePercent(unityModel.getNumberOfPatients(),
-                        unityModel.getNumberOfTotalPatients()),
-                professional);
+                unityModel.getSupportedPatients(),
+                calculatePercentage(unityModel.getNumberOfPatients(),
+                        unityModel.getSupportedPatients()),
+                professionals);
     }
 
     public UnityDto(UnityModel unityModel) {
@@ -38,14 +38,14 @@ public record UnityDto(
                 unityModel.getName(),
                 unityModel.getAddress(),
                 unityModel.getNumberOfPatients(),
-                unityModel.getNumberOfTotalPatients(),
-                calculatePercent(unityModel.getNumberOfPatients(),
-                        unityModel.getNumberOfTotalPatients()),
+                unityModel.getSupportedPatients(),
+                calculatePercentage(unityModel.getNumberOfPatients(),
+                        unityModel.getSupportedPatients()),
                 new ArrayList<>());
     }
 
 
-    private static BigDecimal calculatePercent(Integer numberOfPatients, Integer numberOfToTalPatients) {
+    private static BigDecimal calculatePercentage(Integer numberOfPatients, Integer numberOfToTalPatients) {
         if (numberOfToTalPatients == null || numberOfToTalPatients.equals(0)) {
             return new BigDecimal(0);
         }

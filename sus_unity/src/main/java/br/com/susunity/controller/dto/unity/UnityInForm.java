@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record UnityInForm(
         @NotBlank String name,
-        @NotBlank Integer numberOfToTalPatients,
+        @NotBlank Integer supportedPatients,
         @NotNull AddressFormDTO address
 ) {
 }
