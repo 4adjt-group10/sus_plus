@@ -7,7 +7,7 @@ import br.com.susunity.controller.dto.professional.UnityProfessionalForm;
 import br.com.susunity.model.ProfessionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.model.UnityModel;
-import br.com.susunity.queue.consumer.dto.manager.Professional;
+import br.com.susunity.queue.consumer.dto.manager.MessageBodyByManager;
 import br.com.susunity.queue.consumer.dto.manager.Speciality;
 import br.com.susunity.queue.consumer.dto.MessageBodyByPatientRecord;
 import br.com.susunity.queue.consumer.dto.MessageBodyByScheduling;
@@ -106,10 +106,10 @@ public class UnityService {
     }
 
 
-    public void updateProfessional(Professional messageBody) {
-        if(messageBody.isValidProfessional()){
-            List<SpecialityModel> specialityModels = findSpeciality(messageBody.getSpeciality());
-            UnityModel unityModel = unityRepository.findById(messageBody.getUnityId()).orElseThrow(EntityNotFoundException::new);
+    public void updateProfessional(MessageBodyByManager messageBody) {
+        if(messageBody.professionalValidated()){
+            List<SpecialityModel> specialityModels = findSpeciality(messageBody.speciality());
+            UnityModel unityModel = unityRepository.findById(messageBody.unityId()).orElseThrow(EntityNotFoundException::new);
             unityModel.setProfessional(professionalService.save(messageBody,specialityModels));
             unityRepository.save(unityModel);
         }
