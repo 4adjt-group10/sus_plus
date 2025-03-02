@@ -2,6 +2,7 @@ package br.com.susintegrated.queue.consumer;
 
 import br.com.susintegrated.config.RabbitConfig;
 import br.com.susintegrated.queue.consumer.dto.MessageBodyByPatienteRecord;
+import br.com.susintegrated.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susintegrated.service.PatientService;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;

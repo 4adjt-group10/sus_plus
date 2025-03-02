@@ -1,7 +1,8 @@
 package br.com.susmanager.queue.consumer;
 
 import br.com.susmanager.config.RabbitConfig;
-import br.com.susmanager.queue.consumer.dto.unity.UnityProfessional;
+import br.com.susmanager.queue.consumer.dto.MessageBodyByScheduling;
+import br.com.susmanager.queue.consumer.dto.MessageBodyByUnity;
 import br.com.susmanager.service.ProfessionalManagerService;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -23,12 +24,12 @@ public class RabbitMQReceiver {
     }
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_UNITY_MANAGER, ackMode = "MANUAL", containerFactory = "rabbitListenerContainerFactory")
-    public void receiveUnityMessage(UnityProfessional messageBody,
+    public void receiveUnityMessage(MessageBodyByUnity messageBody,
                                     Channel channel,
                                     @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         try {
             logger.info(String.format("Received <%s>", messageBody.toString()));
-            professionalManagerService.findProfessionalMQ(messageBody);
+            professionalManagerService.findProfessionalAndSendToUnity(messageBody);
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);

@@ -1,10 +1,9 @@
 package br.com.susunity.queue.producer;
 
 import br.com.susunity.config.RabbitConfig;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyForUnity;
-import br.com.susunity.queue.producer.dto.manager.UnityProfessional;
-import br.com.susunity.queue.producer.dto.patientrecord.MessageBodyForPatientRecord;
-import br.com.susunity.queue.producer.dto.scheduler.MessageBodyForScheduler;
+import br.com.susunity.queue.producer.dto.MessageBodyForManager;
+import br.com.susunity.queue.producer.dto.MessageBodyForPatientRecord;
+import br.com.susunity.queue.producer.dto.MessageBodyForScheduler;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -22,7 +21,7 @@ public class MessageProducer {
     }
 
 
-    public void sendToManager(UnityProfessional message) {
+    public void sendToManager(MessageBodyForManager message) {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
         Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);

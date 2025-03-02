@@ -10,15 +10,20 @@ public class Professional {
     private String profissionalName;
     private ProfessionalType type;
     private List<Speciality> speciality;
-    private boolean professional;
+    private boolean professionalValidated;
     private UUID unityId;
 
-    public Professional(UUID profissionalId, String profissionalName, ProfessionalType type, List<Speciality> speciality, Boolean professional, UUID unityId) {
+    public Professional(UUID profissionalId,
+                        String profissionalName,
+                        ProfessionalType type,
+                        List<Speciality> speciality,
+                        Boolean professionalValidated,
+                        UUID unityId) {
         this.profissionalId = profissionalId;
         this.profissionalName = profissionalName;
         this.type = type;
         this.speciality = speciality;
-        this.professional = professional;
+        this.professionalValidated = professionalValidated;
         this.unityId = unityId;
     }
 
@@ -29,7 +34,7 @@ public class Professional {
 
 
     public Professional(UUID idUnity) {
-        professional = false;
+        professionalValidated = false;
         unityId = idUnity;
     }
 
@@ -50,8 +55,8 @@ public class Professional {
         return speciality;
     }
 
-    public Boolean getProfessional() {
-        return professional;
+    public boolean isValidProfessional() {
+        return professionalValidated;
     }
 
     public UUID getUnityId() {

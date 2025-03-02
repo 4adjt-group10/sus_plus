@@ -2,10 +2,9 @@ package br.com.susmanager.service;
 
 import br.com.susmanager.controller.dto.professional.*;
 import br.com.susmanager.controller.dto.speciality.SpecialityForm;
-import br.com.susmanager.model.AddressModel;
+import br.com.susmanager.model.Address;
 import br.com.susmanager.model.ProfessionalModel;
 import br.com.susmanager.model.SpecialityModel;
-import br.com.susmanager.repository.ProfessionalAvailabilityRepository;
 import br.com.susmanager.repository.ProfessionalManagerRepository;
 import br.com.susmanager.repository.SpecialityRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,19 +33,13 @@ public class ProfessionalManagerServiceTest {
     @Mock
     private SpecialityRepository specialityRepository;
 
-    @Mock
-    private AddressService addressService;
-
-    @Mock
-    private ProfessionalAvailabilityRepository professionalAvailabilityRepository;
-
     @InjectMocks
     private ProfessionalManagerService professionalManagerService;
 
     @Test
     void testRegisterProfessional() {
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "city", "state", "zip");
+        Address address = new Address(addressForm);
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -55,30 +48,26 @@ public class ProfessionalManagerServiceTest {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
 
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "123456", addressForm, ProfessionalType.DOCTOR, specialityIds);
         ProfessionalModel professional = new ProfessionalModel(form,null);
         professional.setAddress(address);
 
         when(specialityRepository.findAllById(specialityIds)).thenReturn(specialities);
-        when(addressService.register(addressForm)).thenReturn(address);
         when(professionalRepository.save(any(ProfessionalModel.class))).thenReturn(professional);
-        when(professionalAvailabilityRepository.saveAll(anyList())).thenReturn(List.of());
 
         ProfessionalManagerOut output = professionalManagerService.register(form);
 
         assertNotNull(output);
         assertEquals("Name", output.name());
         verify(professionalRepository).save(any(ProfessionalModel.class));
-        verify(professionalAvailabilityRepository).saveAll(anyList());
-        verify(addressService).register(addressForm);
         verify(specialityRepository).findAllById(specialityIds);
     }
 
     @Test
     void testFindByDocument() {
         String document = "123456";
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
-        AddressModel address = new AddressModel(addressForm);
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "city", "state", "zip");
+        Address address = new Address(addressForm);
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -87,7 +76,7 @@ public class ProfessionalManagerServiceTest {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
 
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", document,  addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", document,  addressForm, ProfessionalType.DOCTOR, specialityIds);
         ProfessionalModel professional = new ProfessionalModel(form,null);
 
         when(professionalRepository.findByDocument(document)).thenReturn(Optional.of(professional));
@@ -111,7 +100,7 @@ public class ProfessionalManagerServiceTest {
     @Test
     void testFindProfessionalById() {
         UUID id = UUID.randomUUID();
-        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "City", "State", "Zip");
+        AddressFormDTO addressForm = new AddressFormDTO("Street", 123, "neighborhood", "city", "state", "zip");
         List<UUID> specialityIds = new ArrayList<>();
         specialityIds.add(UUID.randomUUID());
         List<SpecialityModel> specialities = new ArrayList<>();
@@ -120,7 +109,7 @@ public class ProfessionalManagerServiceTest {
         List<LocalDateTime> availabilities = new ArrayList<>();
         availabilities.add(LocalDateTime.now());
 
-        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "12345",  addressForm, ProfessionalType.DOCTOR, specialityIds, availabilities);
+        ProfessionalCreateForm form = new ProfessionalCreateForm("Name", "12345",  addressForm, ProfessionalType.DOCTOR, specialityIds);
         ProfessionalModel professional = new ProfessionalModel(form,null);
 
         when(professionalRepository.findById(id)).thenReturn(Optional.of(professional));

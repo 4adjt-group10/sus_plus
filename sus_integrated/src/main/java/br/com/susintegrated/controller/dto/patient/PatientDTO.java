@@ -1,6 +1,6 @@
 package br.com.susintegrated.controller.dto.patient;
 
-import br.com.susintegrated.model.patient.Patient;
+import br.com.susintegrated.model.Patient;
 
 import java.util.UUID;
 

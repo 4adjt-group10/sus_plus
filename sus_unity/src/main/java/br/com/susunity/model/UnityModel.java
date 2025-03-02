@@ -1,7 +1,9 @@
 package br.com.susunity.model;
 
-import br.com.susunity.controller.dto.UnityInForm;
+import br.com.susunity.controller.dto.unity.UnityInForm;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "UNITY")
 public class UnityModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
@@ -19,8 +22,9 @@ public class UnityModel {
     @Column(unique = true,name = "name", nullable = false)
     private String name;
 
-    @OneToOne
-    private AddressModel address;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Address address;
 
     private Integer numberOfPatients;
 
@@ -31,13 +35,18 @@ public class UnityModel {
             name = "Unity_Professional",
             joinColumns = @JoinColumn(name = "unity_id"),
             inverseJoinColumns = @JoinColumn(name = "professional_id"))
-    private List<ProfissionalUnityModel> professional;
+    private List<ProfessionalUnityModel> professional;
 
-
+    @Deprecated(since = "Only for use of frameworks")
     public UnityModel() {
     }
 
-    public UnityModel(UUID id, String name, AddressModel address, Integer numberOfPatients, Integer numberOfTotalPatients, List<ProfissionalUnityModel> professional) {
+    public UnityModel(UUID id,
+                      String name,
+                      Address address,
+                      Integer numberOfPatients,
+                      Integer numberOfTotalPatients,
+                      List<ProfessionalUnityModel> professional) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -46,9 +55,9 @@ public class UnityModel {
         this.professional = professional;
     }
 
-    public UnityModel(UnityInForm unityInForm, AddressModel newAddress) {
+    public UnityModel(UnityInForm unityInForm) {
         this.name = unityInForm.name();
-        this.address = newAddress;
+        this.address = new Address(unityInForm.address());
         this.numberOfTotalPatients = (unityInForm.numberOfToTalPatients() != null) ? unityInForm.numberOfToTalPatients() : 0;
     }
 
@@ -60,7 +69,7 @@ public class UnityModel {
         return name;
     }
 
-    public AddressModel getAddress() {
+    public Address getAddress() {
         return address;
     }
 
@@ -72,7 +81,7 @@ public class UnityModel {
         return numberOfTotalPatients;
     }
 
-    public List<ProfissionalUnityModel> getProfessional() {
+    public List<ProfessionalUnityModel> getProfessional() {
         return professional;
     }
 
@@ -86,20 +95,19 @@ public class UnityModel {
         }
     }
 
-
-    public void merge(UnityInForm unityInForm,AddressModel newAddress) {
+    public void merge(UnityInForm unityInForm) {
         if(!this.name.equals(unityInForm.name())){
             this.name = unityInForm.name();
         }
-        this.address = newAddress;
+        this.address.merge(unityInForm.address());
         this.numberOfTotalPatients = unityInForm.numberOfToTalPatients();
     }
 
-    public void setProfessional(ProfissionalUnityModel messageBody) {
+    public void setProfessional(ProfessionalUnityModel messageBody) {
         if(Objects.isNull(professional) || professional.isEmpty()) {
             professional = new ArrayList<>();
             professional.add(messageBody);
-        } else if(!validateProfessional(messageBody.getProfissionalId())) {
+        } else if(!validateProfessional(messageBody.getProfessionalId())) {
             professional.add(messageBody);
         }
     }
@@ -107,10 +115,10 @@ public class UnityModel {
     public boolean validateProfessional(UUID professionalId) {
         return this.professional
                 .stream()
-                .anyMatch(p -> p.getProfissionalId().equals(professionalId));
+                .anyMatch(p -> p.getProfessionalId().equals(professionalId));
     }
 
-    public void remove(ProfissionalUnityModel profissionalUnityModel) {
-        professional.remove(profissionalUnityModel);
+    public void remove(ProfessionalUnityModel professionalUnityModel) {
+        professional.remove(professionalUnityModel);
     }
 }

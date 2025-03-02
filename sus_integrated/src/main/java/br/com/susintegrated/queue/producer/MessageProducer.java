@@ -2,6 +2,7 @@ package br.com.susintegrated.queue.producer;
 
 import br.com.susintegrated.config.RabbitConfig;
 import br.com.susintegrated.queue.producer.dto.MessageBodyForPatientRecord;
+import br.com.susintegrated.queue.producer.dto.MessageBodyForScheduling;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
