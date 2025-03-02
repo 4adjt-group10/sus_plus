@@ -5,10 +5,8 @@ import br.com.susintegrated.queue.consumer.dto.MessageBodyByPatienteRecord;
 import br.com.susintegrated.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susintegrated.service.PatientService;
 import com.rabbitmq.client.Channel;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
@@ -25,24 +23,6 @@ public class RabbitMQReceiver {
 
     public RabbitMQReceiver(PatientService patientService) {
         this.patientService = patientService;
-    }
-
-    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_MANAGER_INTEGRATED, ackMode = "MANUAL")
-    public void receiveManagerMessage(Message message,
-                                      Channel channel,
-                                      @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
-        try {
-            SimpleMessageConverter messageConverter = new SimpleMessageConverter();
-            String messageBody = (String) messageConverter.fromMessage(message);
-            logger.info(String.format("Received <%s>", messageBody));
-            // Adicione aqui a lógica para processar a mensagem
-            // Se o processamento for bem-sucedido, confirme a mensagem
-            channel.basicAck(deliveryTag , false);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error processing message: ".concat(e.getMessage()), e);
-            // Se o processamento falhar, rejeite a mensagem sem reencaminhá-la para a fila
-            channel.basicNack(deliveryTag, false, false);
-        }
     }
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_SCHEDULING_INTEGRATED, ackMode = "MANUAL")

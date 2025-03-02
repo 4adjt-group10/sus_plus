@@ -14,12 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     //producer
-    public static final String QUEUE_NAME_INTEGRATED_MANAGER = "IntegratedManagerQueue";
-    public static final String ROUTING_KEY_INTEGRATED_MANAGER = "routing.key.integrated_manager";
-
-    public static final String QUEUE_NAME_INTEGRATED_UNITY = "IntegratedUnityQueue";
-    public static final String ROUTING_KEY_INTEGRATED_UNITY = "routing.key.integrated_unity";
-
     public static final String QUEUE_NAME_INTEGRATED_SCHEDULING = "IntegratedSchedulingQueue";
     public static final String ROUTING_KEY_INTEGRATED_SCHEDULING = "routing.key.integrated_scheduling";
 
@@ -27,17 +21,11 @@ public class RabbitConfig {
     public static final String ROUTING_KEY_INTEGRATED_PATIENT_RECORD = "routing.key.integrated_patient_record";
 
     //consumer
-    public static final String QUEUE_NAME_MANAGER_INTEGRATED = "ManagerIntegratedQueue";
-    public static final String ROUTING_KEY_MANAGER_INTEGRATED = "routing.key.manager_integrated";
-
     public static final String QUEUE_NAME_SCHEDULING_INTEGRATED = "SchedulingIntegratedQueue";
     public static final String ROUTING_KEY_SCHEDULING_INTEGRATED = "routing.key.scheduling_integrated";
 
     public static final String QUEUE_NAME_PATIENT_RECORD_INTEGRATED = "PatientRecordIntegratedQueue";
     public static final String ROUTING_KEY_PATIENT_RECORD_INTEGRATED = "routing.key.patient_record_integrated";
-
-
-
 
     public static final String EXCHANGE_NAME = "OrderExchange";
 
@@ -64,15 +52,6 @@ public class RabbitConfig {
 
     //consumer
     @Bean
-    public Queue queueManagerIntegrated() {
-        return new Queue(QUEUE_NAME_MANAGER_INTEGRATED, true); // true indica que a fila é durável
-    }
-    @Bean
-    public Binding bindingManagerIntegrated(Queue queueManagerIntegrated, TopicExchange exchange) {
-        return BindingBuilder.bind(queueManagerIntegrated).to(exchange).with(ROUTING_KEY_MANAGER_INTEGRATED);
-    }
-
-    @Bean
     public Queue queueSchedulingIntegrated() {
         return new Queue(QUEUE_NAME_SCHEDULING_INTEGRATED, true); // true indica que a fila é durável
     }
@@ -94,24 +73,6 @@ public class RabbitConfig {
 
 
     //producer
-    @Bean
-    public Queue queueIntegratedManager() {
-        return new Queue(QUEUE_NAME_INTEGRATED_MANAGER, true); // true indica que a fila é durável
-    }
-    @Bean
-    public Binding bindingUnityManager(Queue queueIntegratedManager, TopicExchange exchange) {
-        return BindingBuilder.bind(queueIntegratedManager).to(exchange).with(ROUTING_KEY_INTEGRATED_MANAGER);
-    }
-
-    @Bean
-    public Queue queueIntegratedUnity() {
-        return new Queue(QUEUE_NAME_INTEGRATED_UNITY, true); // true indica que a fila é durável
-    }
-    @Bean
-    public Binding bindingIntegratedUnity(Queue queueIntegratedUnity, TopicExchange exchange) {
-        return BindingBuilder.bind(queueIntegratedUnity).to(exchange).with(ROUTING_KEY_INTEGRATED_UNITY);
-    }
-
     @Bean
     public Queue queueIntegratedScheduling() {
         return new Queue(QUEUE_NAME_INTEGRATED_SCHEDULING, true); // true indica que a fila é durável
