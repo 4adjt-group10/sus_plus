@@ -3,6 +3,7 @@ package br.com.susunity.controller.dto.unity;
 import br.com.susunity.controller.dto.professional.ProfessionalOut;
 import br.com.susunity.model.Address;
 import br.com.susunity.model.UnityModel;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record UnityDto(
 
         UUID id,

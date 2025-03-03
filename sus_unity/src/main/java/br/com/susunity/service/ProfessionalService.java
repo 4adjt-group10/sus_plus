@@ -33,7 +33,11 @@ public class ProfessionalService {
     }
 
     public Optional<ProfessionalUnityModel> getProfessional(UUID uuid) {
-        return professionalRepository.findById(uuid);
+        return professionalRepository.findByProfessionalId(uuid);
+    }
+
+    public Optional<ProfessionalUnityModel> getProfessionalById(UUID professionalId) {
+        return professionalRepository.findById(professionalId);
     }
 
     public boolean validateProfessional(UUID uuid) {

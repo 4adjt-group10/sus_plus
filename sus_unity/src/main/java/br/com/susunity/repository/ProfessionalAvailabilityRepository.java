@@ -15,22 +15,8 @@ public interface ProfessionalAvailabilityRepository extends JpaRepository<Profes
 
     List<ProfessionalAvailabilityModel> findByProfessionalId(UUID professionalId);
 
-    @Query("SELECT pa FROM ProfessionalAvailabilityModel pa WHERE CAST(pa.availableTime AS date) = :date")
-    List<ProfessionalAvailabilityModel> findByAvailableByDate(@Param("date") LocalDate date);
-
-    /*
-     * Retorna as disponibilidades de um profissional em um determinado dia da semana.
-     * Considere Domingo = 1 e sábado = 7.
-     * */
-    @Query("SELECT pa FROM ProfessionalAvailabilityModel pa WHERE FUNCTION('DAY_OF_WEEK', pa.availableTime) = :dayOfWeek")
-    List<ProfessionalAvailabilityModel> findByAvailableTimeByDayOfWeek(@Param("dayOfWeek") Integer dayOfWeek);
-
-    /*
-     * Retorna as disponibilidades de um profissional em um determinado horário do dia.
-     * Considere 0 a 23 horas.
-     * */
-    @Query("SELECT pa FROM ProfessionalAvailabilityModel pa WHERE FUNCTION('HOUR', pa.availableTime) = :hour ORDER BY pa.availableTime ASC")
-    List<ProfessionalAvailabilityModel> findByAvailableByHour(@Param("hour") Integer hour);
+    @Query("SELECT pa FROM ProfessionalAvailabilityModel pa WHERE CAST(pa.availableTime AS date) = :date AND pa.unityId = :unityId")
+    List<ProfessionalAvailabilityModel> findByAvailableByDateAndUnityId(@Param("date") LocalDate date, @Param("unityId") UUID unityId);
 
     List<ProfessionalAvailabilityModel> findAllByAvailableTimeBefore(LocalDateTime now);
 
