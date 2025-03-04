@@ -26,6 +26,7 @@ public class Address {
         this.state = formDTO.state();
         this.number = formDTO.number();
         this.street = formDTO.street();
+        this.zipCode = formDTO.zipCode();
     }
 
     public void merge(AddressFormDTO formDTO) {
@@ -34,6 +35,7 @@ public class Address {
         this.state = formDTO.state();
         this.number = formDTO.number();
         this.street = formDTO.street();
+        this.zipCode = formDTO.zipCode();
     }
 
     public String getStreet() {

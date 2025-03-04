@@ -43,8 +43,7 @@ public class UnityService {
     @Transactional
     public UnityDto create(UnityInForm unityInForm) {
         Optional<UnityModel> unity = unityRepository.findByname(unityInForm.name());
-        return unity.map(UnityService::getUnityDto)
-                .orElseGet(() -> new UnityDto(unityRepository.save(new UnityModel(unityInForm))));
+        return unity.map(UnityDto::new).orElseGet(() -> new UnityDto(unityRepository.save(new UnityModel(unityInForm))));
     }
 
     public List<UnityDto> findAll() {
@@ -91,7 +90,7 @@ public class UnityService {
         return getUnityDto(unity);
     }
 
-    private static UnityDto getUnityDto(UnityModel unity) {
+    private UnityDto getUnityDto(UnityModel unity) {
         if(nonNull(unity.getProfessional())) {
             List<ProfessionalUnityModel> professional = unity.getProfessional();
             List<ProfessionalOut> professionalOut = new ArrayList<>();
@@ -104,7 +103,6 @@ public class UnityService {
         }
         return new UnityDto(unity);
     }
-
 
     public void updateProfessional(MessageBodyByManager messageBody) {
         if(messageBody.professionalValidated()){

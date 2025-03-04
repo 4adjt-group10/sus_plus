@@ -121,7 +121,19 @@ public class ProfessionalUnityModel {
         this.speciality = speciality;
     }
 
-    public boolean validateAppointment(LocalDateTime appointment) {
-        return this.availability.stream().anyMatch(a -> a.getAvailableTime().equals(appointment));
+    public boolean validateAppointment(LocalDateTime appointment, UUID unityId) {
+        return this.availability.stream()
+                .anyMatch(a -> a.getAvailableTime().equals(appointment) && a.getUnityId().equals(unityId));
+    }
+
+    public ProfessionalAvailabilityModel getAvailabilityByDate(LocalDateTime date, UUID unityId) {
+        return this.availability.stream()
+                .filter(a -> a.getAvailableTime().equals(date) && a.getUnityId().equals(unityId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void removeAvailability(ProfessionalAvailabilityModel availability) {
+        this.availability.remove(availability);
     }
 }

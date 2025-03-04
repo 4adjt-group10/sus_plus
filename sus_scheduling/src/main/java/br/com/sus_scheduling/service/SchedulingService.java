@@ -8,7 +8,6 @@ import br.com.sus_scheduling.queue.producer.dto.*;
 import br.com.sus_scheduling.repository.SchedulingRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -94,19 +93,6 @@ public class SchedulingService {
         return schedulingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
     }
 
-    @Transactional
-    public SchedulingDTO update(UUID id, SchedulingUpdateDTO updateDTO){
-        Scheduling scheduling = findById(id);
-        updateDTO.appointment().ifPresent(appointment -> messageProducer
-                        .sendToUnity(new MessageBodyForUnity(scheduling.getSpecialityId(),
-                                scheduling.getUnityId(),
-                                scheduling.getProfessionalId(),
-                                scheduling.getAppointment(),
-                                scheduling.getId())));
-        schedulingRepository.save(scheduling);
-        return new SchedulingDTO(scheduling);
-    }
-
     public SchedulingDTO done(UUID id) {
         Scheduling scheduling = findById(id);
         scheduling.done();
@@ -133,7 +119,7 @@ public class SchedulingService {
             scheduling.late();
             schedulingRepository.save(scheduling);
             //TODO: send notification to external service
-            System.out.println("Late appointment: " + scheduling);
+            logger.info("Late appointment: " + scheduling);
         });
     }
 
@@ -150,7 +136,7 @@ public class SchedulingService {
             scheduling.cancel();
             schedulingRepository.save(scheduling);
             //TODO: send notification to external service
-            System.out.println("Canceled appointment: " + scheduling);
+            logger.info("Canceled appointment: " + scheduling);
         });
     }
 
@@ -168,7 +154,7 @@ public class SchedulingService {
                 .findAllByAppointmentBetweenAndStatusIn(now, next24Hours, List.of(SCHEDULED, RESCHEDULED));
         upcomingSchedules.forEach(scheduling -> {
             // TODO: send notification to external service
-            System.out.println("Upcoming appointment in next 24 hours: " + scheduling);
+            logger.info("Upcoming appointment in next 24 hours: " + scheduling);
         });
     }
 }
