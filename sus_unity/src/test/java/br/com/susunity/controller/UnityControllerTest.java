@@ -1,10 +1,10 @@
 package br.com.susunity.controller;
 
 
-import br.com.susunity.controller.dto.AddressFormDTO;
-import br.com.susunity.controller.dto.UnityDto;
-import br.com.susunity.controller.dto.UnityInForm;
-import br.com.susunity.controller.dto.UnityProfessionalForm;
+import br.com.susunity.controller.dto.professional.UnityProfessionalForm;
+import br.com.susunity.controller.dto.unity.AddressFormDTO;
+import br.com.susunity.controller.dto.unity.UnityDto;
+import br.com.susunity.controller.dto.unity.UnityInForm;
 import br.com.susunity.model.UnityModel;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.service.UnityService;
@@ -50,7 +50,7 @@ class UnityControllerTest {
 
     @Test
     public void testCreateUnity() {
-        UnityInForm unityInForm = new UnityInForm("Unity", 10, new AddressFormDTO("street", 1, "neighborhood", "city", "state"));
+        UnityInForm unityInForm = new UnityInForm("Unity", 10, new AddressFormDTO("street", 1, "neighborhood", "city", "state","123456-000"));
         UnityDto unityDto = new UnityDto(new UnityModel());
         when(unityService.create(unityInForm)).thenReturn(unityDto);
 
@@ -77,19 +77,19 @@ class UnityControllerTest {
     public void testFindUnity() {
         UUID id = UUID.randomUUID();
         UnityDto unityDto = new UnityDto(new UnityModel());
-        when(unityService.findById(id)).thenReturn(unityDto);
+        when(unityService.getById(id)).thenReturn(unityDto);
 
         ResponseEntity<UnityDto> response = unityController.findUnity(id);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(unityDto, response.getBody());
-        verify(unityService, times(1)).findById(id);
+        verify(unityService, times(1)).getById(id);
     }
 
     @Test
     public void testAlterUnity() {
         UUID id = UUID.randomUUID();
-        UnityInForm unityInForm = new UnityInForm("Unity", 10, new AddressFormDTO("street", 1, "neighborhood", "city", "state"));
+        UnityInForm unityInForm = new UnityInForm("Unity", 10, new AddressFormDTO("street", 1, "neighborhood", "city", "state","123456-000"));
         UnityDto unityDto = new UnityDto(new UnityModel());
         when(unityService.update(id, unityInForm)).thenReturn(unityDto);
 

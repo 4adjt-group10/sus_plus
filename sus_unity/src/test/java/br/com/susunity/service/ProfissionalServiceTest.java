@@ -1,6 +1,6 @@
 package br.com.susunity.service;
 
-import br.com.susunity.model.ProfissionalUnityModel;
+import br.com.susunity.model.ProfessionalUnityModel;
 import br.com.susunity.model.SpecialityModel;
 import br.com.susunity.queue.consumer.dto.manager.Professional;
 import br.com.susunity.repository.ProfessionalRepository;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 public class ProfissionalServiceTest {
 
     @InjectMocks
-    private ProfissionalService profissionalService;
+    private ProfessionalService profissionalService;
 
     @Mock
     private ProfessionalRepository professionalRepository;
@@ -33,20 +33,20 @@ public class ProfissionalServiceTest {
         Professional messageBody = new Professional(UUID.randomUUID());
         List<SpecialityModel> specialityModels = List.of(new SpecialityModel(), new SpecialityModel());
 
-        ProfissionalUnityModel expectedProfessional = new ProfissionalUnityModel(messageBody);
+        ProfessionalUnityModel expectedProfessional = new ProfessionalUnityModel(messageBody);
         expectedProfessional.setSpeciality(specialityModels);
 
-        when(professionalRepository.findByProfissionalId(messageBody.getProfissionalId())).thenReturn(Optional.empty());
-        when(professionalRepository.save(any(ProfissionalUnityModel.class))).thenReturn(expectedProfessional);
+        when(professionalRepository.findByProfessionalId(messageBody.getProfissionalId())).thenReturn(Optional.empty());
+        when(professionalRepository.save(any(ProfessionalUnityModel.class))).thenReturn(expectedProfessional);
 
         // Act
-        ProfissionalUnityModel savedProfessional = profissionalService.save(messageBody, specialityModels);
+        ProfessionalUnityModel savedProfessional = profissionalService.save(messageBody, specialityModels);
 
         // Assert
         assertNotNull(savedProfessional);
-        assertEquals(messageBody.getProfissionalName(), savedProfessional.getProfissionalName());
+        assertEquals(messageBody.getProfissionalName(), savedProfessional.getProfessionalName());
         assertEquals(specialityModels, savedProfessional.getSpeciality());
-        verify(professionalRepository, times(2)).save(any(ProfissionalUnityModel.class));
+        verify(professionalRepository, times(2)).save(any(ProfessionalUnityModel.class));
     }
 
     @Test
@@ -55,28 +55,28 @@ public class ProfissionalServiceTest {
         Professional messageBody = new Professional();
         List<SpecialityModel> specialityModels = List.of(new SpecialityModel(), new SpecialityModel());
 
-        ProfissionalUnityModel existingProfessional = new ProfissionalUnityModel(messageBody);
+        ProfessionalUnityModel existingProfessional = new ProfessionalUnityModel(messageBody);
         existingProfessional.setSpeciality(List.of(new SpecialityModel()));
-        when(professionalRepository.findByProfissionalId(messageBody.getProfissionalId())).thenReturn(Optional.of(existingProfessional));
+        when(professionalRepository.findByProfessionalId(messageBody.getProfissionalId())).thenReturn(Optional.of(existingProfessional));
 
         // Act
-        ProfissionalUnityModel savedProfessional = profissionalService.save(messageBody, specialityModels);
+        ProfessionalUnityModel savedProfessional = profissionalService.save(messageBody, specialityModels);
 
         // Assert
         assertEquals(existingProfessional, savedProfessional);
-        verify(professionalRepository, times(1)).findByProfissionalId(messageBody.getProfissionalId());
-        verify(professionalRepository, never()).save(any(ProfissionalUnityModel.class));
+        verify(professionalRepository, times(1)).findByProfessionalId(messageBody.getProfissionalId());
+        verify(professionalRepository, never()).save(any(ProfessionalUnityModel.class));
     }
 
     @Test
     public void testGetProfessional_Exists() {
         // Arrange
         UUID uuid = UUID.randomUUID();
-        ProfissionalUnityModel professional = new ProfissionalUnityModel(new Professional());
+        ProfessionalUnityModel professional = new ProfessionalUnityModel(new Professional());
         when(professionalRepository.findById(uuid)).thenReturn(Optional.of(professional));
 
         // Act
-        Optional<ProfissionalUnityModel> result = profissionalService.getProfessional(uuid);
+        Optional<ProfessionalUnityModel> result = profissionalService.getProfessional(uuid);
 
         // Assert
         assertTrue(result.isPresent());
@@ -91,7 +91,7 @@ public class ProfissionalServiceTest {
         when(professionalRepository.findById(uuid)).thenReturn(Optional.empty());
 
         // Act
-        Optional<ProfissionalUnityModel> result = profissionalService.getProfessional(uuid);
+        Optional<ProfessionalUnityModel> result = profissionalService.getProfessional(uuid);
 
         // Assert
         assertTrue(result.isEmpty());
