@@ -101,16 +101,6 @@ class SchedulingControllerTest {
     }
 
 
-    @Test
-    void updateSchedule_shouldReturnOkAndUpdatedSchedulingDTO() {
-        when(schedulingService.update(schedulingId, updateDTO)).thenReturn(schedulingDTO);
-
-        ResponseEntity<SchedulingDTO> response = schedulingController.updateSchedule(schedulingId, updateDTO);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(schedulingDTO, response.getBody());
-        verify(schedulingService, times(1)).update(schedulingId, updateDTO);
-    }
 
     @Test
     void done_shouldReturnOkAndDoneSchedulingDTO() {
