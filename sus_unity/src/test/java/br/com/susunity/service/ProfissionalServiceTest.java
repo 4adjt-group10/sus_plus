@@ -1,100 +1,120 @@
-//package br.com.susunity.service;
-//
-//import br.com.susunity.model.ProfissionalUnityModel;
-//import br.com.susunity.model.SpecialityModel;
-//import br.com.susunity.queue.consumer.dto.manager.Professional;
-//import br.com.susunity.repository.ProfessionalRepository;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.UUID;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.*;
-//
-//@ExtendWith(MockitoExtension.class)
-//public class ProfissionalServiceTest {
-//
-//    @InjectMocks
-//    private ProfissionalService profissionalService;
-//
-//    @Mock
-//    private ProfessionalRepository professionalRepository;
-//
-//    @Test
-//    public void testSave_NewProfessional() {
-//        // Arrange
-//        Professional messageBody = new Professional(UUID.randomUUID());
-//        List<SpecialityModel> specialityModels = List.of(new SpecialityModel(), new SpecialityModel());
-//
-//        ProfissionalUnityModel expectedProfessional = new ProfissionalUnityModel(messageBody);
-//        expectedProfessional.setSpeciality(specialityModels);
-//
-//        when(professionalRepository.findByProfissionalId(messageBody.getProfissionalId())).thenReturn(Optional.empty());
-//        when(professionalRepository.save(any(ProfissionalUnityModel.class))).thenReturn(expectedProfessional);
-//
-//        // Act
-//        ProfissionalUnityModel savedProfessional = profissionalService.save(messageBody, specialityModels);
-//
-//        // Assert
-//        assertNotNull(savedProfessional);
-//        assertEquals(messageBody.getProfissionalName(), savedProfessional.getProfissionalName());
-//        assertEquals(specialityModels, savedProfessional.getSpeciality());
-//        verify(professionalRepository, times(2)).save(any(ProfissionalUnityModel.class));
-//    }
-//
-//    @Test
-//    public void testSave_ExistingProfessional() {
-//        // Arrange
-//        Professional messageBody = new Professional();
-//        List<SpecialityModel> specialityModels = List.of(new SpecialityModel(), new SpecialityModel());
-//
-//        ProfissionalUnityModel existingProfessional = new ProfissionalUnityModel(messageBody);
-//        existingProfessional.setSpeciality(List.of(new SpecialityModel()));
-//        when(professionalRepository.findByProfissionalId(messageBody.getProfissionalId())).thenReturn(Optional.of(existingProfessional));
-//
-//        // Act
-//        ProfissionalUnityModel savedProfessional = profissionalService.save(messageBody, specialityModels);
-//
-//        // Assert
-//        assertEquals(existingProfessional, savedProfessional);
-//        verify(professionalRepository, times(1)).findByProfissionalId(messageBody.getProfissionalId());
-//        verify(professionalRepository, never()).save(any(ProfissionalUnityModel.class));
-//    }
-//
-//    @Test
-//    public void testGetProfessional_Exists() {
-//        // Arrange
-//        UUID uuid = UUID.randomUUID();
-//        ProfissionalUnityModel professional = new ProfissionalUnityModel(new Professional());
-//        when(professionalRepository.findById(uuid)).thenReturn(Optional.of(professional));
-//
-//        // Act
-//        Optional<ProfissionalUnityModel> result = profissionalService.getProfessional(uuid);
-//
-//        // Assert
-//        assertTrue(result.isPresent());
-//        assertEquals(professional, result.get());
-//        verify(professionalRepository, times(1)).findById(uuid);
-//    }
-//
-//    @Test
-//    public void testGetProfessional_NotExists() {
-//        // Arrange
-//        UUID uuid = UUID.randomUUID();
-//        when(professionalRepository.findById(uuid)).thenReturn(Optional.empty());
-//
-//        // Act
-//        Optional<ProfissionalUnityModel> result = profissionalService.getProfessional(uuid);
-//
-//        // Assert
-//        assertTrue(result.isEmpty());
-//        verify(professionalRepository, times(1)).findById(uuid);
-//    }
-//}
+package br.com.susunity.service;
+
+import br.com.susunity.model.ProfessionalType;
+import br.com.susunity.model.ProfessionalUnityModel;
+import br.com.susunity.model.SpecialityModel;
+import br.com.susunity.queue.consumer.dto.manager.MessageBodyByManager;
+import br.com.susunity.queue.consumer.dto.manager.Speciality;
+import br.com.susunity.repository.ProfessionalRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class ProfessionalServiceTest {
+
+    @Mock
+    private ProfessionalRepository professionalRepository;
+
+    @InjectMocks
+    private ProfessionalService professionalService;
+
+    private MessageBodyByManager messageBody;
+    private List<SpecialityModel> specialityModels;
+    private ProfessionalUnityModel professionalUnityModel;
+    private UUID professionalId;
+
+    @BeforeEach
+    void setUp() {
+        professionalId = UUID.randomUUID();
+        messageBody = new MessageBodyByManager(professionalId, "Test Professional", ProfessionalType.DOCTOR, Arrays.asList(new Speciality(), new Speciality()),true,UUID.randomUUID());
+        specialityModels = Arrays.asList(new SpecialityModel(new Speciality()), new SpecialityModel(new Speciality()));
+        professionalUnityModel = new ProfessionalUnityModel(messageBody);
+        professionalId = professionalUnityModel.getProfessionalId();
+    }
+
+    @Test
+    void save_ShouldReturnExistingProfessionalUnity_WhenProfessionalExists() {
+        when(professionalRepository.findByProfessionalId(professionalId)).thenReturn(Optional.of(professionalUnityModel));
+
+        ProfessionalUnityModel result = professionalService.save(messageBody, specialityModels);
+
+        assertNotNull(result);
+        assertEquals(professionalId, result.getProfessionalId());
+        verify(professionalRepository, never()).save(any(ProfessionalUnityModel.class));
+    }
+
+    @Test
+    void getProfessional_ShouldReturnOptionalProfessionalUnityModel_WhenProfessionalExists() {
+        when(professionalRepository.findByProfessionalId(professionalId)).thenReturn(Optional.of(professionalUnityModel));
+
+        Optional<ProfessionalUnityModel> result = professionalService.getProfessional(professionalId);
+
+        assertTrue(result.isPresent());
+        assertEquals(professionalId, result.get().getProfessionalId());
+    }
+
+    @Test
+    void getProfessional_ShouldReturnEmptyOptional_WhenProfessionalDoesNotExist() {
+        when(professionalRepository.findByProfessionalId(professionalId)).thenReturn(Optional.empty());
+
+        Optional<ProfessionalUnityModel> result = professionalService.getProfessional(professionalId);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void getProfessionalById_ShouldReturnOptionalProfessionalUnityModel_WhenProfessionalExists() {
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professionalUnityModel));
+
+        Optional<ProfessionalUnityModel> result = professionalService.getProfessionalById(professionalId);
+
+        assertTrue(result.isPresent());
+        assertEquals(professionalId, result.get().getProfessionalId());
+    }
+
+    @Test
+    void getProfessionalById_ShouldReturnEmptyOptional_WhenProfessionalDoesNotExist() {
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.empty());
+
+        Optional<ProfessionalUnityModel> result = professionalService.getProfessionalById(professionalId);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void validateProfessional_ShouldReturnTrue_WhenProfessionalExists() {
+        when(professionalRepository.existsById(professionalId)).thenReturn(true);
+
+        boolean result = professionalService.validateProfessional(professionalId);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void validateProfessional_ShouldReturnFalse_WhenProfessionalDoesNotExist() {
+        when(professionalRepository.existsById(professionalId)).thenReturn(false);
+
+        boolean result = professionalService.validateProfessional(professionalId);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void saveProfessional_ShouldSaveProfessionalUnityModel() {
+        professionalService.saveProfessional(professionalUnityModel);
+
+        verify(professionalRepository, times(1)).save(professionalUnityModel);
+    }
+}
