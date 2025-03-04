@@ -43,4 +43,8 @@ public class ProfessionalService {
     public boolean validateProfessional(UUID uuid) {
         return professionalRepository.existsById(uuid);
     }
+
+    public void saveProfessional(ProfessionalUnityModel professionalUnityModel) {
+        professionalRepository.save(professionalUnityModel);
+    }
 }

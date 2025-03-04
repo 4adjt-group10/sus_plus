@@ -84,7 +84,7 @@ public class ProfessionalAvailabilityService {
                             boolean isSpecialityValid = unityService.validateEspeciality(unityModel, message);
                             boolean isProfessionalValid = possibleProfessional.isPresent();
                             boolean isAppointmentValid = possibleProfessional
-                                    .map(professional -> professional.validateAppointment(message.appointment()))
+                                    .map(professional -> professional.validateAppointment(message.appointment(), message.unityId()))
                                     .orElse(false);
 
                             messageProducer.sendToScheduling(new MessageBodyForScheduler(isSpecialityValid,
@@ -92,6 +92,15 @@ public class ProfessionalAvailabilityService {
                                     isProfessionalValid,
                                     isAppointmentValid,
                                     message.schedulingId()));
+
+                            if(isSpecialityValid && isProfessionalValid && isAppointmentValid) {
+                                ProfessionalUnityModel professionalUnityModel = possibleProfessional.get();
+                                ProfessionalAvailabilityModel availability = professionalUnityModel
+                                        .getAvailabilityByDate(message.appointment(), unityModel.getId());
+                                professionalUnityModel.removeAvailability(availability);
+                                professionalService.saveProfessional(professionalUnityModel);
+                                professionalAvailabilityRepository.delete(availability);
+                            }
                         },
                         () -> messageProducer.sendToScheduling(new MessageBodyForScheduler(false,
                                 false,

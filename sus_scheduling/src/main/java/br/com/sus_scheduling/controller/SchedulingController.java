@@ -2,7 +2,6 @@ package br.com.sus_scheduling.controller;//package br.com.susintegrado.controlle
 
 import br.com.sus_scheduling.controller.dto.scheduling.SchedulingDTO;
 import br.com.sus_scheduling.controller.dto.scheduling.SchedulingFormDTO;
-import br.com.sus_scheduling.controller.dto.scheduling.SchedulingUpdateDTO;
 import br.com.sus_scheduling.service.SchedulingService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -40,12 +39,6 @@ public class SchedulingController {
     public ResponseEntity<List<SchedulingDTO>> listByProfessional(@PathVariable("id") UUID id,
                                                                   @RequestParam(value = "date", required = false) Optional<LocalDate> date) {
         return ResponseEntity.ok(schedulingService.findAllByProfessionalId(id, date));
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<SchedulingDTO> updateSchedule(@PathVariable("id") UUID id,
-                                                        @RequestBody @Valid SchedulingUpdateDTO updateDTO) {
-        return ResponseEntity.ok(schedulingService.update(id, updateDTO));
     }
 
     @PutMapping("/done/{id}")

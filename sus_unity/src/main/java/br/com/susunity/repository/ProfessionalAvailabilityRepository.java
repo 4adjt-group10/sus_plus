@@ -23,4 +23,10 @@ public interface ProfessionalAvailabilityRepository extends JpaRepository<Profes
     Optional<ProfessionalAvailabilityModel> findByProfessionalIdAndAvailableTime(UUID professionalId, LocalDateTime date);
 
     List<ProfessionalAvailabilityModel> findAllByProfessional_Speciality_id(UUID specialityId);
+
+    void deleteByProfessionalIdAndAvailableTimeAndUnityId(UUID professionalId, LocalDateTime availableTime, UUID unityId);
+
+    default void deleteByProfessionalAndUnity(UUID professionalId, LocalDateTime availableTime, UUID unityId) {
+        deleteByProfessionalIdAndAvailableTimeAndUnityId(professionalId, availableTime, unityId);
+    }
 }
