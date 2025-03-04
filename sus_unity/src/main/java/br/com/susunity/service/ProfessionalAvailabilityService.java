@@ -4,7 +4,8 @@ import br.com.susunity.controller.dto.professional.ProfessionalAvailabilityDTO;
 import br.com.susunity.controller.dto.professional.ProfessionalAvailabilityFormDTO;
 import br.com.susunity.model.ProfessionalAvailabilityModel;
 import br.com.susunity.model.ProfessionalUnityModel;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
+import br.com.susunity.model.UnityModel;
+import br.com.susunity.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susunity.queue.producer.MessageProducer;
 import br.com.susunity.queue.producer.dto.MessageBodyForScheduler;
 import br.com.susunity.repository.ProfessionalAvailabilityRepository;
@@ -37,14 +38,14 @@ public class ProfessionalAvailabilityService {
         this.messageProducer = messageProducer;
     }
 
-
     @Transactional
     public ProfessionalAvailabilityDTO registerAvailability(ProfessionalAvailabilityFormDTO formDTO) {
-        Optional<ProfessionalUnityModel> professional = professionalService.getProfessional(formDTO.professionalId());
-        if (professional.isEmpty()) {
-            throw new EntityNotFoundException("Professional not found");
+        Optional<ProfessionalUnityModel> professional = professionalService.getProfessionalById(formDTO.professionalUnityId());
+        Optional<UnityModel> unity = unityService.findUnityById(formDTO.unityId());
+        if (professional.isEmpty() || unity.isEmpty()) {
+            throw new EntityNotFoundException("Professional or unity not found");
         }
-        ProfessionalAvailabilityModel availability = new ProfessionalAvailabilityModel(professional.get(), formDTO.availableTime());
+        ProfessionalAvailabilityModel availability = new ProfessionalAvailabilityModel(professional.get(), formDTO.unityId(), formDTO.availableTime());
         professionalAvailabilityRepository.save(availability);
         return new ProfessionalAvailabilityDTO(availability);
     }
@@ -58,18 +59,8 @@ public class ProfessionalAvailabilityService {
                 .stream().map(ProfessionalAvailabilityDTO::new).toList();
     }
 
-    public List<ProfessionalAvailabilityDTO> listAvailabilitiesByDate(LocalDate date) {
-        return professionalAvailabilityRepository.findByAvailableByDate(date)
-                .stream().map(ProfessionalAvailabilityDTO::new).toList();
-    }
-
-    public List<ProfessionalAvailabilityDTO> listAvailabilitiesByDayOfWeek(int dayOfWeek) {
-        return professionalAvailabilityRepository.findByAvailableTimeByDayOfWeek(dayOfWeek % 7 + 1)
-                .stream().map(ProfessionalAvailabilityDTO::new).toList();
-    }
-
-    public List<ProfessionalAvailabilityDTO> listAvailabilitiesByHour(int hour) {
-        return professionalAvailabilityRepository.findByAvailableByHour(hour)
+    public List<ProfessionalAvailabilityDTO> listAvailabilitiesByDate(LocalDate date, UUID unityId) {
+        return professionalAvailabilityRepository.findByAvailableByDateAndUnityId(date, unityId)
                 .stream().map(ProfessionalAvailabilityDTO::new).toList();
     }
 
@@ -93,16 +84,25 @@ public class ProfessionalAvailabilityService {
                             boolean isSpecialityValid = unityService.validateEspeciality(unityModel, message);
                             boolean isProfessionalValid = possibleProfessional.isPresent();
                             boolean isAppointmentValid = possibleProfessional
-                                    .map(professional -> professional.validateAppointment(message.appointment()))
+                                    .map(professional -> professional.validateAppointment(message.appointment(), message.unityId()))
                                     .orElse(false);
 
-                            messageProducer.sendToScheduler(new MessageBodyForScheduler(isSpecialityValid,
+                            messageProducer.sendToScheduling(new MessageBodyForScheduler(isSpecialityValid,
                                     true,
                                     isProfessionalValid,
                                     isAppointmentValid,
                                     message.schedulingId()));
+
+                            if(isSpecialityValid && isProfessionalValid && isAppointmentValid) {
+                                ProfessionalUnityModel professionalUnityModel = possibleProfessional.get();
+                                ProfessionalAvailabilityModel availability = professionalUnityModel
+                                        .getAvailabilityByDate(message.appointment(), unityModel.getId());
+                                professionalUnityModel.removeAvailability(availability);
+                                professionalService.saveProfessional(professionalUnityModel);
+                                professionalAvailabilityRepository.delete(availability);
+                            }
                         },
-                        () -> messageProducer.sendToScheduler(new MessageBodyForScheduler(false,
+                        () -> messageProducer.sendToScheduling(new MessageBodyForScheduler(false,
                                 false,
                                 false,
                                 false,

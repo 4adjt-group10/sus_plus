@@ -1,6 +1,6 @@
 package br.com.susunity.model;
 
-import br.com.susunity.queue.consumer.dto.manager.Professional;
+import br.com.susunity.queue.consumer.dto.manager.MessageBodyByManager;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -70,10 +70,10 @@ public class ProfessionalUnityModel {
         this.availability = availability;
     }
 
-    public ProfessionalUnityModel(Professional messageBody, UnityModel unityIn, List<SpecialityModel> specialityModels) {
-        this.professionalId = messageBody.getProfissionalId();
-        this.professionalName = messageBody.getProfissionalName();
-        this.type = messageBody.getType();
+    public ProfessionalUnityModel(MessageBodyByManager messageBody, UnityModel unityIn) {
+        this.professionalId = messageBody.professionalId();
+        this.professionalName = messageBody.professionalName();
+        this.type = messageBody.type();
         if(Objects.isNull(this.unity)) {
             this.unity = new ArrayList<>();
             unity.add(unityIn);
@@ -82,10 +82,10 @@ public class ProfessionalUnityModel {
         }
     }
 
-    public ProfessionalUnityModel(Professional messageBody) {
-        this.professionalId = messageBody.getProfissionalId();
-        this.professionalName = messageBody.getProfissionalName();
-        this.type = messageBody.getType();
+    public ProfessionalUnityModel(MessageBodyByManager messageBody) {
+        this.professionalId = messageBody.professionalId();
+        this.professionalName = messageBody.professionalName();
+        this.type = messageBody.type();
     }
 
 
@@ -121,7 +121,19 @@ public class ProfessionalUnityModel {
         this.speciality = speciality;
     }
 
-    public boolean validateAppointment(LocalDateTime appointment) {
-        return this.availability.stream().anyMatch(a -> a.getAvailableTime().equals(appointment));
+    public boolean validateAppointment(LocalDateTime appointment, UUID unityId) {
+        return this.availability.stream()
+                .anyMatch(a -> a.getAvailableTime().equals(appointment) && a.getUnityId().equals(unityId));
+    }
+
+    public ProfessionalAvailabilityModel getAvailabilityByDate(LocalDateTime date, UUID unityId) {
+        return this.availability.stream()
+                .filter(a -> a.getAvailableTime().equals(date) && a.getUnityId().equals(unityId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void removeAvailability(ProfessionalAvailabilityModel availability) {
+        this.availability.remove(availability);
     }
 }

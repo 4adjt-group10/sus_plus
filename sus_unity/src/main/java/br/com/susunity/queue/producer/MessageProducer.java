@@ -20,29 +20,24 @@ public class MessageProducer {
         this.jackson2JsonMessageConverter = new Jackson2JsonMessageConverter();
     }
 
-
     public void sendToManager(MessageBodyForManager message) {
-        MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
         rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_UNITY_MANAGER, rabbitMessage);
     }
 
-    public void sendToScheduler(MessageBodyForScheduler message) {
-        MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
+    public void sendToScheduling(MessageBodyForScheduler message) {
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
         rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_UNITY_SCHEDULE, rabbitMessage);
     }
 
-    public void sendToIntegrated(String message) {
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_UNITY_INTEGRATED, message);
+    public void sendToPatientRecord(MessageBodyForPatientRecord messageBodyForPatientRecord) {
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(messageBodyForPatientRecord, getProperties());
+        rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_UNITY_PATIENT_RECORD, rabbitMessage);
     }
 
-    public void sendToPatientRecord(MessageBodyForPatientRecord messageBodyForPatientRecord) {
+    private static MessageProperties getProperties() {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(messageBodyForPatientRecord, messageProperties);
-        rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_UNITY_PATIENT_RECORD, rabbitMessage);
+        return messageProperties;
     }
 }

@@ -19,17 +19,18 @@ public class MessageProducer {
         this.jackson2JsonMessageConverter = new Jackson2JsonMessageConverter();
     }
 
-
     public void sendToIntegrated(RecordToIntegrated message) {
-        MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, messageProperties);
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
         rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_INTEGRATED, rabbitMessage);    }
 
     public void sendToUnity(RecordToUnity recordToUnity) {
+        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(recordToUnity, getProperties());
+        rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_UNITY, rabbitMessage);
+    }
+
+    private static MessageProperties getProperties() {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-        Message rabbitMessage = jackson2JsonMessageConverter.toMessage(recordToUnity, messageProperties);
-        rabbitTemplate.send(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_PATIENT_RECORD_UNITY, rabbitMessage);
+        return messageProperties;
     }
 }

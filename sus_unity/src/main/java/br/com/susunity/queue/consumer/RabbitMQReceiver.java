@@ -1,9 +1,9 @@
 package br.com.susunity.queue.consumer;
 
 import br.com.susunity.config.RabbitConfig;
-import br.com.susunity.queue.consumer.dto.manager.Professional;
-import br.com.susunity.queue.consumer.dto.patientrecord.MessageBodyByPatientRecord;
-import br.com.susunity.queue.consumer.dto.scheduler.MessageBodyByScheduling;
+import br.com.susunity.queue.consumer.dto.manager.MessageBodyByManager;
+import br.com.susunity.queue.consumer.dto.MessageBodyByPatientRecord;
+import br.com.susunity.queue.consumer.dto.MessageBodyByScheduling;
 import br.com.susunity.service.ProfessionalAvailabilityService;
 import br.com.susunity.service.UnityService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -31,9 +31,9 @@ public class RabbitMQReceiver {
 
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_MANAGER_UNITY, ackMode = "MANUAL")
-    public void receiveProfessionalMessage(Professional message,
-                                       Channel channel,
-                                       @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
+    public void receiveProfessionalMessage(MessageBodyByManager message,
+                                           Channel channel,
+                                           @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         try {
             logger.info(String.format("Received <%s>", message.toString()));
             unityService.updateProfessional(message);

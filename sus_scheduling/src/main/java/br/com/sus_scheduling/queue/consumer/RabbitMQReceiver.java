@@ -3,7 +3,6 @@ package br.com.sus_scheduling.queue.consumer;
 
 import br.com.sus_scheduling.config.RabbitConfig;
 import br.com.sus_scheduling.queue.consumer.dto.MessageBodyByIntegrated;
-import br.com.sus_scheduling.queue.consumer.dto.MessageBodyByManager;
 import br.com.sus_scheduling.queue.consumer.dto.MessageBodyByUnity;
 import br.com.sus_scheduling.service.SchedulingService;
 import com.rabbitmq.client.Channel;
@@ -56,24 +55,6 @@ public class RabbitMQReceiver {
         } catch (Exception e) {
             logger.severe("Error processing message: ".concat(e.getMessage()));
             // Se o processamento falhar, rejeite a mensagem sem reencaminhá-la para a fila
-            try {
-                channel.basicNack(deliveryTag, false, false);
-            } catch (IOException ioException) {
-                logger.severe("Error rejecting message: ".concat(ioException.getMessage()));
-            }
-        }
-    }
-
-    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_MANAGER_SCHEDULING, ackMode = "MANUAL")
-    public void receiveManagerMessage(MessageBodyByManager message,
-                                      Channel channel,
-                                      @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
-        try {
-            logger.info(String.format("Received <%s>", message));
-            schedulingService.postValidateManager(message);
-            channel.basicAck(deliveryTag , false);
-        } catch (Exception e) {
-            logger.severe("Error processing message: ".concat(e.getMessage()));
             try {
                 channel.basicNack(deliveryTag, false, false);
             } catch (IOException ioException) {

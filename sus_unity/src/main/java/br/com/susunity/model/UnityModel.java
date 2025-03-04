@@ -28,7 +28,7 @@ public class UnityModel {
 
     private Integer numberOfPatients;
 
-    private Integer numberOfTotalPatients;
+    private Integer supportedPatients;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -45,20 +45,20 @@ public class UnityModel {
                       String name,
                       Address address,
                       Integer numberOfPatients,
-                      Integer numberOfTotalPatients,
+                      Integer supportedPatients,
                       List<ProfessionalUnityModel> professional) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.numberOfPatients = numberOfPatients;
-        this.numberOfTotalPatients = numberOfTotalPatients;
+        this.supportedPatients = supportedPatients;
         this.professional = professional;
     }
 
     public UnityModel(UnityInForm unityInForm) {
         this.name = unityInForm.name();
         this.address = new Address(unityInForm.address());
-        this.numberOfTotalPatients = (unityInForm.numberOfToTalPatients() != null) ? unityInForm.numberOfToTalPatients() : 0;
+        this.supportedPatients = (unityInForm.supportedPatients() != null) ? unityInForm.supportedPatients() : 0;
     }
 
     public UUID getId() {
@@ -77,19 +77,19 @@ public class UnityModel {
         return numberOfPatients;
     }
 
-    public Integer getNumberOfTotalPatients() {
-        return numberOfTotalPatients;
+    public Integer getSupportedPatients() {
+        return supportedPatients;
     }
 
     public List<ProfessionalUnityModel> getProfessional() {
         return professional;
     }
 
-    public void inPatiente(Integer numberOfPatients) {
-        this.numberOfPatients = this.numberOfPatients + numberOfPatients;
+    public void inPatient(Integer numberOfPatients) {
+        this.numberOfPatients = this.numberOfPatients == null ? numberOfPatients : this.numberOfPatients + numberOfPatients;
     }
 
-    public void outPatiente(Integer numberOfPatients) {
+    public void outPatient(Integer numberOfPatients) {
         if(Objects.nonNull(this.numberOfPatients) && this.numberOfPatients > numberOfPatients) {
             this.numberOfPatients = this.numberOfPatients - numberOfPatients;
         }
@@ -100,7 +100,7 @@ public class UnityModel {
             this.name = unityInForm.name();
         }
         this.address.merge(unityInForm.address());
-        this.numberOfTotalPatients = unityInForm.numberOfToTalPatients();
+        this.supportedPatients = unityInForm.supportedPatients();
     }
 
     public void setProfessional(ProfessionalUnityModel messageBody) {

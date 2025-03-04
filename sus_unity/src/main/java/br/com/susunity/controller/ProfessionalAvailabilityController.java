@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -40,18 +39,9 @@ public class ProfessionalAvailabilityController {
     }
 
     @GetMapping("/date/{date}")
-    public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByDate(@PathVariable("date") LocalDate date) {
-        return ResponseEntity.ok(availabilityService.listAvailabilitiesByDate(date));
-    }
-
-    @GetMapping("/day/{dayOfWeek}")
-    public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByDayOfWeek(@PathVariable("dayOfWeek") DayOfWeek dayOfWeek) {
-        return ResponseEntity.ok(availabilityService.listAvailabilitiesByDayOfWeek(dayOfWeek.getValue()));
-    }
-
-    @GetMapping("/hour/{hour}")
-    public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByHour(@PathVariable("hour") Integer hour) {
-        return ResponseEntity.ok(availabilityService.listAvailabilitiesByHour(hour));
+    public ResponseEntity<List<ProfessionalAvailabilityDTO>> listAvailabilitiesByDate(@PathVariable("date") LocalDate date,
+                                                                                      @RequestParam(value = "unityId") UUID unityId) {
+        return ResponseEntity.ok(availabilityService.listAvailabilitiesByDate(date, unityId));
     }
 
     @PutMapping("/update/{id}")

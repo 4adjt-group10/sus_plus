@@ -3,6 +3,7 @@ package br.com.susunity.controller.dto.unity;
 import br.com.susunity.controller.dto.professional.ProfessionalOut;
 import br.com.susunity.model.Address;
 import br.com.susunity.model.UnityModel;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 import java.math.BigDecimal;
@@ -11,26 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record UnityDto(
 
         UUID id,
         String name,
         Address address,
         Integer numberOfPatients,
-        Integer numberOfTotalPatients,
-        BigDecimal porcent,
-        List<ProfessionalOut> professional
+        Integer supportedPatients,
+        BigDecimal occupancyPercentage,
+        List<ProfessionalOut> professionals
 ) {
-    public UnityDto(UnityModel unityModel,List<ProfessionalOut> professional) {
+    public UnityDto(UnityModel unityModel,List<ProfessionalOut> professionals) {
         this(unityModel.getId(),
                 unityModel.getName(),
                 unityModel.getAddress(),
                 unityModel.getNumberOfPatients(),
-                unityModel.getNumberOfTotalPatients(),
-                calculatePercent(unityModel.getNumberOfPatients(),
-                        unityModel.getNumberOfTotalPatients()),
-                professional);
+                unityModel.getSupportedPatients(),
+                calculatePercentage(unityModel.getNumberOfPatients(),
+                        unityModel.getSupportedPatients()),
+                professionals);
     }
 
     public UnityDto(UnityModel unityModel) {
@@ -38,14 +39,14 @@ public record UnityDto(
                 unityModel.getName(),
                 unityModel.getAddress(),
                 unityModel.getNumberOfPatients(),
-                unityModel.getNumberOfTotalPatients(),
-                calculatePercent(unityModel.getNumberOfPatients(),
-                        unityModel.getNumberOfTotalPatients()),
+                unityModel.getSupportedPatients(),
+                calculatePercentage(unityModel.getNumberOfPatients(),
+                        unityModel.getSupportedPatients()),
                 new ArrayList<>());
     }
 
 
-    private static BigDecimal calculatePercent(Integer numberOfPatients, Integer numberOfToTalPatients) {
+    private static BigDecimal calculatePercentage(Integer numberOfPatients, Integer numberOfToTalPatients) {
         if (numberOfToTalPatients == null || numberOfToTalPatients.equals(0)) {
             return new BigDecimal(0);
         }

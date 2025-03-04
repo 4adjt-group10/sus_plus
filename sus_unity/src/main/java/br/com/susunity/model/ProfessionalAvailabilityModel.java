@@ -19,12 +19,16 @@ public class ProfessionalAvailabilityModel {
     @JoinColumn(name = "professional_id")
     private ProfessionalUnityModel professional;
 
+    @Column(name = "unity_id")
+    private UUID unityId;
+
     private LocalDateTime availableTime;
 
-    public ProfessionalAvailabilityModel(ProfessionalUnityModel professional, LocalDateTime availableTime) {
+    public ProfessionalAvailabilityModel(ProfessionalUnityModel professional, UUID unityId, LocalDateTime availableTime) {
         this.id = UUID.randomUUID();
         this.professional = professional;
         this.availableTime = availableTime;
+        this.unityId = unityId;
     }
 
     @Deprecated(since = "Only for use of frameworks")
@@ -45,6 +49,10 @@ public class ProfessionalAvailabilityModel {
 
     public String getProfessionalName() {
         return professional.getProfessionalName();
+    }
+
+    public UUID getUnityId() {
+        return unityId;
     }
 
     public void merge(ProfessionalAvailabilityFormDTO formDTO) {

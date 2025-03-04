@@ -40,12 +40,18 @@ public class SpecialityService {
 
     @Transactional
     public SpecialityDTO update(UUID id, SpecialityForm procedureFormDTO) {
-        List<ProfessionalModel> professionals = professionalManagerRepository.findAllById(procedureFormDTO.professionalsIds());
+        List<ProfessionalModel> professionals;
         SpecialityModel specialityModel = findById(id);
-        specialityModel.merge(procedureFormDTO, professionals);
-        professionals.forEach(professional -> professional.addSpeciality(specialityModel));
+        if(procedureFormDTO.professionalsIds() != null && !procedureFormDTO.professionalsIds().isEmpty()) {
+            professionals = professionalManagerRepository.findAllById(procedureFormDTO.professionalsIds());
+            specialityModel.merge(procedureFormDTO, professionals);
+            professionals.forEach(professional -> professional.addSpeciality(specialityModel));
+            professionalManagerRepository.saveAll(professionals);
+        } else {
+            professionals = new ArrayList<>();
+            specialityModel.merge(procedureFormDTO, professionals);
+        }
         specialityRepository.save(specialityModel);
-        professionalManagerRepository.saveAll(professionals);
         return new SpecialityDTO(specialityModel);
     }
 
