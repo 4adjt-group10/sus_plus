@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 public class PatientRecordService {
@@ -77,14 +76,20 @@ public class PatientRecordService {
     public List<PatientRecordOutDTO> getPatientRecordByUnityIdAndPatientId(UUID unityId, UUID patientId) {
         List<PatientRecordModel> patientRecords = patientRecordRepository.findAllByUnityIdAndPatientId(unityId, patientId);
         return patientRecords.stream()
-                .map(PatientRecordOutDTO::new)
-                .collect(Collectors.toList());
+                .map(PatientRecordOutDTO::new).toList();
     }
 
     public List<PatientRecordOutDTO> getAllPatientRecordByProfessionalId(UUID professionalId) {
         List<PatientRecordModel> patientRecords = patientRecordRepository.findAllByProfessionId(professionalId);
         return patientRecords.stream()
-                .map(PatientRecordOutDTO::new)
-                .collect(Collectors.toList());
+                .map(PatientRecordOutDTO::new).toList();
+    }
+
+    public PatientRecordOutDTO editRecord(UUID id, String observation) {
+        PatientRecordModel patientRecordModel = patientRecordRepository.findById(id).
+                orElseThrow(EntityNotFoundException::new);
+        patientRecordModel.setDescription(patientRecordModel.getDescription() + "/n" + observation);
+        patientRecordRepository.save(patientRecordModel);
+        return new PatientRecordOutDTO(patientRecordModel);
     }
 }

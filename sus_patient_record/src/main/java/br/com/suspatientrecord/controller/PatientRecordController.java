@@ -41,4 +41,9 @@ public class PatientRecordController {
         return ResponseEntity.ok(patientRecordService.getAllPatientRecordByProfessionalId(professionalId));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientRecordOutDTO> includeData(@PathVariable UUID id,@RequestBody String observation) {
+        return ResponseEntity.ok(patientRecordService.editRecord(id,observation));
+    }
+
 }
