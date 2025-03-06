@@ -42,13 +42,224 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
     *   **Propósito:** Gerencia unidades de saúde, profissionais e especialidades.
     *   **Banco de Dados:** PostgreSQL (`sus_manager_database`)
     *   **Endpoints:**
-        *   *(Endpoints não presentes no código fornecido)*
+
+
+#### Gestão de Profissionais de Saúde
+*   **`GET /manager/professional/findall`**
+    *   **Descrição:** Recupera todos os profissionais.
+    *   **Resposta de Sucesso (200 OK):** `List<ProfessionalManagerOut>` (uma lista de todos os profissionais).
+*   **`GET /manager/professional/find/{professionalId}`**
+    *   **Descrição:** Recupera um profissional pelo ID.
+    *   **Parâmetros:**
+        *   `professionalId` (UUID): ID do profissional.
+    *   **Resposta de Sucesso (200 OK):** `ProfessionalManagerOut` (o profissional correspondente ao ID fornecido).
+*   **`POST /manager/professional/create`**
+    *   **Descrição:** Cria um novo profissional.
+    *   **Corpo da Requisição:**
+        ```json
+            {
+                "name": "João silva",
+                "document": "12345678900",
+                "phone": "11999999999",
+                "especialityId": "uuid-da-especialidade",
+                "unityId": "uuid-da-unidade",
+                "active": true
+            }
+        ```
+    *   **Resposta de Sucesso (201 CREATED):** `ProfessionalManagerOut` (o profissional criado).
+*   **`PUT /manager/professional/alter/{professionalId}`**
+    *   **Descrição:** Atualiza um profissional existente.
+    *   **Parâmetros:**
+        *   `professionalId` (UUID): ID do profissional a ser atualizado.
+    *   **Corpo da Requisição:** (Dados para atualização)
+    *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
+* **`PUT /manager/professional/include-speciality/{professionalId}/{idSpeciality}`**
+    * **Descrição:** adiciona uma especialidade a um profissional
+    * **Parametros:**
+        *   `professionalId` (UUID): ID do profissional.
+        * `idSpeciality` (UUID): ID da especialidade.
+    * **Resposta de Sucesso (200 OK):** `OK`
+* **`PUT /manager/professional/exclude-speciality/{professionalId}/{idSpeciality}`**
+    * **Descrição:** remove uma especialidade de um profissional
+    * **Parametros:**
+        *   `professionalId` (UUID): ID do profissional.
+        * `idSpeciality` (UUID): ID da especialidade.
+    * **Resposta de Sucesso (200 OK):** `OK`
+* **`DELETE /manager/professional/delete/{professionalId}`**
+    * **Descrição:** remove o profissional
+    * **Parametros:**
+        *   `professionalId` (UUID): ID do profissional.
+    * **Resposta de Sucesso (200 OK):** `OK`
+
+#### Gestão de Especialidades
+
+*   **`POST /speciality`**
+    *   **Descrição:** Cadastra uma nova especialidade.
+    *   **Corpo da Requisição:**
+        ```json
+        {
+          "name": "cardiologia",
+          "description": "especialidade do coração"
+        }
+        ```
+    *   **Resposta de Sucesso (200 OK):** Retorna a especialidade criada.
+*   **`GET /speciality/find/{id}`**
+    *   **Descrição:** Busca uma especialidade específica.
+    *   **Parâmetros:**
+        *   `id` (UUID): ID da especialidade.
+    *   **Resposta de Sucesso (200 OK):** Retorna a especialidade encontrada.
+*   **`GET /speciality/all`**
+    *   **Descrição:** Lista todas as especialidades.
+    *   **Resposta de Sucesso (200 OK):** Retorna uma lista de especialidades.
 
 3.  **sus-unity:**
     *   **Propósito:** Fornece recursos para as unidades de saúde específicas.
     *   **Banco de Dados:** PostgreSQL (`sus_unity_database`)
-    *   **Endpoints:**
-        *   *(Endpoints não presentes no código fornecido)*
+*   **`POST /unity/create`**
+    *   **Descrição:** Cria uma nova unidade de saúde.
+    *   **Corpo da Requisição:**
+        ```json
+        {
+          "name": "Hospital Central",
+          "address": "Rua Principal, 123",
+          "phone": "11987654321",
+          "quantity": 10
+        }
+        ```
+    *   **Resposta de Sucesso (200 OK):** Retorna a unidade criada.
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`GET /unity/find/all`**
+    *   **Descrição:** Lista todas as unidades de saúde cadastradas.
+    *   **Resposta de Sucesso (200 OK):** Retorna uma lista de unidades.
+    *   **Resposta Erro:** Pode retornar `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`GET /unity/find/{id}`**
+    *   **Descrição:** Busca uma unidade de saúde pelo ID.
+    *   **Parâmetros:**
+        *   `id` (UUID): ID da unidade de saúde.
+    *   **Resposta de Sucesso (200 OK):** Retorna a unidade encontrada.
+    *   **Resposta Erro:** Pode retornar `404 NOT FOUND` caso a unidade não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`POST /unity/update/{id}`**
+    *   **Descrição:** Atualiza os dados de uma unidade de saúde.
+    *   **Parâmetros:**
+        *   `id` (UUID): ID da unidade de saúde a ser atualizada.
+    *   **Corpo da Requisição:**
+    ```json
+        {
+          "name": "Novo nome",
+          "address": "Nova rua",
+          "phone": "11911112222",
+          "quantity": 15
+        }
+    ```
+    *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes, `404 NOT FOUND` caso a unidade não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`DELETE /unity/{id}`**
+    *   **Descrição:** Remove uma unidade de saúde.
+    *   **Parâmetros:**
+        *   `id` (UUID): ID da unidade de saúde a ser removida.
+    *   **Resposta de Sucesso (200 OK):** `"unidade Deletada"`
+    *   **Resposta Erro:** Pode retornar `404 NOT FOUND` caso a unidade não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`PUT /unity/update/{id}/{quantity}/in`**
+    *   **Descrição:** Adiciona a quantidade de atendimento na unidade.
+    *   **Parâmetros:**
+        *   `id` (UUID): ID da unidade de saúde.
+        *   `quantity` (int): quantidade a ser adicionada.
+    *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes, `404 NOT FOUND` caso a unidade não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`PUT /unity/update/{id}/{quantity}/out`**
+    *   **Descrição:** Retira a quantidade de atendimento na unidade.
+    *   **Parâmetros:**
+        *   `id` (UUID): ID da unidade de saúde.
+        *   `quantity` (int): quantidade a ser retirada.
+    *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes, `404 NOT FOUND` caso a unidade não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`POST /unity/include/professional`**
+    *   **Descrição:** Inclui um profissional em uma unidade.
+    *   **Corpo da Requisição:**
+        ```json
+        {
+          "unityId": "uuid-da-unidade",
+          "professionalId": "uuid-do-profissional"
+        }
+        ```
+    *   **Resposta de Sucesso (200 OK):** `OK`
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes, `404 NOT FOUND` caso a unidade ou o profissional não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`POST /unity/exclude/professional`**
+    *   **Descrição:** Retira um profissional de uma unidade.
+    *   **Corpo da Requisição:**
+        ```json
+        {
+          "unityId": "uuid-da-unidade",
+          "professionalId": "uuid-do-profissional"
+        }
+        ```
+    *   **Resposta de Sucesso (200 OK):** `OK`
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes, `404 NOT FOUND` caso a unidade ou o profissional não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+    *   **`POST /professional-availability/create`**
+    *   **Descrição:** Cria um novo registro de disponibilidade para um profissional.
+    *   **Corpo da Requisição:**
+        ```json
+        {
+            "professionalId": "uuid-do-profissional",
+            "unityId": "uuid-da-unidade",
+            "date": "AAAA-MM-DD",
+            "startTime": "HH:MM",
+            "endTime": "HH:MM"
+        }
+        ```
+        * **Exemplo de como fica a data:** 2024-12-01
+        * **Exemplo de como fica o horario:** 10:00
+    *   **Resposta de Sucesso (201 CREATED):** Retorna o registro de disponibilidade criado.
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes ou `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`GET /professional-availability/list-all`**
+    *   **Descrição:** Lista todos os registros de disponibilidade de profissionais.
+    *   **Resposta de Sucesso (200 OK):** Retorna uma lista de registros de disponibilidade.
+    *   **Resposta Erro:** Pode retornar `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`GET /professional-availability/professional/{professionalId}`**
+    *   **Descrição:** Lista os registros de disponibilidade para um profissional específico.
+    *   **Parâmetros:**
+        *   `professionalId` (UUID): ID do profissional.
+    *   **Resposta de Sucesso (200 OK):** Retorna uma lista de registros de disponibilidade para o profissional.
+    *   **Resposta Erro:** Pode retornar `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`GET /professional-availability/date/{date}`**
+    *   **Descrição:** Lista os registros de disponibilidade para uma data específica e unidade.
+    *   **Parâmetros:**
+        *   `date` (LocalDate): Data no formato `AAAA-MM-DD`.
+        * `unityId` (UUID): ID da unidade a ser pesquisada.
+    *   **Resposta de Sucesso (200 OK):** Retorna uma lista de registros de disponibilidade para a data e unidade.
+    *   **Resposta Erro:** Pode retornar `500 INTERNAL SERVER ERROR` para erros internos.
+
+*   **`PUT /professional-availability/update/{id}`**
+    *   **Descrição:** Atualiza um registro de disponibilidade.
+    *   **Parâmetros:**
+        *   `id` (UUID): ID do registro de disponibilidade a ser atualizado.
+    *   **Corpo da Requisição:**
+        ```json
+        {
+            "professionalId": "uuid-do-profissional",
+            "unityId": "uuid-da-unidade",
+            "date": "AAAA-MM-DD",
+            "startTime": "HH:MM",
+            "endTime": "HH:MM"
+        }
+        ```
+        * **Exemplo de como fica a data:** 2024-12-01
+        * **Exemplo de como fica o horario:** 10:00
+    *   **Resposta de Sucesso (200 OK):** Retorna o registro de disponibilidade atualizado.
+    *   **Resposta Erro:** Pode retornar `400 BAD REQUEST` caso os dados enviados estejam inconsistentes, `404 NOT FOUND` caso o registro não exista ou `500 INTERNAL SERVER ERROR` para erros internos.
+    * **Dependências:** RabbitMQ
+    * **Responsabilidade:** validar dados de pacientes para outros microsserviços, criar, buscar, listar e atualizar pacientes.
 
 4.  **sus-scheduling:**
     *   **Propósito:** Lida com o agendamento de consultas e operações relacionadas.
@@ -131,5 +342,13 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
 
 3. **Testando o fluxo do sistema**
     * Primeiro você precisará criar um paciente no serviço `sus-integrated` usando o enpoint `POST /patient/create`
+    * Depois disso, você pode criar um medico no serviço  `sus-manager` usando o endpoint `POST /manager/professional/create`
+    * Depois disso, você pode criar uma especialidade no serviço  `sus-manager` usando o endpoint `POST /speciality`
+    * Depois disso, você associa o medico a especialidade no serviço  `sus-manager` usando o endpoint `PUT /manager/professional/include-speciality/{professionalId}/{idSpeciality}`
+    * Depois disso, cria uma unidade no serviço  `sus-unity` usando o endpoint `POST /unity/create`
+    * Depois disso, você associa o medico a unidade no serviço  `sus-unity` usando o endpoint `PUT /unity/include/professional`
+    * Depois disso, você pode criar um horario disponivel no serviço `sus-unity` usando o endpoint `POST /professional-availability/create`
+    * Depois disso, você pode criar um novo agendamento no serviço `sus-scheduling` usando o endpoint `POST /scheduling`
     * Depois disso, você pode criar um registro de paciente no `sus-patient-record` usando o endpoint `POST /patient-records`
-    * Depois disso, você pode criar um novo agendamento no serviço `sus-scheduling` usando o endpoint `POST /scheduling`  
+    * lembrando que a criação de profissional, especialidade e unidade nao necessariamente precisam ter os ids integrados , pode se criar e depois associar
+   
