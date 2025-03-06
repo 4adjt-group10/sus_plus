@@ -4,12 +4,16 @@ import br.com.susintegrated.controller.dto.patient.PatientDTO;
 import br.com.susintegrated.controller.dto.patient.PatientFormDTO;
 import br.com.susintegrated.service.PatientService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
@@ -33,8 +37,8 @@ public class PatientController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<PatientDTO>> listAll() {
-        return ResponseEntity.ok(patientService.listAll());
+    public ResponseEntity<Page<PatientDTO>> listAll(@Nullable @PageableDefault(size = 20, sort = "name", direction = ASC) Pageable pageable) {
+        return ResponseEntity.ok(patientService.listAll(pageable));
     }
 
     @PutMapping("/update/{id}")

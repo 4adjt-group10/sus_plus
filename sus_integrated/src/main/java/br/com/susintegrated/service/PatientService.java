@@ -11,9 +11,10 @@ import br.com.susintegrated.queue.producer.dto.MessageBodyForScheduling;
 import br.com.susintegrated.repository.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,8 +51,8 @@ public class PatientService {
         return patientRepository.findById(id);
     }
 
-    public List<PatientDTO> listAll() {
-        return patientRepository.findAll().stream().map(PatientDTO::new).toList();
+    public Page<PatientDTO> listAll(Pageable pageable) {
+        return patientRepository.findAll(pageable).map(PatientDTO::new);
     }
 
     public Patient findByDocumentOrCreate(String patientName, String patientDocument, String phone) {
