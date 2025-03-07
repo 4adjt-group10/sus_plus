@@ -43,74 +43,72 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
     *   **Banco de Dados:** PostgreSQL (`sus_manager_database`)
     *   **Endpoints:**
 
+         **Gestão de Profissionais de Saúde**
+         *   **`GET /manager/professional/findall`**
+             *   **Descrição:** Recupera todos os profissionais.
+             *   **Resposta de Sucesso (200 OK):** `List<ProfessionalManagerOut>` (uma lista de todos os profissionais).
+         *   **`GET /manager/professional/find/{professionalId}`**
+             *   **Descrição:** Recupera um profissional pelo ID.
+             *   **Parâmetros:**
+                 *   `professionalId` (UUID): ID do profissional.
+             *   **Resposta de Sucesso (200 OK):** `ProfessionalManagerOut` (o profissional correspondente ao ID fornecido).
+         *   **`POST /manager/professional/create`**
+             *   **Descrição:** Cria um novo profissional.
+             *   **Corpo da Requisição:**
+                 ```json
+                     {
+                         "name": "João silva",
+                         "document": "12345678900",
+                         "phone": "11999999999",
+                         "especialityId": "uuid-da-especialidade",
+                         "unityId": "uuid-da-unidade",
+                         "active": true
+                     }
+                 ```
+             *   **Resposta de Sucesso (201 CREATED):** `ProfessionalManagerOut` (o profissional criado).
+         *   **`PUT /manager/professional/alter/{professionalId}`**
+             *   **Descrição:** Atualiza um profissional existente.
+             *   **Parâmetros:**
+                 *   `professionalId` (UUID): ID do profissional a ser atualizado.
+             *   **Corpo da Requisição:** (Dados para atualização)
+             *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
+         * **`PUT /manager/professional/include-speciality/{professionalId}/{idSpeciality}`**
+             * **Descrição:** adiciona uma especialidade a um profissional
+             * **Parametros:**
+                 *   `professionalId` (UUID): ID do profissional.
+                 * `idSpeciality` (UUID): ID da especialidade.
+             * **Resposta de Sucesso (200 OK):** `OK`
+         * **`PUT /manager/professional/exclude-speciality/{professionalId}/{idSpeciality}`**
+             * **Descrição:** remove uma especialidade de um profissional
+             * **Parametros:**
+                 *   `professionalId` (UUID): ID do profissional.
+                 * `idSpeciality` (UUID): ID da especialidade.
+             * **Resposta de Sucesso (200 OK):** `OK`
+         * **`DELETE /manager/professional/delete/{professionalId}`**
+             * **Descrição:** remove o profissional
+             * **Parametros:**
+                 *   `professionalId` (UUID): ID do profissional.
+             * **Resposta de Sucesso (200 OK):** `OK`
 
-#### Gestão de Profissionais de Saúde
-*   **`GET /manager/professional/findall`**
-    *   **Descrição:** Recupera todos os profissionais.
-    *   **Resposta de Sucesso (200 OK):** `List<ProfessionalManagerOut>` (uma lista de todos os profissionais).
-*   **`GET /manager/professional/find/{professionalId}`**
-    *   **Descrição:** Recupera um profissional pelo ID.
-    *   **Parâmetros:**
-        *   `professionalId` (UUID): ID do profissional.
-    *   **Resposta de Sucesso (200 OK):** `ProfessionalManagerOut` (o profissional correspondente ao ID fornecido).
-*   **`POST /manager/professional/create`**
-    *   **Descrição:** Cria um novo profissional.
-    *   **Corpo da Requisição:**
-        ```json
-            {
-                "name": "João silva",
-                "document": "12345678900",
-                "phone": "11999999999",
-                "especialityId": "uuid-da-especialidade",
-                "unityId": "uuid-da-unidade",
-                "active": true
-            }
-        ```
-    *   **Resposta de Sucesso (201 CREATED):** `ProfessionalManagerOut` (o profissional criado).
-*   **`PUT /manager/professional/alter/{professionalId}`**
-    *   **Descrição:** Atualiza um profissional existente.
-    *   **Parâmetros:**
-        *   `professionalId` (UUID): ID do profissional a ser atualizado.
-    *   **Corpo da Requisição:** (Dados para atualização)
-    *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
-* **`PUT /manager/professional/include-speciality/{professionalId}/{idSpeciality}`**
-    * **Descrição:** adiciona uma especialidade a um profissional
-    * **Parametros:**
-        *   `professionalId` (UUID): ID do profissional.
-        * `idSpeciality` (UUID): ID da especialidade.
-    * **Resposta de Sucesso (200 OK):** `OK`
-* **`PUT /manager/professional/exclude-speciality/{professionalId}/{idSpeciality}`**
-    * **Descrição:** remove uma especialidade de um profissional
-    * **Parametros:**
-        *   `professionalId` (UUID): ID do profissional.
-        * `idSpeciality` (UUID): ID da especialidade.
-    * **Resposta de Sucesso (200 OK):** `OK`
-* **`DELETE /manager/professional/delete/{professionalId}`**
-    * **Descrição:** remove o profissional
-    * **Parametros:**
-        *   `professionalId` (UUID): ID do profissional.
-    * **Resposta de Sucesso (200 OK):** `OK`
-
-#### Gestão de Especialidades
-
-*   **`POST /speciality`**
-    *   **Descrição:** Cadastra uma nova especialidade.
-    *   **Corpo da Requisição:**
-        ```json
-        {
-          "name": "cardiologia",
-          "description": "especialidade do coração"
-        }
-        ```
-    *   **Resposta de Sucesso (200 OK):** Retorna a especialidade criada.
-*   **`GET /speciality/find/{id}`**
-    *   **Descrição:** Busca uma especialidade específica.
-    *   **Parâmetros:**
-        *   `id` (UUID): ID da especialidade.
-    *   **Resposta de Sucesso (200 OK):** Retorna a especialidade encontrada.
-*   **`GET /speciality/all`**
-    *   **Descrição:** Lista todas as especialidades.
-    *   **Resposta de Sucesso (200 OK):** Retorna uma lista de especialidades.
+         **Gestão de Especialidades**
+         *   **`POST /speciality`**
+             *   **Descrição:** Cadastra uma nova especialidade.
+             *   **Corpo da Requisição:**
+                 ```json
+                 {
+                   "name": "cardiologia",
+                   "description": "especialidade do coração"
+                 }
+                 ```
+             *   **Resposta de Sucesso (200 OK):** Retorna a especialidade criada.
+         *   **`GET /speciality/find/{id}`**
+             *   **Descrição:** Busca uma especialidade específica.
+             *   **Parâmetros:**
+                 *   `id` (UUID): ID da especialidade.
+             *   **Resposta de Sucesso (200 OK):** Retorna a especialidade encontrada.
+         *   **`GET /speciality/all`**
+             *   **Descrição:** Lista todas as especialidades.
+             *   **Resposta de Sucesso (200 OK):** Retorna uma lista de especialidades.
 
 3.  **sus-unity:**
     *   **Propósito:** Fornece recursos para as unidades de saúde específicas.
@@ -336,13 +334,13 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
     * Os testes estão na pasta src/test/java, você pode verificar isso para cada microsserviço.
 
 2.  **Testes de API:**
-    *   Use ferramentas como Postman ou `curl` para interagir com as APIs REST dos microsserviços.
+    *   Use ferramentas como Postman ou a própria documentação atravez do Swagger para interagir com as APIs REST dos microsserviços.
     *   Consulte a seção "Endpoints" acima para detalhes sobre a API de cada microsserviço.
     * Você pode executar o comando docker compose e depois enviar a requisição para cada serviço na porta especificada.
 
 3. **Testando o fluxo do sistema**
     * Primeiro você precisará criar um paciente no serviço `sus-integrated` usando o enpoint `POST /patient/create`
-    * Depois disso, você pode criar um medico no serviço  `sus-manager` usando o endpoint `POST /manager/professional/create`
+    * Depois disso, você pode criar um médico no serviço  `sus-manager` usando o endpoint `POST /manager/professional/create`
     * Depois disso, você pode criar uma especialidade no serviço  `sus-manager` usando o endpoint `POST /speciality`
     * Depois disso, você associa o medico a especialidade no serviço  `sus-manager` usando o endpoint `PUT /manager/professional/include-speciality/{professionalId}/{idSpeciality}`
     * Depois disso, cria uma unidade no serviço  `sus-unity` usando o endpoint `POST /unity/create`
@@ -350,5 +348,5 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
     * Depois disso, você pode criar um horario disponivel no serviço `sus-unity` usando o endpoint `POST /professional-availability/create`
     * Depois disso, você pode criar um novo agendamento no serviço `sus-scheduling` usando o endpoint `POST /scheduling`
     * Depois disso, você pode criar um registro de paciente no `sus-patient-record` usando o endpoint `POST /patient-records`
-    * lembrando que a criação de profissional, especialidade e unidade nao necessariamente precisam ter os ids integrados , pode se criar e depois associar
+    * Vale lembrar que a criação de profissional, especialidade e unidade não necessariamente precisam ter os ids integrados, pode-se criar e depois associar
    
