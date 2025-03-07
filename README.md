@@ -20,99 +20,109 @@ Este projeto utiliza uma variedade de tecnologias modernas para garantir desempe
 
 O projeto `sus_plus` é composto por vários microsserviços, cada um com suas responsabilidades específicas:
 
-1.  **sus-integrated:**
-    *   **Propósito:** Central de gerenciamento de pacientes e hub de integração de dados. Valida os dados do paciente com os outros microsserviços e lida com a criação e gerenciamento de pacientes.
-    *   **Banco de Dados:** PostgreSQL (`sus_integrated_database`)
-    *   **Endpoints:**
-        *   `POST /patient/create`: Cadastra um novo paciente.
-            *   **Corpo da Requisição:** `PatientFormDTO` (name, document, phone).
-            *   **Resposta:** `PatientDTO` (detalhes do paciente).
-        *   `GET /patient/search/{id}`: Recupera um paciente pelo seu ID.
-            *   **Resposta:** `PatientDTO` (detalhes do paciente).
-        *   `GET /patient/list`: Lista todos os pacientes (paginado).
-            *   **Parâmetros:** `page`, `size`, `sort`.
-            *   **Resposta:** `Page<PatientDTO>` (lista de pacientes).
-        *   `PUT /patient/update/{id}`: Atualiza um paciente existente.
-            *   **Corpo da Requisição:** `PatientFormDTO` (name, document, phone).
-            *   **Resposta:** `PatientDTO` (detalhes do paciente atualizado).
-    * **Dependências:** RabbitMQ
-    * **Responsabilidade:** validar dados de pacientes para outros microsserviços, criar, buscar, listar e atualizar pacientes.
+<details>
+<summary>1. sus-integrated</summary>
 
-2.  **sus-manager:**
-    *   **Propósito:** Gerencia unidades de saúde, profissionais e especialidades.
-    *   **Banco de Dados:** PostgreSQL (`sus_manager_database`)
-    *   **Endpoints:**
+*   **Propósito:** Central de gerenciamento de pacientes e hub de integração de dados. Valida os dados do paciente com os outros microsserviços e lida com a criação e gerenciamento de pacientes.
+*   **Banco de Dados:** PostgreSQL (`sus_integrated_database`)
+*   **Endpoints:**
+    *   `POST /patient/create`: Cadastra um novo paciente.
+        *   **Corpo da Requisição:** `PatientFormDTO` (name, document, phone).
+        *   **Resposta:** `PatientDTO` (detalhes do paciente).
+    *   `GET /patient/search/{id}`: Recupera um paciente pelo seu ID.
+        *   **Resposta:** `PatientDTO` (detalhes do paciente).
+    *   `GET /patient/list`: Lista todos os pacientes (paginado).
+        *   **Parâmetros:** `page`, `size`, `sort`.
+        *   **Resposta:** `Page<PatientDTO>` (lista de pacientes).
+    *   `PUT /patient/update/{id}`: Atualiza um paciente existente.
+        *   **Corpo da Requisição:** `PatientFormDTO` (name, document, phone).
+        *   **Resposta:** `PatientDTO` (detalhes do paciente atualizado).
+* **Dependências:** RabbitMQ
+* **Responsabilidade:** validar dados de pacientes para outros microsserviços, criar, buscar, listar e atualizar pacientes.
 
-         **Gestão de Profissionais de Saúde**
-         *   **`GET /manager/professional/findall`**
-             *   **Descrição:** Recupera todos os profissionais.
-             *   **Resposta de Sucesso (200 OK):** `List<ProfessionalManagerOut>` (uma lista de todos os profissionais).
-         *   **`GET /manager/professional/find/{professionalId}`**
-             *   **Descrição:** Recupera um profissional pelo ID.
-             *   **Parâmetros:**
-                 *   `professionalId` (UUID): ID do profissional.
-             *   **Resposta de Sucesso (200 OK):** `ProfessionalManagerOut` (o profissional correspondente ao ID fornecido).
-         *   **`POST /manager/professional/create`**
-             *   **Descrição:** Cria um novo profissional.
-             *   **Corpo da Requisição:**
-                 ```json
-                     {
-                         "name": "João silva",
-                         "document": "12345678900",
-                         "phone": "11999999999",
-                         "especialityId": "uuid-da-especialidade",
-                         "unityId": "uuid-da-unidade",
-                         "active": true
-                     }
-                 ```
-             *   **Resposta de Sucesso (201 CREATED):** `ProfessionalManagerOut` (o profissional criado).
-         *   **`PUT /manager/professional/alter/{professionalId}`**
-             *   **Descrição:** Atualiza um profissional existente.
-             *   **Parâmetros:**
-                 *   `professionalId` (UUID): ID do profissional a ser atualizado.
-             *   **Corpo da Requisição:** (Dados para atualização)
-             *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
-         * **`PUT /manager/professional/include-speciality/{professionalId}/{idSpeciality}`**
-             * **Descrição:** adiciona uma especialidade a um profissional
-             * **Parametros:**
-                 *   `professionalId` (UUID): ID do profissional.
-                 * `idSpeciality` (UUID): ID da especialidade.
-             * **Resposta de Sucesso (200 OK):** `OK`
-         * **`PUT /manager/professional/exclude-speciality/{professionalId}/{idSpeciality}`**
-             * **Descrição:** remove uma especialidade de um profissional
-             * **Parametros:**
-                 *   `professionalId` (UUID): ID do profissional.
-                 * `idSpeciality` (UUID): ID da especialidade.
-             * **Resposta de Sucesso (200 OK):** `OK`
-         * **`DELETE /manager/professional/delete/{professionalId}`**
-             * **Descrição:** remove o profissional
-             * **Parametros:**
-                 *   `professionalId` (UUID): ID do profissional.
-             * **Resposta de Sucesso (200 OK):** `OK`
+</details>
 
-         **Gestão de Especialidades**
-         *   **`POST /speciality`**
-             *   **Descrição:** Cadastra uma nova especialidade.
-             *   **Corpo da Requisição:**
-                 ```json
+<details>
+<summary>2. sus-manager</summary>
+
+*   **Propósito:** Gerencia unidades de saúde, profissionais e especialidades.
+*   **Banco de Dados:** PostgreSQL (`sus_manager_database`)
+*   **Endpoints:**
+
+     **Gestão de Profissionais de Saúde**
+     *   **`GET /manager/professional/findall`**
+         *   **Descrição:** Recupera todos os profissionais.
+         *   **Resposta de Sucesso (200 OK):** `List<ProfessionalManagerOut>` (uma lista de todos os profissionais).
+     *   **`GET /manager/professional/find/{professionalId}`**
+         *   **Descrição:** Recupera um profissional pelo ID.
+         *   **Parâmetros:**
+             *   `professionalId` (UUID): ID do profissional.
+         *   **Resposta de Sucesso (200 OK):** `ProfessionalManagerOut` (o profissional correspondente ao ID fornecido).
+     *   **`POST /manager/professional/create`**
+         *   **Descrição:** Cria um novo profissional.
+         *   **Corpo da Requisição:**
+             ```json
                  {
-                   "name": "cardiologia",
-                   "description": "especialidade do coração"
+                     "name": "João silva",
+                     "document": "12345678900",
+                     "phone": "11999999999",
+                     "especialityId": "uuid-da-especialidade",
+                     "unityId": "uuid-da-unidade",
+                     "active": true
                  }
-                 ```
-             *   **Resposta de Sucesso (200 OK):** Retorna a especialidade criada.
-         *   **`GET /speciality/find/{id}`**
-             *   **Descrição:** Busca uma especialidade específica.
-             *   **Parâmetros:**
-                 *   `id` (UUID): ID da especialidade.
-             *   **Resposta de Sucesso (200 OK):** Retorna a especialidade encontrada.
-         *   **`GET /speciality/all`**
-             *   **Descrição:** Lista todas as especialidades.
-             *   **Resposta de Sucesso (200 OK):** Retorna uma lista de especialidades.
+             ```
+         *   **Resposta de Sucesso (201 CREATED):** `ProfessionalManagerOut` (o profissional criado).
+     *   **`PUT /manager/professional/alter/{professionalId}`**
+         *   **Descrição:** Atualiza um profissional existente.
+         *   **Parâmetros:**
+             *   `professionalId` (UUID): ID do profissional a ser atualizado.
+         *   **Corpo da Requisição:** (Dados para atualização)
+         *   **Resposta de Sucesso (200 OK):** Retorna a unidade atualizada.
+     * **`PUT /manager/professional/include-speciality/{professionalId}/{idSpeciality}`**
+         * **Descrição:** adiciona uma especialidade a um profissional
+         * **Parametros:**
+             *   `professionalId` (UUID): ID do profissional.
+             * `idSpeciality` (UUID): ID da especialidade.
+         * **Resposta de Sucesso (200 OK):** `OK`
+     * **`PUT /manager/professional/exclude-speciality/{professionalId}/{idSpeciality}`**
+         * **Descrição:** remove uma especialidade de um profissional
+         * **Parametros:**
+             *   `professionalId` (UUID): ID do profissional.
+             * `idSpeciality` (UUID): ID da especialidade.
+         * **Resposta de Sucesso (200 OK):** `OK`
+     * **`DELETE /manager/professional/delete/{professionalId}`**
+         * **Descrição:** remove o profissional
+         * **Parametros:**
+             *   `professionalId` (UUID): ID do profissional.
+         * **Resposta de Sucesso (200 OK):** `OK`
 
-3.  **sus-unity:**
-    *   **Propósito:** Fornece recursos para as unidades de saúde específicas.
-    *   **Banco de Dados:** PostgreSQL (`sus_unity_database`)
+     **Gestão de Especialidades**
+     *   **`POST /speciality`**
+         *   **Descrição:** Cadastra uma nova especialidade.
+         *   **Corpo da Requisição:**
+             ```json
+             {
+               "name": "cardiologia",
+               "description": "especialidade do coração"
+             }
+             ```
+         *   **Resposta de Sucesso (200 OK):** Retorna a especialidade criada.
+     *   **`GET /speciality/find/{id}`**
+         *   **Descrição:** Busca uma especialidade específica.
+         *   **Parâmetros:**
+             *   `id` (UUID): ID da especialidade.
+         *   **Resposta de Sucesso (200 OK):** Retorna a especialidade encontrada.
+     *   **`GET /speciality/all`**
+         *   **Descrição:** Lista todas as especialidades.
+         *   **Resposta de Sucesso (200 OK):** Retorna uma lista de especialidades.
+
+</details>
+
+<details>
+<summary>3. sus-unity</summary>
+
+*   **Propósito:** Fornece recursos para as unidades de saúde específicas.
+*   **Banco de Dados:** PostgreSQL (`sus_unity_database`)
 *   **`POST /unity/create`**
     *   **Descrição:** Cria uma nova unidade de saúde.
     *   **Corpo da Requisição:**
@@ -259,39 +269,50 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
     * **Dependências:** RabbitMQ
     * **Responsabilidade:** validar dados de pacientes para outros microsserviços, criar, buscar, listar e atualizar pacientes.
 
-4.  **sus-scheduling:**
-    *   **Propósito:** Lida com o agendamento de consultas e operações relacionadas.
-    *   **Banco de Dados:** PostgreSQL (`sus_scheduling_database`)
-    *   **Endpoints:**
-        *   `POST /scheduling`: cria um novo Agendamento.
-            *   **Corpo da Requisição:** `SchedulingFormDTO`
-            *   **Resposta:** `SchedulingDTO`
-        *   `GET /scheduling/patient/{patientId}`: Lista agendamentos para um paciente.
-            *   **Resposta:** `List<SchedulingDTO>` (lista de agendamentos).
-        *   `GET /scheduling/professional/{professionalId}`: Lista agendamentos para um profissional.
-            *   **Resposta:** `List<SchedulingDTO>` (lista de agendamentos).
-        *   `PUT /scheduling/{id}/done`: marca o agendamento como concluído.
-            * **Resposta:** `SchedulingDTO` (Agendamento atualizado).
-    * **Dependências:** RabbitMQ
-    * **Responsabilidade:** criar, listar e atualizar um agendamento
-5.  **sus-patient-record:**
-    *   **Propósito:** Gerencia prontuários médicos para pacientes.
-    *   **Banco de Dados:** PostgreSQL (`sus_patient-record_database`)
-    *   **Endpoints:**
-        *   `POST /patient-records`: Cria um novo prontuário do paciente.
-            *   **Corpo da Requisição:** `PatientRecordFormDTO`.
-            *   **Resposta:** `PatientRecordOutDTO`.
-        *   `GET /patient-records/{id}`: Recupera um prontuário do paciente pelo ID.
-            *   **Resposta:** `PatientRecordOutDTO`.
-        *   `GET /patient-records/unity/{unityId}/patient/{patientId}`: Recupera prontuários de um paciente específico em uma unidade específica.
-            *   **Resposta:** `List<PatientRecordOutDTO>`
-        *   `GET /patient-records/professional/{professionalId}`: Recupera todos os prontuários de um profissional específico.
-            *   **Resposta:** `List<PatientRecordOutDTO>`
-        *   `PUT /patient-records/{id}`: Inclui observações no prontuário do paciente.
-            *   **Corpo da Requisição:** `String observation`.
-            *   **Resposta:** `PatientRecordOutDTO`.
-    * **Dependências:** RabbitMQ
-    * **Responsabilidade:** criar, buscar, listar e editar o prontuário do paciente
+</details>
+
+<details>
+<summary>4. sus-scheduling</summary>
+
+*   **Propósito:** Lida com o agendamento de consultas e operações relacionadas.
+*   **Banco de Dados:** PostgreSQL (`sus_scheduling_database`)
+*   **Endpoints:**
+    *   `POST /scheduling`: cria um novo Agendamento.
+        *   **Corpo da Requisição:** `SchedulingFormDTO`
+        *   **Resposta:** `SchedulingDTO`
+    *   `GET /scheduling/patient/{patientId}`: Lista agendamentos para um paciente.
+        *   **Resposta:** `List<SchedulingDTO>` (lista de agendamentos).
+    *   `GET /scheduling/professional/{professionalId}`: Lista agendamentos para um profissional.
+        *   **Resposta:** `List<SchedulingDTO>` (lista de agendamentos).
+    *   `PUT /scheduling/{id}/done`: marca o agendamento como concluído.
+        * **Resposta:** `SchedulingDTO` (Agendamento atualizado).
+* **Dependências:** RabbitMQ
+* **Responsabilidade:** criar, listar e atualizar um agendamento
+
+</details>
+
+<details>
+<summary>5. sus-patient-record</summary>
+
+*   **Propósito:** Gerencia prontuários médicos para pacientes.
+*   **Banco de Dados:** PostgreSQL (`sus_patient-record_database`)
+*   **Endpoints:**
+    *   `POST /patient-records`: Cria um novo prontuário do paciente.
+        *   **Corpo da Requisição:** `PatientRecordFormDTO`.
+        *   **Resposta:** `PatientRecordOutDTO`.
+    *   `GET /patient-records/{id}`: Recupera um prontuário do paciente pelo ID.
+        *   **Resposta:** `PatientRecordOutDTO`.
+    *   `GET /patient-records/unity/{unityId}/patient/{patientId}`: Recupera prontuários de um paciente específico em uma unidade específica.
+        *   **Resposta:** `List<PatientRecordOutDTO>`
+    *   `GET /patient-records/professional/{professionalId}`: Recupera todos os prontuários de um profissional específico.
+        *   **Resposta:** `List<PatientRecordOutDTO>`
+    *   `PUT /patient-records/{id}`: Inclui observações no prontuário do paciente.
+        *   **Corpo da Requisição:** `String observation`.
+        *   **Resposta:** `PatientRecordOutDTO`.
+* **Dependências:** RabbitMQ
+* **Responsabilidade:** criar, buscar, listar e editar o prontuário do paciente
+
+</details>
 
 ## Comunicação Entre Microsserviços
 
@@ -349,4 +370,3 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
     * Depois disso, você pode criar um novo agendamento no serviço `sus-scheduling` usando o endpoint `POST /scheduling`
     * Depois disso, você pode criar um registro de paciente no `sus-patient-record` usando o endpoint `POST /patient-records`
     * Vale lembrar que a criação de profissional, especialidade e unidade não necessariamente precisam ter os ids integrados, pode-se criar e depois associar
-   
