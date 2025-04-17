@@ -147,6 +147,20 @@ services:
     networks:
       - sus-scheduling-network
 
+  mongodb-scheduling:
+    container_name: mongodb-scheduling
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./sus_scheduling/data/db/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - "27017:27017"
+    networks:
+      - sus-scheduling-network
+
   sus-scheduling-app:
     container_name: java-sus-scheduling
     image: maven:3.8.4-openjdk-17
@@ -157,6 +171,7 @@ services:
     environment:
       - TZ=America/Sao_Paulo
       - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:secret@mongodb-scheduling:27017/sus_scheduling?authSource=admin
     ports:
       - "8083:8080"
       - "5008:5005"
@@ -164,7 +179,7 @@ services:
       - sus-scheduling-network
       - rabbitmq_go_net
     depends_on:
-      - sus-scheduling-db
+      - mongodb-scheduling
 
   sus-patient-record-db:
     container_name: postgres-sus-patient-record
@@ -182,6 +197,20 @@ services:
     networks:
       - sus-patient-record-network
 
+  mongodb-patient-record:
+    container_name: mongodb-patient-record
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./sus_patient_record/data/db/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - "27018:27017"
+    networks:
+      - sus-patient-record-network
+
   sus-patient-record-app:
     container_name: java-sus-patient-record
     image: maven:3.8.4-openjdk-17
@@ -192,6 +221,7 @@ services:
     environment:
       - TZ=America/Sao_Paulo
       - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:secret@mongodb-patient-record:27017/sus_patient_record?authSource=admin
     ports:
       - "8084:8080"
       - "5009:5005"
@@ -199,4 +229,4 @@ services:
       - sus-patient-record-network
       - rabbitmq_go_net
     depends_on:
-      - sus-patient-record-db
+      - mongodb-patient-record
