@@ -21,7 +21,7 @@ services:
     image: mongo:latest
     restart: unless-stopped
     volumes:
-      - ./sus_scheduling/data/db/mongodb:/data/db
+      - ./data/db/mongodb:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
