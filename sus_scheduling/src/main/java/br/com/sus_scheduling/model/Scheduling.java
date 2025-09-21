@@ -121,6 +121,14 @@ public class Scheduling {
         return status;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
     public boolean hasStatus(SchedulingStatus status) {
         return this.status.equals(status);
     }
