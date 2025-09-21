@@ -1,4 +1,4 @@
-package br.com.sus_scheduling.service;//package br.com.susintegrado.service;
+package br.com.sus_scheduling.service;
 
 import br.com.sus_scheduling.controller.dto.scheduling.*;
 import br.com.sus_scheduling.model.Scheduling;
@@ -26,7 +26,6 @@ public class SchedulingService {
 
     private final SchedulingRepository schedulingRepository;
     private final MessageProducer messageProducer;
-
     private final Logger logger = Logger.getLogger(SchedulingService.class.getName());
 
     public SchedulingService(SchedulingRepository schedulingRepository, MessageProducer messageProducer) {

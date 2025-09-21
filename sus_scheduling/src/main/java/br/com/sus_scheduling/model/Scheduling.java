@@ -42,21 +42,12 @@ public class Scheduling {
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
-    @Column(name = "created_by", nullable = false, updatable = false)
-    private String createdBy;
-    
-    @Column(name = "updated_by")
-    private String updatedBy;
-    
-    @Version
-    private Long version;
 
     @Deprecated(since = "Only for use of frameworks")
     public Scheduling() {
     }
 
-    public Scheduling(SchedulingFormDTO formDTO, String createdBy) {
+    public Scheduling(SchedulingFormDTO formDTO) {
         this.patientId = formDTO.patientId();
         this.specialityId = formDTO.specialityId();
         this.unityId = formDTO.unityId();
@@ -64,36 +55,26 @@ public class Scheduling {
         this.appointment = formDTO.appointment();
         this.status = UNDER_ANALYSIS;
         this.createdAt = LocalDateTime.now();
-        this.updatedAt = this.createdAt;
-        this.createdBy = createdBy;
-        this.updatedBy = createdBy;
     }
 
-    public Scheduling(UUID patientId,
-                      String patientName,
-                      UUID specialityId,
-                      String specialityName,
-                      UUID professionalId,
-                      String professionalName,
-                      UUID unityId,
-                      String unityName,
-                      LocalDateTime appointment,
-                      SchedulingStatus status,
-                      String createdBy) {
-        this.patientId = patientId;
-        this.patientName = patientName;
-        this.specialityId = specialityId;
-        this.specialityName = specialityName;
-        this.professionalId = professionalId;
-        this.professionalName = professionalName;
-        this.unityId = unityId;
-        this.unityName = unityName;
-        this.appointment = appointment;
-        this.status = status;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = this.createdAt;
-        this.createdBy = createdBy;
-        this.updatedBy = createdBy;
+    public void cancel() {
+        this.status = CANCELED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void done() {
+        this.status = DONE;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void late() {
+        this.status = LATE;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void approve() {
+        this.status = SCHEDULED;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public UUID getId() {
@@ -140,51 +121,7 @@ public class Scheduling {
         return status;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
     public boolean hasStatus(SchedulingStatus status) {
         return this.status.equals(status);
-    }
-
-    public void cancel(String updatedBy) {
-        this.status = CANCELED;
-        this.updatedAt = LocalDateTime.now();
-        this.updatedBy = updatedBy;
-    }
-
-    public void done(String updatedBy) {
-        this.status = DONE;
-        this.updatedAt = LocalDateTime.now();
-        this.updatedBy = updatedBy;
-    }
-
-    public void late(String updatedBy) {
-        this.status = LATE;
-        this.updatedAt = LocalDateTime.now();
-        this.updatedBy = updatedBy;
-    }
-
-    public void approve(String updatedBy) {
-        this.status = SCHEDULED;
-        this.updatedAt = LocalDateTime.now();
-        this.updatedBy = updatedBy;
     }
 }

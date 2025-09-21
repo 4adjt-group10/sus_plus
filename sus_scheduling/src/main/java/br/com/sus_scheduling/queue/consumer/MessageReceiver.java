@@ -1,7 +1,6 @@
 package br.com.sus_scheduling.queue.consumer;
 
 
-import br.com.sus_scheduling.config.RabbitConfig;
 import br.com.sus_scheduling.queue.consumer.dto.MessageBodyByIntegrated;
 import br.com.sus_scheduling.queue.consumer.dto.MessageBodyByUnity;
 import br.com.sus_scheduling.service.SchedulingService;
@@ -12,25 +11,26 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-public class RabbitMQReceiver {
+public class MessageReceiver {
 
-    private final Logger logger = Logger.getLogger(RabbitMQReceiver.class.getName());
+    private final Logger logger = Logger.getLogger(MessageReceiver.class.getName());
 
     private final SchedulingService schedulingService;
 
-    public RabbitMQReceiver(SchedulingService schedulingService) {
+    public MessageReceiver(SchedulingService schedulingService) {
         this.schedulingService = schedulingService;
     }
 
-    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_UNITY_SCHEDULING, ackMode = "MANUAL")
+    @RabbitListener(queues = ConsumerUtils.QUEUE_NAME_UNITY_SCHEDULING, ackMode = "MANUAL")
     public void receiveUnityMessage(MessageBodyByUnity message,
                                     Channel channel,
                                     @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
         try {
-            logger.info(String.format("Received <%s>", message));
+            logger.log(Level.INFO,"Received {}", message);
             schedulingService.postValidateUnity(message);
             channel.basicAck(deliveryTag , false);
         } catch (Exception e) {
@@ -39,12 +39,13 @@ public class RabbitMQReceiver {
             try {
                 channel.basicNack(deliveryTag, false, false);
             } catch (IOException ioException) {
-                logger.severe("Error rejecting message: ".concat(ioException.getMessage()));
+                //TODO: Adicionar lógica de tratamento de DLQ
+                logger.log(Level.SEVERE, "Error rejecting message: {}", ioException.getMessage());
             }
         }
     }
 
-    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_INTEGRATED_SCHEDULING, ackMode = "MANUAL")
+    @RabbitListener(queues = ConsumerUtils.QUEUE_NAME_INTEGRATED_SCHEDULING, ackMode = "MANUAL")
     public void receiveIntegratedMessage(MessageBodyByIntegrated message,
                                          Channel channel,
                                          @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
@@ -58,6 +59,7 @@ public class RabbitMQReceiver {
             try {
                 channel.basicNack(deliveryTag, false, false);
             } catch (IOException ioException) {
+                //TODO: Adicionar lógica de tratamento de DLQ
                 logger.severe("Error rejecting message: ".concat(ioException.getMessage()));
             }
         }
