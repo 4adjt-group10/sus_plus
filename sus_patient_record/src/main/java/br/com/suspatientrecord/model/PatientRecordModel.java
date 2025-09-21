@@ -1,8 +1,6 @@
 package br.com.suspatientrecord.model;
 
 import br.com.suspatientrecord.controller.dto.PatientRecordFormDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
 
 import java.util.UUID;
 import jakarta.persistence.*;
@@ -25,18 +23,6 @@ public class PatientRecordModel {
     private String unityName;
 
     public PatientRecordModel() {
-    }
-
-    public PatientRecordModel(UUID patientId, UUID professionId, UUID unityId, UUID specialityId, String specialityName, String description, String patientName, String professionName, String unityName) {
-        this.patientId = patientId;
-        this.professionId = professionId;
-        this.unityId = unityId;
-        this.specialityId = specialityId;
-        this.specialityName = specialityName;
-        this.description = description;
-        this.patientName = patientName;
-        this.professionName = professionName;
-        this.unityName = unityName;
     }
 
     public PatientRecordModel(PatientRecordFormDTO patientRecord) {

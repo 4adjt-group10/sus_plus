@@ -1,0 +1,58 @@
+services:
+
+  sus-patient-record-db:
+    container_name: postgres-sus-patient-record
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - ./sus_patient_record/data/db/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sus_patient_record_database
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=myuser
+      - TZ=America/Sao_Paulo
+    ports:
+      - "5436:5432"
+    networks:
+      - sus-patient-record-network
+
+  mongodb-patient-record:
+    container_name: mongodb-patient-record
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./sus_patient_record/data/db/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - "27018:27017"
+    networks:
+      - sus-patient-record-network
+
+  sus-patient-record-app:
+    container_name: java-sus-patient-record
+    image: maven:3.8.4-openjdk-17
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: bash -c "mvn clean install && java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar target/sus_patient_record.jar"
+    environment:
+      - TZ=America/Sao_Paulo
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:secret@mongodb-patient-record:27017/sus_patient_record?authSource=admin
+    ports:
+      - "8084:8080"
+      - "5009:5005"
+    networks:
+      - sus-patient-record-network
+      - rabbitmq_go_net
+    depends_on:
+      - mongodb-patient-record
+      - sus-patient-record-db
+
+networks:
+  rabbitmq_go_net:
+    name: rabbitmq_go_net
+  sus-patient-record-network:
+    name: sus-patient-record-network
