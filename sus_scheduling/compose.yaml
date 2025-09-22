@@ -16,6 +16,20 @@ services:
     networks:
       - sus-scheduling-network
 
+  mongodb-scheduling:
+    container_name: mongodb-scheduling
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./data/db/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - "27017:27017"
+    networks:
+      - sus-scheduling-network
+
   sus-scheduling-app:
     container_name: java-sus-scheduling
     image: maven:3.8.4-openjdk-17
@@ -34,9 +48,10 @@ services:
       - rabbitmq_go_net
     depends_on:
       - sus-scheduling-db
+      - mongodb-scheduling
 
 networks:
   rabbitmq_go_net:
-    external: true
+    name: rabbitmq_go_net
   sus-scheduling-network:
     name: sus-scheduling-network

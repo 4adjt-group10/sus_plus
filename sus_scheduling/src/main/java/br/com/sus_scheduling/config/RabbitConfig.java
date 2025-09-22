@@ -11,23 +11,11 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static br.com.sus_scheduling.queue.consumer.ConsumerUtils.*;
+import static br.com.sus_scheduling.queue.producer.ProducerUtils.*;
+
 @Configuration
 public class RabbitConfig {
-
-    //producer
-    public static final String QUEUE_NAME_SCHEDULING_UNITY = "SchedulingUnityQueue";
-    public static final String ROUTING_KEY_SCHEDULING_UNITY = "routing.key.scheduling_unity";
-
-    public static final String QUEUE_NAME_SCHEDULING_INTEGRATED = "SchedulingIntegratedQueue";
-    public static final String ROUTING_KEY_SCHEDULING_INTEGRATED = "routing.key.scheduling_integrated";
-
-
-    //consumer
-    public static final String QUEUE_NAME_UNITY_SCHEDULING = "UnitySchedulingQueue";
-    public static final String ROUTING_KEY_UNITY_SCHEDULING = "routing.key.unity_scheduling";
-
-    public static final String QUEUE_NAME_INTEGRATED_SCHEDULING = "IntegratedSchedulingQueue";
-    public static final String ROUTING_KEY_INTEGRATED_SCHEDULING = "routing.key.integrated_scheduling";
 
     public static final String EXCHANGE_NAME = "OrderExchange";
 

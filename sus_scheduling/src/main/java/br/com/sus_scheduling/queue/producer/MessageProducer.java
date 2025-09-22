@@ -22,12 +22,12 @@ public class MessageProducer {
 
     public void sendToUnity(MessageBodyForUnity message) {
         Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_SCHEDULING_UNITY, rabbitMessage);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, ProducerUtils.ROUTING_KEY_SCHEDULING_UNITY, rabbitMessage);
     }
 
     public void sendToIntegrated(MessageBodyForIntegrated message) {
         Message rabbitMessage = jackson2JsonMessageConverter.toMessage(message, getProperties());
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_SCHEDULING_INTEGRATED, rabbitMessage);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, ProducerUtils.ROUTING_KEY_SCHEDULING_INTEGRATED, rabbitMessage);
     }
 
     private static MessageProperties getProperties() {

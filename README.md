@@ -295,7 +295,7 @@ O projeto `sus_plus` é composto por vários microsserviços, cada um com suas r
 <summary>5. sus-patient-record</summary>
 
 *   **Propósito:** Gerencia prontuários médicos para pacientes.
-*   **Banco de Dados:** PostgreSQL (`sus_patient-record_database`)
+*   **Banco de Dados:** PostgreSQL (`sus_patient_record_database`)
 *   **Endpoints:**
     *   `POST /patient-records`: Cria um novo prontuário do paciente.
         *   **Corpo da Requisição:** `PatientRecordFormDTO`.

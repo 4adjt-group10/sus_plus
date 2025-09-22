@@ -35,6 +35,13 @@ public class Scheduling {
     private LocalDateTime appointment;
     @Enumerated(EnumType.STRING)
     private SchedulingStatus status;
+    
+    // Campos de auditoria
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Deprecated(since = "Only for use of frameworks")
     public Scheduling() {
@@ -47,28 +54,27 @@ public class Scheduling {
         this.professionalId = formDTO.professionalId();
         this.appointment = formDTO.appointment();
         this.status = UNDER_ANALYSIS;
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Scheduling(UUID patientId,
-                      String patientName,
-                      UUID specialityId,
-                      String specialityName,
-                      UUID professionalId,
-                      String professionalName,
-                      UUID unityId,
-                      String unityName,
-                      LocalDateTime appointment,
-                      SchedulingStatus status) {
-        this.patientId = patientId;
-        this.patientName = patientName;
-        this.specialityId = specialityId;
-        this.specialityName = specialityName;
-        this.professionalId = professionalId;
-        this.professionalName = professionalName;
-        this.unityId = unityId;
-        this.unityName = unityName;
-        this.appointment = appointment;
-        this.status = status;
+    public void cancel() {
+        this.status = CANCELED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void done() {
+        this.status = DONE;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void late() {
+        this.status = LATE;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void approve() {
+        this.status = SCHEDULED;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public UUID getId() {
@@ -115,23 +121,15 @@ public class Scheduling {
         return status;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
     public boolean hasStatus(SchedulingStatus status) {
         return this.status.equals(status);
-    }
-
-    public void cancel() {
-        this.status = CANCELED;
-    }
-
-    public void done() {
-        this.status = DONE;
-    }
-
-    public void late() {
-        this.status = LATE;
-    }
-
-    public void approve() {
-        this.status = SCHEDULED;
     }
 }
